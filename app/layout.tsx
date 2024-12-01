@@ -1,4 +1,5 @@
 import AppLayout from "@/components/layout/AppLayout";
+import "./globals.css";
 
 export const metadata = {
   title: "Next.js",
