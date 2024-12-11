@@ -1,11 +1,10 @@
 import React from "react";
 import Link from "next/link";
-import {
-  ShoppingCartIcon,
-  UserCircleIcon,
-  XMarkIcon,
-  MagnifyingGlassIcon,
-} from "@heroicons/react/24/outline";
+
+import { LuShoppingCart } from "react-icons/lu";
+import { FaRegCircleUser } from "react-icons/fa6";
+import { CiSearch } from "react-icons/ci";
+import { IoIosClose } from "react-icons/io";
 
 export default function Navbar() {
   return (
@@ -19,7 +18,7 @@ export default function Navbar() {
           </button>
         </div>
         <button>
-          <XMarkIcon className="w-4 h-4 text-white" />
+          <IoIosClose className="w-4 h-4 text-white" />
         </button>
       </div>
 
@@ -59,7 +58,7 @@ export default function Navbar() {
         <div className="flex items-center space-x-4  w-full">
           {/* Search Input */}
           <div className="flex items-center border rounded-full w-full bg-slate-100">
-            <MagnifyingGlassIcon className="w-6 h-6 text-black ml-3 " />
+            <CiSearch className="w-6 h-6 text-black ml-3 " />
             <input
               type="text"
               placeholder="Search for products..."
@@ -69,12 +68,12 @@ export default function Navbar() {
 
           {/* Cart Icon */}
           <button>
-            <ShoppingCartIcon className="w-6 h-6 text-black" />
+            <LuShoppingCart className="w-6 h-6 text-black" />
           </button>
 
           {/* User Icon */}
           <button>
-            <UserCircleIcon className="w-6 h-6 text-black" />
+            <FaRegCircleUser className="w-6 h-6 text-black" />
           </button>
         </div>
       </nav>
