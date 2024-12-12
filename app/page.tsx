@@ -1,4 +1,5 @@
 import CarouselTemplate from "@/components/carousel/CarouselTemplate";
+import CategoriesStyle from "@/components/categoriesStyle/CategoriesStyle";
 import Navbar from "@/components/navbar/Navbar";
 import ListProduct from "@/components/products/ListProduct";
 
@@ -7,7 +8,9 @@ export default function Home() {
     <div>
       <Navbar />
       <CarouselTemplate />
-      <ListProduct />
+      <ListProduct title="NEW ARRIVALS" />
+      <ListProduct isHideBorder={true} title="TOP SELLING" />
+      <CategoriesStyle />
     </div>
   );
 }
