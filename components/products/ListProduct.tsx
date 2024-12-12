@@ -39,7 +39,9 @@ function ListProduct({ title, isHideBorder }: Props) {
         />
       </div>
       <div className="text-center mb-10 mt-10">
-        <button className="border py-2 px-10 rounded-2xl">View All</button>
+        <button className="border border-black py-2 px-10 rounded-2xl text-black">
+          View All
+        </button>
       </div>
       {!isHideBorder && <div className="border w-full"></div>}
     </div>

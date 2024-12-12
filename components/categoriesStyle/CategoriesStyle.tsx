@@ -10,7 +10,7 @@ export default function CategoriesStyle() {
         </h1>
         <div className="flex space-x-10 justify-center">
           <div className="bg-white flex rounded-lg overflow-hidden">
-            <h1 className="text-4xl px-10 py-10">Casual</h1>
+            <h1 className="text-4xl px-10 py-10 text-black">Casual</h1>
             <Image
               className="rounded-lg transform transition-transform duration-300 ease-in-out hover:scale-110"
               src="/casual.png"
@@ -20,7 +20,7 @@ export default function CategoriesStyle() {
             />
           </div>
           <div className="bg-white flex rounded-lg overflow-hidden">
-            <div className="text-4xl px-10 py-10">Formal</div>
+            <div className="text-4xl px-10 py-10 text-black">Formal</div>
             <Image
               className="rounded-lg transform transition-transform duration-300 ease-in-out hover:scale-110"
               src="/formal.png"
@@ -32,7 +32,7 @@ export default function CategoriesStyle() {
         </div>
         <div className="flex space-x-10 mt-10 cursor-pointer justify-center">
           <div className="bg-white flex rounded-lg overflow-hidden">
-            <h1 className="text-4xl px-10 py-10">Casual</h1>
+            <h1 className="text-4xl px-10 py-10 text-black">Casual</h1>
             <Image
               className="rounded-lg transform transition-transform duration-300 ease-in-out hover:scale-110"
               src="/party.png"
@@ -42,7 +42,7 @@ export default function CategoriesStyle() {
             />
           </div>
           <div className="bg-white flex rounded-lg overflow-hidden cursor-pointer">
-            <div className="text-4xl px-10 py-10">Formal</div>
+            <div className="text-4xl px-10 py-10 text-black">Gym</div>
             <Image
               className="rounded-lg transform transition-transform duration-300 ease-in-out hover:scale-110"
               src="/gym.png"

@@ -1,5 +1,8 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import { LuShoppingCart } from "react-icons/lu";
 import { FaRegCircleUser } from "react-icons/fa6";
@@ -7,6 +10,12 @@ import { CiSearch } from "react-icons/ci";
 import { IoIosClose } from "react-icons/io";
 
 export default function Navbar() {
+  const router = useRouter();
+
+  const handleOnClickCart = () => {
+    router.push("/cart/1");
+  };
+
   return (
     <header className="w-full border-b bg-white">
       {/* Top Announcement Bar */}
@@ -32,22 +41,25 @@ export default function Navbar() {
           {/* Nav Links */}
           <ul className="hidden md:flex space-x-6 text-sm font-medium items-center m-0">
             <li>
-              <Link href="/shop" className="hover:text-gray-700">
+              <Link href="/shop" className="p-1 hover:bg-customGray rounded">
                 Shop
               </Link>
             </li>
             <li>
-              <Link href="/on-sale" className="hover:text-gray-700">
+              <Link href="/on-sale" className="p-1 hover:bg-customGray rounded">
                 On Sale
               </Link>
             </li>
             <li>
-              <Link href="/new-arrivals" className="hover:text-gray-700">
+              <Link
+                href="/new-arrivals"
+                className="p-1 hover:bg-customGray rounded"
+              >
                 New Arrivals
               </Link>
             </li>
             <li>
-              <Link href="/brands" className="hover:text-gray-700">
+              <Link href="/brands" className="p-1 hover:bg-customGray rounded">
                 Brands
               </Link>
             </li>
@@ -67,12 +79,15 @@ export default function Navbar() {
           </div>
 
           {/* Cart Icon */}
-          <button>
+          <button
+            onClick={handleOnClickCart}
+            className="p-1 hover:bg-customGray rounded"
+          >
             <LuShoppingCart className="w-6 h-6 text-black" />
           </button>
 
           {/* User Icon */}
-          <button>
+          <button className="p-1 hover:bg-customGray rounded">
             <FaRegCircleUser className="w-6 h-6 text-black" />
           </button>
         </div>
