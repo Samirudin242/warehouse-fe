@@ -1,7 +1,7 @@
 import React from "react";
 import ProductCard from "../ProductCard";
 import CommentCard from "@/components/comments/CommentCard";
-import ButtonComponent from "@/components/button/Button";
+import ButtonComponent from "@/components/globals/Button";
 
 function ProductReview() {
   return (

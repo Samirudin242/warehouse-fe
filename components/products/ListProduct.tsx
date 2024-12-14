@@ -1,6 +1,6 @@
 import React from "react";
 import ProductCard from "./ProductCard";
-import ButtonComponent from "../button/Button";
+import ButtonComponent from "../globals/Button";
 
 interface Props {
   title: string;
