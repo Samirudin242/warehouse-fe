@@ -2,10 +2,18 @@ import React from "react";
 import { IoStarSharp } from "react-icons/io5";
 import { FaCheckCircle } from "react-icons/fa";
 
-export default function CommentCard() {
+interface Props {
+  customwWidth?: String;
+}
+
+export default function CommentCard({ customwWidth }: Props) {
   return (
     <div>
-      <div className="border w-72 rounded-lg py-4 px-3">
+      <div
+        className={`border ${
+          customwWidth ? customwWidth : "w-72"
+        } rounded-lg py-4 px-3`}
+      >
         <div className="flex">
           {[...Array(4)].map((_, i) => (
             <IoStarSharp key={i} className="text-amber-300" />

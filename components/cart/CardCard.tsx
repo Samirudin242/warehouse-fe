@@ -31,9 +31,9 @@ function CardCard() {
           <MdDelete className="text-red-600 text-2xl" />
         </div>
         <div className="flex justify-between border py-2 gap-5 px-4 rounded-3xl bg-customGray">
-          <button className="hover:bg-gray-300 px-2 rounded-lg">-</button>
+          <button className="hover:bg-gray-200 px-2 rounded-lg">-</button>
           <span>1</span>
-          <button className="hover:bg-gray-300 px-2 rounded-lg">+</button>
+          <button className="hover:bg-gray-200 px-2 rounded-lg">+</button>
         </div>
       </div>
     </div>

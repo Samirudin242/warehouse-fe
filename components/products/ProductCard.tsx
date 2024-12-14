@@ -33,7 +33,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
             <IoStarSharp key={i} className="text-amber-300" />
           ))}
           {[...Array(1)].map((_, i) => (
-            <IoStarHalfSharp className="text-amber-300" />
+            <IoStarHalfSharp key={i} className="text-amber-300" />
           ))}
           <span className="text-sm text-gray-500 ml-2">{rating}/5</span>
         </div>

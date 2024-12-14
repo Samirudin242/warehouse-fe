@@ -41,25 +41,25 @@ export default function Navbar() {
           {/* Nav Links */}
           <ul className="hidden md:flex space-x-6 text-sm font-medium items-center m-0">
             <li>
-              <Link href="/shop" className="p-1 hover:bg-customGray rounded">
+              <Link href="/shop" className="p-1 hover:bg-gray-100 rounded">
                 Shop
               </Link>
             </li>
             <li>
-              <Link href="/on-sale" className="p-1 hover:bg-customGray rounded">
+              <Link href="/on-sale" className="p-1 hover:bg-gray-100 rounded">
                 On Sale
               </Link>
             </li>
             <li>
               <Link
                 href="/new-arrivals"
-                className="p-1 hover:bg-customGray rounded"
+                className="p-1 hover:bg-gray-100 rounded"
               >
                 New Arrivals
               </Link>
             </li>
             <li>
-              <Link href="/brands" className="p-1 hover:bg-customGray rounded">
+              <Link href="/brands" className="p-1 hover:bg-gray-100 rounded">
                 Brands
               </Link>
             </li>
@@ -81,13 +81,13 @@ export default function Navbar() {
           {/* Cart Icon */}
           <button
             onClick={handleOnClickCart}
-            className="p-1 hover:bg-customGray rounded"
+            className="p-1 hover:bg-gray-100 rounded"
           >
             <LuShoppingCart className="w-6 h-6 text-black" />
           </button>
 
           {/* User Icon */}
-          <button className="p-1 hover:bg-customGray rounded">
+          <button className="p-1 hover:bg-gray-100 rounded">
             <FaRegCircleUser className="w-6 h-6 text-black" />
           </button>
         </div>
