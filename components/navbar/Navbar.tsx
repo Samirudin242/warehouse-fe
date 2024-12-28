@@ -2,16 +2,44 @@
 
 import React from "react";
 import Link from "next/link";
+import { Dropdown, Menu } from "antd";
 import { useRouter } from "next/navigation";
-
+import { RiAdminFill } from "react-icons/ri";
 import { LuShoppingCart } from "react-icons/lu";
 import { FaRegCircleUser } from "react-icons/fa6";
 import { CiSearch } from "react-icons/ci";
 import { IoIosClose } from "react-icons/io";
 
+const items = [
+  {
+    key: "1",
+    label: "My Account",
+    disabled: true,
+  },
+  {
+    type: "divider",
+  },
+  {
+    key: "2",
+    label: "Profile",
+    extra: "⌘P",
+  },
+  {
+    key: "3",
+    label: "Billing",
+    extra: "⌘B",
+  },
+];
 export default function Navbar() {
   const router = useRouter();
 
+  const menu = (
+    <Menu>
+      <Menu.Item key="1" disabled>
+        My Account
+      </Menu.Item>
+    </Menu>
+  );
   const handleOnClickCart = () => {
     router.push("/cart/1");
   };
@@ -74,7 +102,7 @@ export default function Navbar() {
             <input
               type="text"
               placeholder="Search for products..."
-              className="hidden md:block w-64 rounded-full px-4 py-2 text-sm focus:outline-none text-black bg-slate-100 w-full"
+              className="hidden md:block w-64 rounded-full px-4 py-2 text-sm focus:outline-none text-black bg-slate-100"
             />
           </div>
 
@@ -87,8 +115,20 @@ export default function Navbar() {
           </button>
 
           {/* User Icon */}
+          <Dropdown
+            menu={{
+              items: [
+                { key: "1", label: "My Account" },
+                { key: "2", label: "Login" },
+              ],
+            }}
+          >
+            <button className="p-1 hover:bg-gray-100 rounded">
+              <FaRegCircleUser className="w-6 h-6 text-black" />
+            </button>
+          </Dropdown>
           <button className="p-1 hover:bg-gray-100 rounded">
-            <FaRegCircleUser className="w-6 h-6 text-black" />
+            <RiAdminFill className="w-6 h-6 text-black" />
           </button>
         </div>
       </nav>
