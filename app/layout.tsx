@@ -3,6 +3,7 @@ import AppLayout from "@/components/layout/AppLayout";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import "./globals.css";
+import AppLayoutAdmin from "@/components/layout/AppLayoutAdmin";
 
 export default function RootLayout({
   children,
@@ -12,6 +13,7 @@ export default function RootLayout({
   const pathname = usePathname();
   const authRoutes = ["/auth/signin", "/auth/signup"];
   const isAuthRoute = authRoutes.includes(pathname);
+  const isAdminPage = pathname.startsWith("/admin");
   const { isAuthenticated } = useAuth();
 
   return (
@@ -21,7 +23,15 @@ export default function RootLayout({
         name="viewport"
         content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover"
       />
-      <body>{isAuthRoute ? children : <AppLayout>{children}</AppLayout>}</body>
+      <body>
+        {isAuthRoute ? (
+          children
+        ) : isAdminPage ? (
+          <AppLayoutAdmin>{children}</AppLayoutAdmin>
+        ) : (
+          <AppLayout>{children}</AppLayout>
+        )}
+      </body>
     </html>
   );
 }
