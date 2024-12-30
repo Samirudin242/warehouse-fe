@@ -1,6 +1,7 @@
 "use client";
 import AppLayout from "@/components/layout/AppLayout";
 import { usePathname } from "next/navigation";
+import { useAuth } from "@/hooks/useAuth";
 import "./globals.css";
 
 export default function RootLayout({
@@ -11,6 +12,7 @@ export default function RootLayout({
   const pathname = usePathname();
   const authRoutes = ["/auth/signin", "/auth/signup"];
   const isAuthRoute = authRoutes.includes(pathname);
+  const { isAuthenticated } = useAuth();
 
   return (
     <html lang="en">
