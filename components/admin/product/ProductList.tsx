@@ -3,6 +3,8 @@
 import React, { useState } from "react";
 import { Dropdown, Menu } from "antd";
 import { DownOutlined } from "@ant-design/icons";
+import { FaEdit, FaTrashAlt } from "react-icons/fa";
+import ModalAddProduct from "./ModalAddProduct";
 
 type Product = {
   name: string;
@@ -10,6 +12,7 @@ type Product = {
   stock: number;
   price: number;
   category: string;
+  photo: string;
 };
 
 const products: Product[] = [
@@ -19,6 +22,7 @@ const products: Product[] = [
     stock: 30,
     price: 15.99,
     category: "Electronics",
+    photo: "https://via.placeholder.com/50",
   },
   {
     name: "Product 2",
@@ -26,6 +30,7 @@ const products: Product[] = [
     stock: 50,
     price: 25.99,
     category: "Clothing",
+    photo: "https://via.placeholder.com/50",
   },
   {
     name: "Product 3",
@@ -33,14 +38,23 @@ const products: Product[] = [
     stock: 10,
     price: 9.99,
     category: "Groceries",
+    photo: "https://via.placeholder.com/50",
   },
-  { name: "Product 4", sku: "P004", stock: 20, price: 5.99, category: "Toys" },
+  {
+    name: "Product 4",
+    sku: "P004",
+    stock: 20,
+    price: 5.99,
+    category: "Toys",
+    photo: "https://via.placeholder.com/50",
+  },
   {
     name: "Product 5",
     sku: "P005",
     stock: 5,
     price: 19.99,
     category: "Electronics",
+    photo: "https://via.placeholder.com/50",
   },
   {
     name: "Product 6",
@@ -48,6 +62,7 @@ const products: Product[] = [
     stock: 100,
     price: 12.99,
     category: "Clothing",
+    photo: "https://via.placeholder.com/50",
   },
 ];
 
@@ -57,6 +72,8 @@ const ProductList = () => {
   const [categoryFilter, setCategoryFilter] = useState("All");
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(50);
+
+  const [isAddProduct, setIsAddProduct] = useState<boolean>(false);
 
   // Filter products based on category and price range
   const filteredProducts = products.filter((product) => {
@@ -78,8 +95,14 @@ const ProductList = () => {
 
   const menu = (sku: string) => (
     <Menu>
-      <Menu.Item onClick={() => handleEditClick(sku)}>Edit</Menu.Item>
-      <Menu.Item onClick={() => handleDeleteClick(sku)} danger>
+      <Menu.Item onClick={() => handleEditClick(sku)} icon={<FaEdit />}>
+        Edit
+      </Menu.Item>
+      <Menu.Item
+        onClick={() => handleDeleteClick(sku)}
+        danger
+        icon={<FaTrashAlt />}
+      >
         Delete
       </Menu.Item>
     </Menu>
@@ -125,7 +148,7 @@ const ProductList = () => {
       <div className="mb-4">
         <button
           className="bg-blue-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-600"
-          onClick={() => console.log("Add new product")}
+          onClick={() => setIsAddProduct(true)}
         >
           Add Product
         </button>
@@ -140,7 +163,7 @@ const ProductList = () => {
             <th className="px-4 py-2">Stock</th>
             <th className="px-4 py-2">Price</th>
             <th className="px-4 py-2">Category</th>
-            <th className="px-4 py-2">Actions</th>
+            <th className="px-4 py-2 text-center">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -153,7 +176,14 @@ const ProductList = () => {
           ) : (
             filteredProducts.map((product, index) => (
               <tr key={index} className="border-b hover:bg-gray-50">
-                <td className="px-4 py-2">{product.name}</td>
+                <td className="px-4 py-2 flex items-center space-x-4">
+                  <img
+                    src={product.photo}
+                    alt={product.name}
+                    className="w-10 h-10 rounded-md object-cover"
+                  />
+                  <span>{product.name}</span>
+                </td>
                 <td className="px-4 py-2">{product.sku}</td>
                 <td className="px-4 py-2">{product.stock}</td>
                 <td className="px-4 py-2">${product.price.toFixed(2)}</td>
@@ -170,6 +200,13 @@ const ProductList = () => {
           )}
         </tbody>
       </table>
+
+      {isAddProduct && (
+        <ModalAddProduct
+          isOpen={isAddProduct}
+          onCancel={() => setIsAddProduct(false)}
+        />
+      )}
     </div>
   );
 };
