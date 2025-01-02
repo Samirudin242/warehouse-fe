@@ -174,7 +174,7 @@ const ModalAddProduct = (props: ModalAddProductProps) => {
   return (
     <>
       <Modal
-        title="Submit Product"
+        title="Add New Product"
         open={props.isOpen}
         onCancel={props.onCancel}
         footer={[
