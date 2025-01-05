@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import "./globals.css";
 import AppLayoutAdmin from "@/components/layout/AppLayoutAdmin";
+import { AppContextProvider } from "@/contexts/useContext";
 
 export default function RootLayout({
   children,
@@ -24,13 +25,15 @@ export default function RootLayout({
         content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover"
       />
       <body>
-        {isAuthRoute ? (
-          children
-        ) : isAdminPage ? (
-          <AppLayoutAdmin>{children}</AppLayoutAdmin>
-        ) : (
-          <AppLayout>{children}</AppLayout>
-        )}
+        <AppContextProvider>
+          {isAuthRoute ? (
+            children
+          ) : isAdminPage ? (
+            <AppLayoutAdmin>{children}</AppLayoutAdmin>
+          ) : (
+            <AppLayout>{children}</AppLayout>
+          )}
+        </AppContextProvider>
       </body>
     </html>
   );

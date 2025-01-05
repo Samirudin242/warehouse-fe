@@ -1,87 +1,84 @@
 "use client";
 
 import React from "react";
-import Swal from "sweetalert2";
 import Cookies from "js-cookie"; // Client-side cookie management
 import { toast, Bounce, ToastContainer } from "react-toastify";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { Col, Form, Image, Input, Button, Row } from "antd";
-import { Tlogin } from "@/utils/types/auth";
-import { configUrl } from "@/config/config";
+import axiosRequest from "@/hooks/useAxios";
+import { configUrl } from "@/config/configUrl";
 import "react-toastify/dist/ReactToastify.css";
-// import "./style.module.css";
+import { useLastUrl } from "@/contexts/useContext";
+
+interface IFormLogin {
+  usernameEmail: string;
+  password: string;
+}
 
 function page() {
   const router = useRouter();
   const [formLogin] = Form.useForm();
+  const { lastUrl } = useLastUrl();
 
-  //   const onFinish = async (values: Tlogin) => {
-  //     try {
-  //       const response = await fetch(`${configUrl.apiUrl}/auth/login`, {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //         body: JSON.stringify(values),
-  //         credentials: "include",
-  //       });
+  const onFinish = async (values: IFormLogin) => {
+    try {
+      const { response, error } = await axiosRequest({
+        url: `${configUrl.apiUrlUserService}/auth/login`,
+        method: "POST",
+        body: {
+          usernameEmail: values.usernameEmail,
+          password: values.password,
+        },
+      });
 
-  //       if (response.ok) {
-  //         const data = await response.json();
-  //         console.log(data, "Success Response");
-  //         Cookies.set("accessToken", data.data.accessToekn); //set the cookie
-  //         // Success toast message
-  //         toast.success("🎉 Login successful!", {
-  //           position: "top-center",
-  //           autoClose: 1000,
-  //           hideProgressBar: false,
-  //           closeOnClick: true,
-  //           pauseOnHover: true,
-  //           draggable: true,
-  //           progress: undefined,
-  //           theme: "light",
-  //           transition: Bounce,
-  //         });
+      console.log(response?.data?.isSuccess, "Response");
+      if (response?.data?.isSuccess) {
+        Cookies.set("accessToken", response?.data.accessToken); //set the cookie
+        // Success toast message
+        toast.success("🎉 Login successful!", {
+          position: "top-center",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
+        });
 
-  //         setTimeout(() => {
-  //           router.push("/");
-  //         }, 1000);
-
-  //         // Redirect or handle successful login here
-  //       } else {
-  //         const errorData = await response.json();
-  //         console.error(errorData, "Error Response");
-
-  //         // Error toast message
-  //         toast.error("❌ Invalid credentials. Please try again.", {
-  //           position: "top-center",
-  //           autoClose: 3000,
-  //           hideProgressBar: false,
-  //           closeOnClick: true,
-  //           pauseOnHover: true,
-  //           draggable: true,
-  //           progress: undefined,
-  //           theme: "light",
-  //           transition: Bounce,
-  //         });
-  //       }
-  //     } catch (error) {
-  //       console.error(error, "Network or Unexpected Error");
-
-  //       // Error toast for network or unexpected errors
-  //       toast.error("❌ An unexpected error occurred. Please try again later.", {
-  //         position: "top-center",
-  //         autoClose: 1000,
-  //         hideProgressBar: false,
-  //         closeOnClick: true,
-  //         pauseOnHover: true,
-  //         draggable: true,
-  //         progress: undefined,
-  //         theme: "light",
-  //         transition: Bounce,
-  //       });
-  //     }
-  //   };
+        setTimeout(() => {
+          router.push(lastUrl);
+        }, 1000);
+      } else {
+        // Error toast message
+        toast.error("❌ Invalid credentials. Please try again.", {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
+        });
+      }
+    } catch (error) {
+      // Error toast for network or unexpected errors
+      toast.error("❌ An unexpected error occurred. Please try again later.", {
+        position: "top-center",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+    }
+  };
 
   const handleClickRouter = (e: any) => {
     e.preventDefault();
@@ -109,23 +106,19 @@ function page() {
             </div>
             <Form
               form={formLogin}
-              //   onFinish={onFinish}
+              onFinish={onFinish}
               layout="vertical"
               className="mt-10"
             >
               <Row className="w-full">
                 <Col className="w-full">
                   <Form.Item
-                    name="username"
-                    label="Email address"
+                    name="usernameEmail"
+                    label="Email address or Username"
                     rules={[
                       {
                         required: true,
                         message: "Please input your email !",
-                      },
-                      {
-                        type: "email",
-                        message: "Please input a valid email !",
                       },
                     ]}
                   >

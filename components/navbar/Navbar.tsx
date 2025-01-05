@@ -1,47 +1,30 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
+
 import Link from "next/link";
 import { Dropdown, Menu } from "antd";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { RiAdminFill } from "react-icons/ri";
 import { LuShoppingCart } from "react-icons/lu";
 import { FaRegCircleUser } from "react-icons/fa6";
 import { CiSearch } from "react-icons/ci";
 import { IoIosClose } from "react-icons/io";
+import { useLastUrl } from "@/contexts/useContext";
 
-const items = [
-  {
-    key: "1",
-    label: "My Account",
-    disabled: true,
-  },
-  {
-    type: "divider",
-  },
-  {
-    key: "2",
-    label: "Profile",
-    extra: "⌘P",
-  },
-  {
-    key: "3",
-    label: "Billing",
-    extra: "⌘B",
-  },
-];
 export default function Navbar() {
   const router = useRouter();
+  const { setLastUrl } = useLastUrl();
+  const currentUrl = usePathname();
 
-  const menu = (
-    <Menu>
-      <Menu.Item key="1" disabled>
-        My Account
-      </Menu.Item>
-    </Menu>
-  );
   const handleOnClickCart = () => {
     router.push("/cart/1");
+  };
+
+  const handleClickRegister = (type: string) => {
+    setLastUrl(currentUrl);
+    if (type == "register") router.push("/auth/signup");
+    else router.push("/auth/signin");
   };
 
   return (
@@ -116,12 +99,16 @@ export default function Navbar() {
 
           {/* User Icon */}
           <Dropdown
-            menu={{
-              items: [
-                { key: "1", label: "My Account" },
-                { key: "2", label: "Login" },
-              ],
-            }}
+            overlay={
+              <Menu>
+                <Menu.Item key="1" onClick={() => router.push("/account")}>
+                  My Account
+                </Menu.Item>
+                <Menu.Item key="3" onClick={() => handleClickRegister("login")}>
+                  Login
+                </Menu.Item>
+              </Menu>
+            }
           >
             <button className="p-1 hover:bg-gray-100 rounded">
               <FaRegCircleUser className="w-6 h-6 text-black" />

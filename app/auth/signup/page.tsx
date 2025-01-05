@@ -10,13 +10,14 @@ import { provinces } from "@/data/provinces";
 import { City, Role } from "@/types/city";
 import { configUrl } from "@/config/configUrl";
 import GlobalModal from "@/components/modal/GlobalModal";
-
 import axiosRequest from "@/hooks/useAxios";
+import { useLastUrl } from "@/contexts/useContext";
 const { Option } = Select;
 
 function page() {
   const router = useRouter();
   const [form] = Form.useForm();
+  const { lastUrl } = useLastUrl();
 
   const [openGlobalModal, setOpenGlobalModal] = useState<boolean>(false);
 
@@ -115,6 +116,7 @@ function page() {
       city_id: selectedCity?.city_id,
       postal_code: selectedCity?.postal_code,
       is_verified: false,
+      password: values.password,
     };
 
     setBody(body);
@@ -123,6 +125,7 @@ function page() {
   const onSubmitData = async () => {
     try {
       // Hit the API
+      console.log("Body:", body);
       const { response, error } = await axiosRequest({
         url: `${configUrl.apiUrlUserService}/auth/register`,
         method: "POST",
@@ -146,6 +149,7 @@ function page() {
       toast.success("User successfully registered!", {
         position: "top-center",
       });
+      router.push(lastUrl || "/");
       setOpenGlobalModal(false);
     } catch (error) {
       console.error("Error:", error);
@@ -238,6 +242,55 @@ function page() {
                     ]}
                   >
                     <Input />
+                  </Form.Item>
+                </Col>
+              </Row>
+              <Row className="flex justify-between">
+                <Col>
+                  <Form.Item
+                    label="Password"
+                    name="password"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input your password!",
+                      },
+                      {
+                        pattern:
+                          /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
+                        message:
+                          "Password must be at least 8 characters long and include letters, numbers, and symbols.",
+                      },
+                    ]}
+                  >
+                    <Input.Password />
+                  </Form.Item>
+                </Col>
+                <Col>
+                  <Form.Item
+                    label="Confirm Your Password"
+                    name="confirmPassword"
+                    dependencies={["password"]}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please confirm your password!",
+                      },
+                      ({ getFieldValue }) => ({
+                        validator(_, value) {
+                          if (!value || getFieldValue("password") === value) {
+                            return Promise.resolve();
+                          }
+                          return Promise.reject(
+                            new Error(
+                              "The two passwords that you entered do not match!"
+                            )
+                          );
+                        },
+                      }),
+                    ]}
+                  >
+                    <Input.Password />
                   </Form.Item>
                 </Col>
               </Row>

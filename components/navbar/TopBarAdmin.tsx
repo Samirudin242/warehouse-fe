@@ -10,7 +10,7 @@ export default function TopBarAdmin() {
   // Dropdown menu items
   const accountMenuItems: MenuProps["items"] = [
     { key: "1", label: "My Account" },
-    { key: "2", label: "Login" },
+    { key: "2", label: "Register" },
   ];
 
   return (
