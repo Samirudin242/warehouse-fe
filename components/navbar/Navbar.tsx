@@ -11,11 +11,43 @@ import { FaRegCircleUser } from "react-icons/fa6";
 import { CiSearch } from "react-icons/ci";
 import { IoIosClose } from "react-icons/io";
 import { useLastUrl } from "@/contexts/useContext";
+import Cookies from "js-cookie";
+import { jwtDecode } from "jwt-decode";
+
+interface TokenPayload {
+  sub: string;
+  username: string;
+  email: string;
+  role: string;
+  iat: number;
+  exp: number;
+}
 
 export default function Navbar() {
   const router = useRouter();
   const { setLastUrl } = useLastUrl();
   const currentUrl = usePathname();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [roleUser, setRoleUser] = useState<string>("");
+
+  // Check token existence and validity
+  useEffect(() => {
+    const token = Cookies.get("accessToken");
+    if (token) {
+      try {
+        const decoded = jwtDecode<TokenPayload>(token);
+        console.log("Decoded token:", decoded);
+        if (decoded && decoded.exp * 1000 > Date.now()) {
+          setIsLoggedIn(true);
+        }
+      } catch (error) {
+        console.error("Invalid token:", error);
+        setIsLoggedIn(false);
+      }
+    } else {
+      setIsLoggedIn(false);
+    }
+  }, []);
 
   const handleOnClickCart = () => {
     router.push("/cart/1");
@@ -23,8 +55,14 @@ export default function Navbar() {
 
   const handleClickRegister = (type: string) => {
     setLastUrl(currentUrl);
-    if (type == "register") router.push("/auth/signup");
+    if (type === "register") router.push("/auth/signup");
     else router.push("/auth/signin");
+  };
+
+  const handleLogout = () => {
+    Cookies.remove("accessToken");
+    setIsLoggedIn(false);
+    router.push("/");
   };
 
   return (
@@ -101,12 +139,21 @@ export default function Navbar() {
           <Dropdown
             overlay={
               <Menu>
-                <Menu.Item key="1" onClick={() => router.push("/account")}>
-                  My Account
-                </Menu.Item>
-                <Menu.Item key="3" onClick={() => handleClickRegister("login")}>
-                  Login
-                </Menu.Item>
+                {isLoggedIn ? (
+                  <Menu.Item key="1" onClick={handleLogout}>
+                    Logout
+                  </Menu.Item>
+                ) : (
+                  <>
+                    <Menu.Item key="2">My Account</Menu.Item>
+                    <Menu.Item
+                      key="3"
+                      onClick={() => handleClickRegister("login")}
+                    >
+                      Login
+                    </Menu.Item>
+                  </>
+                )}
               </Menu>
             }
           >
