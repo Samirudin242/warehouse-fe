@@ -140,12 +140,14 @@ export default function Navbar() {
             overlay={
               <Menu>
                 {isLoggedIn ? (
-                  <Menu.Item key="1" onClick={handleLogout}>
-                    Logout
-                  </Menu.Item>
-                ) : (
                   <>
                     <Menu.Item key="2">My Account</Menu.Item>
+                    <Menu.Item key="1" onClick={handleLogout}>
+                      Logout
+                    </Menu.Item>
+                  </>
+                ) : (
+                  <>
                     <Menu.Item
                       key="3"
                       onClick={() => handleClickRegister("login")}

@@ -166,9 +166,9 @@ function page() {
   };
 
   return (
-    <div className="flex items-center h-full bg-gray-100 text-black">
+    <div className="flex items-center h-full bg-gray-100 text-black overflow-auto">
       <div className="w-4/6 bg-white px-7 py-2  rounded-lg shadow-lg mx-auto">
-        <ToastContainer /> {/* Ensure this is included */}
+        <ToastContainer />
         <div className="flex justify-between">
           <div className="w-96">
             <div>

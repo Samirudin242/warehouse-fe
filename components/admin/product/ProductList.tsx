@@ -1,66 +1,120 @@
 "use client";
 
 import React, { useState } from "react";
-import { Dropdown, Menu } from "antd";
+import { Table, Dropdown, Menu, Button } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
+import { createStyles } from "antd-style";
 import ModalAddProduct from "./ModalAddProduct";
 
+const useStyle = createStyles(({ css, token }) => {
+  const antCls = ".ant";
+  return {
+    customTable: css`
+      ${antCls}-table {
+        ${antCls}-table-container {
+          ${antCls}-table-body,
+          ${antCls}-table-content {
+            scrollbar-width: thin;
+            scrollbar-color: #eaeaea transparent;
+            scrollbar-gutter: stable;
+          }
+        }
+      }
+    `,
+  };
+});
+
 type Product = {
+  key: React.Key;
   name: string;
   sku: string;
   stock: number;
   price: number;
+  warehouse: string;
+  brand: string;
+  color: string;
+  size: string;
   category: string;
   photo: string;
 };
 
 const products: Product[] = [
   {
+    key: "1",
     name: "Product 1",
     sku: "P001",
     stock: 30,
     price: 15.99,
+    warehouse: "W001",
+    brand: "B001",
+    color: "Red",
+    size: "M",
     category: "Electronics",
     photo: "https://via.placeholder.com/50",
   },
   {
+    key: "2",
     name: "Product 2",
     sku: "P002",
     stock: 50,
     price: 25.99,
+    warehouse: "W001",
+    brand: "B001",
+    color: "Red",
+    size: "M",
     category: "Clothing",
     photo: "https://via.placeholder.com/50",
   },
   {
+    key: "3",
     name: "Product 3",
     sku: "P003",
     stock: 10,
     price: 9.99,
+    warehouse: "W001",
+    brand: "B001",
+    color: "Red",
+    size: "M",
     category: "Groceries",
     photo: "https://via.placeholder.com/50",
   },
   {
+    key: "4",
     name: "Product 4",
     sku: "P004",
     stock: 20,
     price: 5.99,
+    warehouse: "W001",
+    brand: "B001",
+    color: "Red",
+    size: "M",
     category: "Toys",
     photo: "https://via.placeholder.com/50",
   },
   {
+    key: "5",
     name: "Product 5",
     sku: "P005",
     stock: 5,
     price: 19.99,
+    warehouse: "W001",
+    brand: "B001",
+    color: "Red",
+    size: "M",
     category: "Electronics",
     photo: "https://via.placeholder.com/50",
   },
   {
+    key: "6",
     name: "Product 6",
     sku: "P006",
     stock: 100,
     price: 12.99,
+    warehouse: "W001",
+    brand: "B001",
+    color: "Red",
+    size: "M",
     category: "Clothing",
     photo: "https://via.placeholder.com/50",
   },
@@ -69,28 +123,19 @@ const products: Product[] = [
 const categories = ["All", "Electronics", "Clothing", "Groceries", "Toys"];
 
 const ProductList = () => {
+  const { styles } = useStyle();
+
   const [categoryFilter, setCategoryFilter] = useState("All");
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(50);
-
-  const [isAddProduct, setIsAddProduct] = useState<boolean>(false);
-
-  // Filter products based on category and price range
-  const filteredProducts = products.filter((product) => {
-    const matchesCategory =
-      categoryFilter === "All" || product.category === categoryFilter;
-    const matchesPrice = product.price >= minPrice && product.price <= maxPrice;
-    return matchesCategory && matchesPrice;
-  });
+  const [isAddProduct, setIsAddProduct] = useState(false);
 
   const handleEditClick = (sku: string) => {
     console.log(`Edit product with SKU: ${sku}`);
-    // Implement edit functionality here
   };
 
   const handleDeleteClick = (sku: string) => {
     console.log(`Delete product with SKU: ${sku}`);
-    // Implement delete functionality here
   };
 
   const menu = (sku: string) => (
@@ -107,6 +152,69 @@ const ProductList = () => {
       </Menu.Item>
     </Menu>
   );
+
+  const columns = [
+    {
+      fixed: "left",
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+      width: 400,
+      render: (_: any, product: Product) => (
+        <div className="flex items-center space-x-4">
+          <img
+            src={product.photo}
+            alt={product.name}
+            className="w-10 h-10 rounded-md object-cover"
+          />
+          <span>{product.name}</span>
+        </div>
+      ),
+    },
+    {
+      title: "Stock",
+      dataIndex: "stock",
+      key: "stock",
+    },
+    {
+      title: "Price",
+      dataIndex: "price",
+      key: "price",
+      render: (price: number) => `$${price.toFixed(2)}`,
+    },
+    {
+      title: "Warehouse",
+      dataIndex: "warehouse",
+      key: "warehouse",
+    },
+    {
+      title: "Brand",
+      dataIndex: "brand",
+      key: "brand",
+    },
+    {
+      title: "Category",
+      dataIndex: "category",
+      key: "category",
+    },
+    {
+      fixed: "right",
+      title: "Actions",
+      key: "actions",
+      render: (_: any, product: Product) => (
+        <Dropdown overlay={menu(product.sku)} trigger={["click"]}>
+          <Button icon={<DownOutlined />} />
+        </Dropdown>
+      ),
+    },
+  ];
+
+  const filteredProducts = products.filter((product) => {
+    const matchesCategory =
+      categoryFilter === "All" || product.category === categoryFilter;
+    const matchesPrice = product.price >= minPrice && product.price <= maxPrice;
+    return matchesCategory && matchesPrice;
+  });
 
   return (
     <div className="p-6 text-black">
@@ -125,7 +233,6 @@ const ProductList = () => {
             </option>
           ))}
         </select>
-
         <div className="flex space-x-2">
           <input
             type="number"
@@ -155,51 +262,13 @@ const ProductList = () => {
       </div>
 
       {/* Product Table */}
-      <table className="table-auto w-full">
-        <thead>
-          <tr className="text-left">
-            <th className="px-4 py-2">Name</th>
-            <th className="px-4 py-2">SKU</th>
-            <th className="px-4 py-2">Stock</th>
-            <th className="px-4 py-2">Price</th>
-            <th className="px-4 py-2">Category</th>
-            <th className="px-4 py-2 text-center">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredProducts.length === 0 ? (
-            <tr>
-              <td colSpan={6} className="text-center py-4">
-                No products found
-              </td>
-            </tr>
-          ) : (
-            filteredProducts.map((product, index) => (
-              <tr key={index} className="border-b hover:bg-gray-50">
-                <td className="px-4 py-2 flex items-center space-x-4">
-                  <img
-                    src={product.photo}
-                    alt={product.name}
-                    className="w-10 h-10 rounded-md object-cover"
-                  />
-                  <span>{product.name}</span>
-                </td>
-                <td className="px-4 py-2">{product.sku}</td>
-                <td className="px-4 py-2">{product.stock}</td>
-                <td className="px-4 py-2">${product.price.toFixed(2)}</td>
-                <td className="px-4 py-2">{product.category}</td>
-                <td className="px-4 py-2 text-center">
-                  <Dropdown overlay={menu(product.sku)} trigger={["click"]}>
-                    <button className="text-gray-500 hover:text-gray-700">
-                      <span className="text-2xl">•••</span>
-                    </button>
-                  </Dropdown>
-                </td>
-              </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+      <Table
+        columns={columns}
+        dataSource={filteredProducts}
+        pagination={{ pageSize: 5 }}
+        rowKey="key"
+        className={styles.customTable}
+      />
 
       {isAddProduct && (
         <ModalAddProduct

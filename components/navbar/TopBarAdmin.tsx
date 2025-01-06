@@ -14,9 +14,9 @@ export default function TopBarAdmin() {
   ];
 
   return (
-    <div className="flex items-center justify-between bg-gray-200 py-2.5 px-6 shadow-md">
+    <div className="flex items-center justify-between bg-gray-200 py-2.5 px-6 shadow-md  w-full overflow-hidden">
       {/* Search Input */}
-      <div className="flex items-center border rounded-full bg-gray-100 w-full max-w-lg">
+      <div className="flex items-center border rounded-full bg-gray-100 w-full max-w-lg overflow-hidden">
         <CiSearch className="w-5 h-5 text-gray-500 ml-3" />
         <input
           type="text"
