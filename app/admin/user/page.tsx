@@ -2,8 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { Table, Button, Select, Input } from "antd";
 import { configUrl } from "@/config/configUrl";
-import { City, Role } from "@/types/city";
-import axiosRequest from "@/hooks/useAxios";
+import useSwr from "@/hooks/useSwr";
 import AddUserModal from "@/components/admin/user/ModalAddUser";
 
 const { Option } = Select;
@@ -11,60 +10,26 @@ const { Option } = Select;
 const page = () => {
   const [roleFilter, setRoleFilter] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [listRoles, setListRoles] = useState<Role[]>([]);
-
   const [isAddModal, setIsAddModal] = useState<boolean>(false);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [pageSize] = useState<number>(5);
 
-  useEffect(() => {
-    const fetchRoles = async () => {
-      const { response } = await axiosRequest({
-        url: `${configUrl.apiUrlUserService}/auth/get-roles`,
-      });
-      console.log("response", response?.data);
-      setListRoles(response?.data);
-    };
+  const { data, error, isLoading, refresh } = useSwr(
+    `${configUrl.apiUrlUserService}/user`
+  );
 
-    fetchRoles();
-  }, []);
-
-  const users = [
-    {
-      id: 1,
-      name: "John Doe",
-      username: "johndoe",
-      role: "Admin",
-      address: "123 Main St, Cityville",
-      profilePic: "https://via.placeholder.com/50",
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      username: "janesmith",
-      role: "User",
-      address: "456 Elm St, Townsville",
-      profilePic: "https://via.placeholder.com/50",
-    },
-    {
-      id: 3,
-      name: "Mike Johnson",
-      username: "mikej",
-      role: "Moderator",
-      address: "789 Oak St, Villagetown",
-      profilePic: "https://via.placeholder.com/50",
-    },
-  ];
-
-  const roles = ["Admin", "User", "Moderator"];
+  const users = data?.content || [];
+  const totalUsers = data?.totalElements || 0;
 
   const handleRoleFilterChange = (value: string | null) => {
     setRoleFilter(value);
+    setCurrentPage(1);
   };
 
-  const filteredUsers = users.filter(
-    (user) =>
-      (!roleFilter || user.role === roleFilter) &&
-      user.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+    setCurrentPage(1);
+  };
 
   const columns = [
     {
@@ -74,7 +39,7 @@ const page = () => {
       render: (text: string, record: any) => (
         <div className="flex items-center">
           <img
-            src={record.profilePic}
+            src={record.profile_picture}
             alt="profile"
             className="w-10 h-10 rounded-full mr-2.5"
           />
@@ -89,8 +54,8 @@ const page = () => {
     },
     {
       title: "Role",
-      dataIndex: "role",
-      key: "role",
+      dataIndex: "role_name",
+      key: "role_name",
     },
     {
       title: "Address",
@@ -109,7 +74,8 @@ const page = () => {
             className="w-52"
             onChange={handleRoleFilterChange}
           >
-            {roles.map((role) => (
+            {/* Dynamically render roles if available */}
+            {(data?.roles || []).map((role: string) => (
               <Option key={role} value={role}>
                 {role}
               </Option>
@@ -118,7 +84,7 @@ const page = () => {
           <Input
             placeholder="Search by Name"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={handleSearchChange}
             className="border rounded px-2 py-1 w-52"
           />
         </div>
@@ -130,11 +96,18 @@ const page = () => {
           Add New User
         </Button>
       </div>
+
       <Table
-        dataSource={filteredUsers}
+        dataSource={users}
         columns={columns}
         rowKey="id"
-        pagination={{ pageSize: 5 }}
+        pagination={{
+          current: currentPage,
+          pageSize,
+          total: totalUsers,
+          onChange: (page) => setCurrentPage(page),
+        }}
+        loading={isLoading}
         className="shadow-sm"
       />
 
@@ -142,9 +115,11 @@ const page = () => {
         <AddUserModal
           isOpen={isAddModal}
           onCancel={() => setIsAddModal(false)}
-          roles={listRoles}
+          refresh={refresh}
         />
       )}
+
+      {error && <div className="text-red-500">Failed to load data</div>}
     </div>
   );
 };

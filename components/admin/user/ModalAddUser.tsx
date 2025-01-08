@@ -13,12 +13,14 @@ interface AddUserModalProps {
   isOpen: boolean;
   onCancel: () => void;
   roles?: { id: string; role_name: string }[];
+  refresh?: () => void;
 }
 
 const AddUserModal: React.FC<AddUserModalProps> = ({
   isOpen,
   onCancel,
   roles,
+  refresh,
 }) => {
   const [form] = Form.useForm();
 
@@ -97,6 +99,10 @@ const AddUserModal: React.FC<AddUserModalProps> = ({
       city_id: values.city,
       postal_code: selectedCity?.postal_code,
       is_verified: true,
+      city: selectedCity?.city_name,
+      province: provinces.find(
+        (province) => province.province_id === selectedProvince
+      ),
       password: values.password,
     };
 
