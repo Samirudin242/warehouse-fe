@@ -25,7 +25,7 @@ const NavbarAdmin: React.FC<NavbarAdminProps> = ({
       icon: <FaBox className="text-xl" />,
     },
     {
-      name: "User",
+      name: "Warehouse Admin",
       path: "/admin/user",
       icon: <FaUsers className="text-xl" />,
     },

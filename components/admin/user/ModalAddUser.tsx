@@ -1,42 +1,150 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Form, Input, Select } from "antd";
+import { Modal, Form, Input, Select, Upload, Button, Image } from "antd";
+import { toast, ToastContainer } from "react-toastify";
+import { UploadOutlined } from "@ant-design/icons";
 import { configUrl } from "@/config/configUrl";
+import { provinces } from "@/data/provinces";
 import { City, Role } from "@/types/city";
 import axiosRequest from "@/hooks/useAxios";
+import GlobalModal from "@/components/modal/GlobalModal";
 const { Option } = Select;
 
 interface AddUserModalProps {
   isOpen: boolean;
-  onSubmit: (values: any) => void;
   onCancel: () => void;
-  roles?: { id: string; name: string }[];
+  roles?: { id: string; role_name: string }[];
 }
 
 const AddUserModal: React.FC<AddUserModalProps> = ({
   isOpen,
-  onSubmit,
   onCancel,
   roles,
 }) => {
   const [form] = Form.useForm();
 
-  const [listRoles, setListRoles] = useState<Role[]>([]);
+  const [body, setBody] = useState<any>({});
+
+  const [selectedProvince, setSelectedProvince] = useState<string | undefined>(
+    undefined
+  );
+
+  const [selectedCity, setSelectedCity] = useState<City | undefined>(undefined);
+  const [listCity, setListCity] = useState<City[]>([]);
+
+  const [profilePicture, setProfilePicture] = useState<File | null>(null);
+  const [urlProfilePicture, setUrlProfilePicture] = useState<string | null>(
+    null
+  );
+
+  const [openGlobalModal, setOpenGlobalModal] = useState<boolean>(false);
 
   useEffect(() => {
-    const fetchRoles = async () => {
-      const { response } = await axiosRequest({
-        url: `${configUrl.apiUrlUserService}/auth/get-roles`,
-      });
-      console.log("response", response?.data);
-      setListRoles(response?.data);
+    if (selectedProvince) {
+      const fetchCities = async () => {
+        const { response } = await axiosRequest({
+          url: `${configUrl.rajaOngkirUrl}/city/?provinceId=${selectedProvince}`,
+        });
+
+        setSelectedCity(undefined);
+        form.setFieldsValue({ city: undefined });
+
+        setListCity(response?.data);
+      };
+
+      fetchCities();
+    }
+  }, [selectedProvince]);
+
+  const handleProvinceChange = (value: string) => {
+    setSelectedProvince(value);
+    setSelectedCity(undefined);
+    form.setFieldsValue({ city: undefined });
+  };
+
+  const handleUpload = async (file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const { response, error } = await axiosRequest({
+      url: `${configUrl.apiUrlUserService}/auth/profile-photo`,
+      method: "POST",
+      body: formData,
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    if (response) {
+      console.log("Upload success:", response?.data);
+      setProfilePicture(file);
+      setUrlProfilePicture(response?.data?.url);
+    } else {
+      console.error("Upload error:", error);
+    }
+  };
+
+  const onSubmit = async (values: any) => {
+    setOpenGlobalModal(true);
+    const body = {
+      name: values.name,
+      user_name: values.user_name,
+      email: values.email,
+      profile_picture: urlProfilePicture,
+      role_id: roles?.find((role) => role.role_name === "WAREHOUSE_ADMIN")?.id,
+      phone_number: values.phone_number,
+      address: values.address,
+      province_id: values.province,
+      city_id: values.city,
+      postal_code: selectedCity?.postal_code,
+      is_verified: true,
+      password: values.password,
     };
 
-    fetchRoles();
-  }, []);
+    setBody(body);
+  };
+
+  const onSubmitData = async () => {
+    try {
+      // Hit the API
+      console.log("Body:", body);
+      const { response, error } = await axiosRequest({
+        url: `${configUrl.apiUrlUserService}/auth/register`,
+        method: "POST",
+        body: body,
+      });
+
+      console.log("error", error?.response?.data);
+
+      console.log("Response:", response?.data);
+
+      if (error?.response?.data) {
+        const errorMessage: any = error?.response?.data;
+        // Show error notification
+        toast.error(errorMessage?.message, {
+          position: "top-center",
+        });
+        return;
+      }
+
+      // Show success notification
+      toast.success("User successfully registered!", {
+        position: "top-center",
+      });
+      setOpenGlobalModal(false);
+      onCancel();
+    } catch (error) {
+      console.error("Error:", error);
+
+      // Show error notification
+      toast.error("Failed to register user. Please try again.", {
+        position: "top-center",
+      });
+    }
+  };
 
   return (
     <Modal
-      title="Add New User"
+      title="New Warehouse Admin"
       open={isOpen}
       onOk={() => form.submit()}
       onCancel={() => {
@@ -47,6 +155,7 @@ const AddUserModal: React.FC<AddUserModalProps> = ({
       cancelText="Cancel"
       width={800}
     >
+      <ToastContainer />
       <Form
         form={form}
         layout="vertical"
@@ -78,24 +187,16 @@ const AddUserModal: React.FC<AddUserModalProps> = ({
           <Input placeholder="Enter email" />
         </Form.Item>
         <Form.Item
-          label="Profile Picture URL"
-          name="profile_picture"
-          rules={[{ required: true, message: "Please enter the URL" }]}
+          label="Password"
+          name="password"
+          rules={[
+            {
+              required: true,
+              message: "Please input your password!",
+            },
+          ]}
         >
-          <Input placeholder="Enter profile picture URL" />
-        </Form.Item>
-        <Form.Item
-          label="Role"
-          name="role_id"
-          rules={[{ required: true, message: "Please select a role" }]}
-        >
-          <Select placeholder="Select role">
-            {roles?.map((role) => (
-              <Option key={role.id} value={role.id}>
-                {role.name}
-              </Option>
-            ))}
-          </Select>
+          <Input.Password />
         </Form.Item>
         <Form.Item
           label="Phone Number"
@@ -114,39 +215,82 @@ const AddUserModal: React.FC<AddUserModalProps> = ({
         <Form.Item
           label="Province"
           name="province"
-          rules={[{ required: true, message: "Please enter province" }]}
+          rules={[
+            {
+              required: true,
+              message: "Please select your province!",
+            },
+          ]}
         >
-          <Input placeholder="Enter province" />
+          <Select onChange={handleProvinceChange}>
+            {provinces?.map((province) => (
+              <Option key={province.province_id} value={province.province_id}>
+                {province.province}
+              </Option>
+            ))}
+          </Select>
         </Form.Item>
         <Form.Item
           label="City"
           name="city"
-          rules={[{ required: true, message: "Please enter city" }]}
+          rules={[
+            {
+              required: true,
+              message: "Please input your city!",
+            },
+          ]}
         >
-          <Input placeholder="Enter city" />
-        </Form.Item>
-        <Form.Item
-          label="Province ID"
-          name="province_id"
-          rules={[{ required: true, message: "Please enter province ID" }]}
-        >
-          <Input placeholder="Enter province ID" />
-        </Form.Item>
-        <Form.Item
-          label="City ID"
-          name="city_id"
-          rules={[{ required: true, message: "Please enter city ID" }]}
-        >
-          <Input placeholder="Enter city ID" />
+          <Select
+            onChange={(value) => {
+              const city = listCity.find((city) => city.city_id === value);
+              setSelectedCity(city);
+              form.setFieldsValue({
+                postal_code: city?.postal_code,
+              });
+            }}
+          >
+            {listCity?.map((city) => (
+              <Option key={city.city_id} value={city.city_id}>
+                {city.city_name}
+              </Option>
+            ))}
+          </Select>
         </Form.Item>
         <Form.Item
           label="Postal Code"
           name="postal_code"
           rules={[{ required: true, message: "Please enter postal code" }]}
         >
-          <Input placeholder="Enter postal code" />
+          <Input disabled placeholder="Enter postal code" />
+        </Form.Item>
+        <Form.Item label="Profile Picture" name="profile_picture">
+          <Upload
+            customRequest={({ file }) => handleUpload(file as File)}
+            showUploadList={false}
+            accept=".jpg,.png"
+          >
+            <Button icon={<UploadOutlined />}>Click to Upload</Button>
+          </Upload>
+          {profilePicture && (
+            <div className="mt-2">
+              <Image
+                src={URL.createObjectURL(profilePicture)}
+                alt="Profile Preview"
+                width={100}
+                height={100}
+                style={{ borderRadius: "50%" }}
+              />
+            </div>
+          )}
         </Form.Item>
       </Form>
+      <GlobalModal
+        isVisible={openGlobalModal}
+        title="Confirmation"
+        content="Are you sure you want to create an account?"
+        onOk={onSubmitData}
+        onCancel={() => setOpenGlobalModal(false)}
+      />
     </Modal>
   );
 };

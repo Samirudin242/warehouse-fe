@@ -72,7 +72,6 @@ function page() {
   };
 
   const handleUpload = async (file: File) => {
-    console.log("Uploading file:", file);
     const formData = new FormData();
     formData.append("file", file);
 
