@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Modal, Form, Input, Select } from "antd";
-
+import { configUrl } from "@/config/configUrl";
+import { City, Role } from "@/types/city";
+import axiosRequest from "@/hooks/useAxios";
 const { Option } = Select;
 
 interface AddUserModalProps {
@@ -18,6 +20,20 @@ const AddUserModal: React.FC<AddUserModalProps> = ({
 }) => {
   const [form] = Form.useForm();
 
+  const [listRoles, setListRoles] = useState<Role[]>([]);
+
+  useEffect(() => {
+    const fetchRoles = async () => {
+      const { response } = await axiosRequest({
+        url: `${configUrl.apiUrlUserService}/auth/get-roles`,
+      });
+      console.log("response", response?.data);
+      setListRoles(response?.data);
+    };
+
+    fetchRoles();
+  }, []);
+
   return (
     <Modal
       title="Add New User"
@@ -29,7 +45,7 @@ const AddUserModal: React.FC<AddUserModalProps> = ({
       }}
       okText="Add User"
       cancelText="Cancel"
-      width={800} // Makes the modal wider
+      width={800}
     >
       <Form
         form={form}

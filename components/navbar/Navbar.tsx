@@ -29,16 +29,19 @@ export default function Navbar() {
   const currentUrl = usePathname();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [roleUser, setRoleUser] = useState<string>("");
-
+  const [idUser, setIdUser] = useState<string>("");
   // Check token existence and validity
   useEffect(() => {
     const token = Cookies.get("accessToken");
+    console.log("Token:", token);
     if (token) {
       try {
         const decoded = jwtDecode<TokenPayload>(token);
         console.log("Decoded token:", decoded);
         if (decoded && decoded.exp * 1000 > Date.now()) {
           setIsLoggedIn(true);
+          setRoleUser(decoded.role);
+          setIdUser(decoded.sub);
         }
       } catch (error) {
         console.error("Invalid token:", error);
@@ -51,6 +54,10 @@ export default function Navbar() {
 
   const handleOnClickCart = () => {
     router.push("/cart/1");
+  };
+
+  const handlePageAdmin = () => {
+    router.push(`/admin/${idUser}`);
   };
 
   const handleClickRegister = (type: string) => {
@@ -163,9 +170,14 @@ export default function Navbar() {
               <FaRegCircleUser className="w-6 h-6 text-black" />
             </button>
           </Dropdown>
-          <button className="p-1 hover:bg-gray-100 rounded">
-            <RiAdminFill className="w-6 h-6 text-black" />
-          </button>
+          {(roleUser === "WAREHOUSE_ADMIN" || roleUser === "SUPER_ADMIN") && (
+            <button
+              onClick={handlePageAdmin}
+              className="p-1 hover:bg-gray-100 rounded"
+            >
+              <RiAdminFill className="w-6 h-6 text-black" />
+            </button>
+          )}
         </div>
       </nav>
     </header>

@@ -1,6 +1,9 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Table, Button, Select, Input } from "antd";
+import { configUrl } from "@/config/configUrl";
+import { City, Role } from "@/types/city";
+import axiosRequest from "@/hooks/useAxios";
 import AddUserModal from "./ModalAddUser";
 
 const { Option } = Select;
@@ -8,6 +11,7 @@ const { Option } = Select;
 const UserList = () => {
   const [roleFilter, setRoleFilter] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [listRoles, setListRoles] = useState<Role[]>([]);
 
   const [isAddModal, setIsAddModal] = useState<boolean>(false);
 

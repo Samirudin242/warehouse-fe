@@ -3,6 +3,7 @@
 import React from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { FaHome, FaBox, FaUsers, FaChartBar, FaBars } from "react-icons/fa";
+import { MdWarehouse } from "react-icons/md";
 
 type NavbarAdminProps = {
   isMinimized: boolean;
@@ -27,6 +28,11 @@ const NavbarAdmin: React.FC<NavbarAdminProps> = ({
       name: "User",
       path: "/admin/user",
       icon: <FaUsers className="text-xl" />,
+    },
+    {
+      name: "Warehouse",
+      path: "/admin/warehouse",
+      icon: <MdWarehouse className="text-xl" />,
     },
     {
       name: "Report",
