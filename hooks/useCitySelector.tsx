@@ -4,8 +4,12 @@ import axios from "axios";
 import { configUrl } from "@/config/configUrl";
 
 interface City {
-  id: string;
-  name: string;
+  city_id: string;
+  province_id: string;
+  province: string;
+  type: string;
+  city_name: string;
+  postal_code: string;
 }
 
 interface UseCitySelectorOptions {
@@ -26,7 +30,7 @@ export function useCitySelector({ provinceId, form }: UseCitySelectorOptions) {
           );
           setSelectedCity(undefined);
           form.setFieldsValue({ city: undefined });
-          setListCity(data?.data || []);
+          setListCity(data || []);
         } catch (error) {
           console.error("Error fetching cities:", error);
         }

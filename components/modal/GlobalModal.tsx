@@ -11,6 +11,7 @@ interface GlobalModalProps {
   okText?: string;
   cancelText?: string;
   type?: "confirm" | "info" | "success" | "error" | "warning";
+  icon?: "user" | "warehouse";
 }
 
 const GlobalModal: React.FC<GlobalModalProps> = ({
@@ -21,7 +22,11 @@ const GlobalModal: React.FC<GlobalModalProps> = ({
   onCancel,
   okText = "Confirm",
   cancelText = "Cancel",
+  icon,
 }) => {
+  const pathImage =
+    icon == "warehouse" ? "/images/warehouse.png" : "/images/self.png";
+
   return (
     <Modal
       title={title}
@@ -30,16 +35,11 @@ const GlobalModal: React.FC<GlobalModalProps> = ({
       onCancel={onCancel}
       okText={okText}
       cancelText={cancelText}
-      centered // Ensures the modal is centered on the screen
-      footer={null} // We'll use custom footer with Tailwind
+      centered
+      footer={null}
     >
       <div className="flex flex-col items-center justify-center border-t border-gray-200 pt-4">
-        <Image
-          src="/images/self.png"
-          height={200}
-          width={200}
-          alt="image self"
-        />
+        <Image src={pathImage} height={200} width={200} alt="image self" />
         <div className="mt-4 text-center text-2xl">{content}</div>
         <div className="mt-4 flex justify-center gap-4">
           <button

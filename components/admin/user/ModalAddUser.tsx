@@ -4,9 +4,10 @@ import { toast, ToastContainer } from "react-toastify";
 import { UploadOutlined } from "@ant-design/icons";
 import { configUrl } from "@/config/configUrl";
 import { provinces } from "@/data/provinces";
-import { City, Role } from "@/types/city";
+import { City } from "@/types/city";
 import axiosRequest from "@/hooks/useAxios";
 import GlobalModal from "@/components/modal/GlobalModal";
+import { useCitySelector } from "@/hooks/useCitySelector";
 const { Option } = Select;
 
 interface AddUserModalProps {
@@ -30,9 +31,6 @@ const AddUserModal: React.FC<AddUserModalProps> = ({
     undefined
   );
 
-  const [selectedCity, setSelectedCity] = useState<City | undefined>(undefined);
-  const [listCity, setListCity] = useState<City[]>([]);
-
   const [profilePicture, setProfilePicture] = useState<File | null>(null);
   const [urlProfilePicture, setUrlProfilePicture] = useState<string | null>(
     null
@@ -40,22 +38,10 @@ const AddUserModal: React.FC<AddUserModalProps> = ({
 
   const [openGlobalModal, setOpenGlobalModal] = useState<boolean>(false);
 
-  useEffect(() => {
-    if (selectedProvince) {
-      const fetchCities = async () => {
-        const { response } = await axiosRequest({
-          url: `${configUrl.rajaOngkirUrl}/city/?provinceId=${selectedProvince}`,
-        });
-
-        setSelectedCity(undefined);
-        form.setFieldsValue({ city: undefined });
-
-        setListCity(response?.data);
-      };
-
-      fetchCities();
-    }
-  }, [selectedProvince]);
+  const { selectedCity, setSelectedCity, listCity } = useCitySelector({
+    provinceId: selectedProvince,
+    form,
+  });
 
   const handleProvinceChange = (value: string) => {
     setSelectedProvince(value);
@@ -77,7 +63,6 @@ const AddUserModal: React.FC<AddUserModalProps> = ({
     });
 
     if (response) {
-      console.log("Upload success:", response?.data);
       setProfilePicture(file);
       setUrlProfilePicture(response?.data?.url);
     } else {
@@ -106,28 +91,20 @@ const AddUserModal: React.FC<AddUserModalProps> = ({
       password: values.password,
     };
 
-    console.log(body, "<<");
-
     setBody(body);
   };
 
   const onSubmitData = async () => {
     try {
       // Hit the API
-      console.log("Body:", body);
       const { response, error } = await axiosRequest({
         url: `${configUrl.apiUrlUserService}/auth/register`,
         method: "POST",
         body: body,
       });
 
-      console.log("error", error?.response?.data);
-
-      console.log("Response:", response?.data);
-
       if (error?.response?.data) {
         const errorMessage: any = error?.response?.data;
-        // Show error notification
         toast.error(errorMessage?.message, {
           position: "top-center",
         });
@@ -142,8 +119,6 @@ const AddUserModal: React.FC<AddUserModalProps> = ({
       onCancel();
     } catch (error) {
       console.error("Error:", error);
-
-      // Show error notification
       toast.error("Failed to register user. Please try again.", {
         position: "top-center",
       });

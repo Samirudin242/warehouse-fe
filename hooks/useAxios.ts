@@ -6,6 +6,7 @@ interface AxiosRequestProps {
   body?: any;
   config?: AxiosRequestConfig;
   headers?: Record<string, string>;
+  withCredentials?: boolean; // Include credentials
 }
 
 const axiosRequest = async ({
@@ -14,6 +15,7 @@ const axiosRequest = async ({
   body = null,
   config = {},
   headers = {},
+  withCredentials = true,
 }: AxiosRequestProps): Promise<{
   response: AxiosResponse | null;
   error: AxiosError | null;
@@ -24,6 +26,7 @@ const axiosRequest = async ({
       method,
       data: body,
       headers,
+      withCredentials,
       ...config,
     });
     return { response, error: null };
