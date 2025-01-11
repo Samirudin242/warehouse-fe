@@ -23,7 +23,7 @@ const CarouselTemplate: React.FC = () => {
         <Carousel
           afterChange={(currentSlide) => console.log(currentSlide)}
           autoplay
-          autoplaySpeed={5000}
+          autoplaySpeed={3000}
         >
           <div style={{ height: "160px", backgroundColor: "#364d79" }}>
             <Carousel1 />

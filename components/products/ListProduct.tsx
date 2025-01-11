@@ -1,5 +1,6 @@
 import React from "react";
 import ProductCard from "./ProductCard";
+import ButtonComponent from "../globals/Button";
 
 interface Props {
   title: string;
@@ -39,7 +40,7 @@ function ListProduct({ title, isHideBorder }: Props) {
         />
       </div>
       <div className="text-center mb-10 mt-10">
-        <button className="border py-2 px-10 rounded-2xl">View All</button>
+        <ButtonComponent text="View All" />
       </div>
       {!isHideBorder && <div className="border w-full"></div>}
     </div>
