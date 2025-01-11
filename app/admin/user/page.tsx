@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import { Table, Button, Select, Input } from "antd";
 import { configUrl } from "@/config/configUrl";
 import useSwr from "@/hooks/useSwr";
+import axiosRequest from "@/hooks/useAxios";
+import { City, Role } from "@/types/city";
 import AddUserModal from "@/components/admin/user/ModalAddUser";
 
 const { Option } = Select;
@@ -20,6 +22,7 @@ const page = () => {
 
   const users = data?.content || [];
   const totalUsers = data?.totalElements || 0;
+  const [listRoles, setListRoles] = useState<Role[]>([]);
 
   const handleRoleFilterChange = (value: string | null) => {
     setRoleFilter(value);
@@ -30,6 +33,18 @@ const page = () => {
     setSearchTerm(e.target.value);
     setCurrentPage(1);
   };
+
+  useEffect(() => {
+    const fetchRoles = async () => {
+      const { response } = await axiosRequest({
+        url: `${configUrl.apiUrlUserService}/auth/get-roles`,
+      });
+      console.log("response", response?.data);
+      setListRoles(response?.data);
+    };
+
+    fetchRoles();
+  }, []);
 
   const columns = [
     {
@@ -116,6 +131,7 @@ const page = () => {
           isOpen={isAddModal}
           onCancel={() => setIsAddModal(false)}
           refresh={refresh}
+          roles={listRoles || []}
         />
       )}
 

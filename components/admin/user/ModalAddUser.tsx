@@ -12,8 +12,8 @@ const { Option } = Select;
 interface AddUserModalProps {
   isOpen: boolean;
   onCancel: () => void;
-  roles?: { id: string; role_name: string }[];
-  refresh?: () => void;
+  roles: { id: string; role_name: string }[];
+  refresh: () => void;
 }
 
 const AddUserModal: React.FC<AddUserModalProps> = ({
@@ -102,9 +102,11 @@ const AddUserModal: React.FC<AddUserModalProps> = ({
       city: selectedCity?.city_name,
       province: provinces.find(
         (province) => province.province_id === selectedProvince
-      ),
+      )?.province,
       password: values.password,
     };
+
+    console.log(body, "<<");
 
     setBody(body);
   };
@@ -132,7 +134,7 @@ const AddUserModal: React.FC<AddUserModalProps> = ({
         return;
       }
 
-      // Show success notification
+      refresh();
       toast.success("User successfully registered!", {
         position: "top-center",
       });
