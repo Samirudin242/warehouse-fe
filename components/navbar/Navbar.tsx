@@ -10,7 +10,7 @@ import { LuShoppingCart } from "react-icons/lu";
 import { FaRegCircleUser } from "react-icons/fa6";
 import { CiSearch } from "react-icons/ci";
 import { IoIosClose } from "react-icons/io";
-import { useLastUrl } from "@/contexts/useContext";
+import { useAppContext } from "@/contexts/useContext";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
 
@@ -25,7 +25,7 @@ interface TokenPayload {
 
 export default function Navbar() {
   const router = useRouter();
-  const { setLastUrl } = useLastUrl();
+  const { setLastUrl } = useAppContext();
   const currentUrl = usePathname();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [roleUser, setRoleUser] = useState<string>("");

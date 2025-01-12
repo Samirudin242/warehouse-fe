@@ -8,7 +8,7 @@ import { Col, Form, Image, Input, Button, Row } from "antd";
 import axiosRequest from "@/hooks/useAxios";
 import { configUrl } from "@/config/configUrl";
 import "react-toastify/dist/ReactToastify.css";
-import { useLastUrl } from "@/contexts/useContext";
+import { useAppContext } from "@/contexts/useContext";
 
 interface IFormLogin {
   usernameEmail: string;
@@ -18,7 +18,7 @@ interface IFormLogin {
 function page() {
   const router = useRouter();
   const [formLogin] = Form.useForm();
-  const { lastUrl } = useLastUrl();
+  const { lastUrl } = useAppContext();
 
   const onFinish = async (values: IFormLogin) => {
     try {
