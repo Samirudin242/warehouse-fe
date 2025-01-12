@@ -11,13 +11,13 @@ import { City, Role } from "@/types/city";
 import { configUrl } from "@/config/configUrl";
 import GlobalModal from "@/components/modal/GlobalModal";
 import axiosRequest from "@/hooks/useAxios";
-import { useLastUrl } from "@/contexts/useContext";
+import { useAppContext } from "@/contexts/useContext";
 const { Option } = Select;
 
 function page() {
   const router = useRouter();
   const [form] = Form.useForm();
-  const { lastUrl } = useLastUrl();
+  const { lastUrl } = useAppContext();
 
   const [openGlobalModal, setOpenGlobalModal] = useState<boolean>(false);
 
