@@ -17,7 +17,10 @@ const fetcher = async (url: string) => {
 };
 
 const useHookSwr = (url: string) => {
-  const { data, error, isLoading, mutate } = useSWR(url, fetcher);
+  const { data, error, isLoading, mutate } = useSWR(url, fetcher, {
+    revalidateOnFocus: false,
+    revalidateIfStale: false,
+  });
 
   return {
     data,

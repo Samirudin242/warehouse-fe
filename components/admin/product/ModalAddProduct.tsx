@@ -57,28 +57,53 @@ const ModalAddProduct = (props: ModalAddProductProps) => {
     `${configUrl.apiUrlProductService}/product/products-color`
   );
 
+  const { data: dataWarehouse, refresh: refreshWarehouse } = useHookSwr(
+    `${configUrl.apiUrlWarehouseService}/warehouse?name=`
+  );
+
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
 
   const [selectedParent, setSelectedParent] = useState<string | null>(null);
   const [selectedChild, setSelectedChild] = useState<string | null>(null);
+  const [selectedSubChild, setSelectedSubChild] = useState<string | null>(null);
 
   const handleParentChange = (value: string) => {
     setSelectedParent(value);
     setSelectedChild(null);
+    setSelectedSubChild(null);
   };
 
   const handleChildChange = (value: string) => {
     setSelectedChild(value);
+    setSelectedSubChild(null);
+  };
+
+  const handleSubChildChange = (value: string) => {
+    setSelectedSubChild(value);
+  };
+
+  const handleSearchWarehouse = (query: string) => {
+    const url = `http://localhost:8080/warehouse?name=${query}`;
+    refreshWarehouse(url);
   };
 
   const parentCategories = dataCategory;
+
   const childCategories =
     (selectedParent &&
       parentCategories.find((cat: any) => cat.id === selectedParent)
         ?.children) ||
     [];
+
+  const subChildCategories =
+    (
+      selectedChild &&
+      parentCategories
+        .find((cat: any) => cat.id === selectedParent)
+        ?.children.find((cc: any) => cc.id === selectedChild)
+    )?.children || [];
 
   const handleOpenModal = () => setIsModalVisible(true);
   const handleCloseModal = () => {
@@ -271,11 +296,45 @@ const ModalAddProduct = (props: ModalAddProductProps) => {
               >
                 {childCategories?.map((child: any) => (
                   <Option key={child?.id} value={child?.id}>
-                    {child?.name}
+                    {_startCase(_toLower(child?.name))}
                   </Option>
                 ))}
               </Select>
             )}
+
+            {subChildCategories?.length > 0 && (
+              <Select
+                placeholder="Select Subcategory"
+                onChange={handleSubChildChange}
+                value={selectedSubChild}
+                style={{ marginTop: "10px" }}
+              >
+                {subChildCategories?.map((child: any) => (
+                  <Option key={child?.id} value={child?.id}>
+                    {_startCase(_toLower(child?.name))}
+                  </Option>
+                ))}
+              </Select>
+            )}
+          </Form.Item>
+          <Form.Item
+            label="Category"
+            rules={[{ required: true, message: "Please select a category" }]}
+          >
+            <Select
+              placeholder="Search Warehouse"
+              showSearch
+              onSearch={(e) => {
+                handleSearchWarehouse(e);
+              }}
+              // onChange={handleParentChange}
+            >
+              {dataWarehouse?.content?.map((war: any) => (
+                <Option key={war?.id} value={war?.id}>
+                  {_startCase(_toLower(war?.name))}
+                </Option>
+              ))}
+            </Select>
           </Form.Item>
         </Form>
       </Modal>
