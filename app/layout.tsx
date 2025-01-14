@@ -1,7 +1,6 @@
 "use client";
 import AppLayout from "@/components/layout/AppLayout";
 import { usePathname } from "next/navigation";
-import { useAuth } from "@/hooks/useAuth";
 import "./globals.css";
 import AppLayoutAdmin from "@/components/layout/AppLayoutAdmin";
 import { AppContextProvider } from "@/contexts/useContext";
@@ -15,7 +14,6 @@ export default function RootLayout({
   const authRoutes = ["/auth/signin", "/auth/signup"];
   const isAuthRoute = authRoutes.includes(pathname);
   const isAdminPage = pathname.startsWith("/admin");
-  const { isAuthenticated } = useAuth();
 
   return (
     <html lang="en">

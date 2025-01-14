@@ -1,127 +1,34 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal, Form, Input, Button, Select } from "antd";
+import _startCase from "lodash/startCase";
+import _toLower from "lodash/toLower";
+import useHookSwr from "@/hooks/useSwr";
+import { configUrl } from "@/config/configUrl";
 
 const { TextArea } = Input;
 const { Option } = Select;
 
-const sizes = [
-  "35",
-  "35.5",
-  "36",
-  "36.5",
-  "37",
-  "37.5",
-  "38",
-  "38.5",
-  "39",
-  "39.5",
-  "40",
-  "40.5",
-  "41",
-  "41.5",
-  "42",
-  "42.5",
-  "43",
-  "43.5",
-  "44",
-  "44.5",
-  "45",
-];
+type Size = {
+  id: string;
+  size: string;
+};
 
-const colors = [
-  { name: "white", filterGroup: "#FFFFFF" },
-  { name: "silver", filterGroup: "#C0C0C0" },
-  { name: "pink", filterGroup: "#FFC0CB" },
-  { name: "beige", filterGroup: "#F5F5DC" },
-  {
-    name: "multi",
-    filterGroup:
-      "linear-gradient(to right, #FF0000, #FFFF00, #00FF00, #0000FF)",
-  },
-  { name: "black", filterGroup: "#000000" },
-  { name: "brow", filterGroup: "#8B4513" },
-  { name: "grey", filterGroup: "#808080" },
-  { name: "olive", filterGroup: "#808000" },
-  { name: "orange", filterGroup: "#FFA500" },
-  { name: "gold", filterGroup: "#FFD700" },
-  { name: "yellow", filterGroup: "#FFFF00" },
-  { name: "red", filterGroup: "#FF0000" },
-  { name: "green", filterGroup: "#008000" },
-  { name: "blue", filterGroup: "#0000FF" },
-];
+type brand = {
+  id: string;
+  brand: string;
+};
 
-const categories = [
-  {
-    id: "women",
-    name: "Women",
-    children: [
-      {
-        id: "bags",
-        name: "Bags",
-      },
-      {
-        id: "clothing",
-        name: "Clothing",
-        children: [
-          { id: "blazer", name: "Blazer" },
-          { id: "dresses", name: "Dresses" },
-          { id: "jackets", name: "Jackets" },
-          { id: "jeans", name: "Jeans" },
-          { id: "shirts", name: "Shirts" },
-          { id: "skirts", name: "Skirts" },
-          { id: "t-shirts", name: "T-Shirts" },
-          { id: "tops", name: "Tops" },
-          { id: "trouser", name: "Trouser" },
-        ],
-      },
-      {
-        id: "shoes",
-        name: "Shoes",
-      },
-    ],
-  },
-  {
-    id: "men",
-    name: "Men",
-    children: [
-      {
-        id: "clothing",
-        name: "Clothing",
-        children: [
-          { id: "blazer", name: "Blazer" },
-          { id: "jackets", name: "Jackets" },
-          { id: "jeans", name: "Jeans" },
-          { id: "shirts", name: "Shirts" },
-          { id: "t-shirts", name: "T-Shirts" },
-          { id: "trouser", name: "Trouser" },
-        ],
-      },
-      {
-        id: "shoes",
-        name: "Shoes",
-      },
-    ],
-  },
-  {
-    id: "accessories",
-    name: "Accessories",
-    children: [
-      {
-        id: "women",
-        name: "Women",
-        children: [
-          { id: "clothing", name: "Clothing" },
-          { id: "looks", name: "Looks" },
-          { id: "sunglasses", name: "Sunglasses" },
-        ],
-      },
-      {
-        id: "men",
-        name: "Men",
-      },
-    ],
-  },
-];
+type Color = {
+  id: string;
+  name: string;
+};
+
+type Category = {
+  id: string;
+  parentId: string;
+  name: string;
+  slug: string;
+};
 
 interface ModalAddProductProps {
   isOpen: boolean;
@@ -132,6 +39,24 @@ interface ModalAddProductProps {
 
 const ModalAddProduct = (props: ModalAddProductProps) => {
   const [form] = Form.useForm();
+
+  //List master data
+  const { data: dataCategory } = useHookSwr(
+    `${configUrl.apiUrlProductService}/product/products-category`
+  );
+
+  const { data: dataBrand } = useHookSwr(
+    `${configUrl.apiUrlProductService}/product/products-brand`
+  );
+
+  const { data: dataSize } = useHookSwr(
+    `${configUrl.apiUrlProductService}/product/products-size`
+  );
+
+  const { data: dataColor } = useHookSwr(
+    `${configUrl.apiUrlProductService}/product/products-color`
+  );
+
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
@@ -141,17 +66,18 @@ const ModalAddProduct = (props: ModalAddProductProps) => {
 
   const handleParentChange = (value: string) => {
     setSelectedParent(value);
-    setSelectedChild(null); // Reset child when parent changes
+    setSelectedChild(null);
   };
 
   const handleChildChange = (value: string) => {
     setSelectedChild(value);
   };
 
-  const parentCategories = categories;
+  const parentCategories = dataCategory;
   const childCategories =
     (selectedParent &&
-      parentCategories.find((cat) => cat.id === selectedParent)?.children) ||
+      parentCategories.find((cat: any) => cat.id === selectedParent)
+        ?.children) ||
     [];
 
   const handleOpenModal = () => setIsModalVisible(true);
@@ -160,6 +86,18 @@ const ModalAddProduct = (props: ModalAddProductProps) => {
     setSelectedSize(null);
     setSelectedColor(null);
     setIsModalVisible(false);
+  };
+
+  const formatCurrency = (num: any) => {
+    if (!num) return "";
+    const cleanedNum = num.replace(/\D/g, "");
+    return cleanedNum.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  };
+
+  const handleInputChange = (e: any) => {
+    const inputValue = e.target.value;
+    const formattedValue = formatCurrency(inputValue);
+    form.setFieldsValue({ price: formattedValue });
   };
 
   const handleFormSubmit = (values: any) => {
@@ -195,12 +133,23 @@ const ModalAddProduct = (props: ModalAddProductProps) => {
             } text-white px-4 py-2`}
             onClick={() => form.submit()}
             disabled={!selectedSize || !selectedColor}
+            size="large"
           >
             Submit
           </Button>,
         ]}
+        width={1000}
       >
-        <Form form={form} layout="vertical" onFinish={handleFormSubmit}>
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={handleFormSubmit}
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: "16px",
+          }}
+        >
           <Form.Item
             label="Name"
             name="name"
@@ -210,6 +159,41 @@ const ModalAddProduct = (props: ModalAddProductProps) => {
           >
             <Input
               placeholder="Enter product name"
+              className="rounded-lg border-gray-300"
+            />
+          </Form.Item>
+          <Form.Item
+            label="Price"
+            name="price"
+            rules={[
+              { required: true, message: "Please enter the product price" },
+            ]}
+          >
+            <Input
+              prefix="Rp"
+              placeholder="Enter product price"
+              className="rounded-lg border-gray-300"
+              onChange={handleInputChange}
+            />
+          </Form.Item>
+          <Form.Item
+            label="Quantity"
+            name="quantity"
+            rules={[{ required: true, message: "Please enter the quantity" }]}
+          >
+            <Input
+              placeholder="Enter product quantity"
+              className="rounded-lg border-gray-300"
+              type="number"
+            />
+          </Form.Item>
+          <Form.Item
+            label="SKU"
+            name="sku"
+            rules={[{ required: true, message: "Please enter the SKU" }]}
+          >
+            <Input
+              placeholder="Enter product SKU"
               className="rounded-lg border-gray-300"
             />
           </Form.Item>
@@ -224,50 +208,41 @@ const ModalAddProduct = (props: ModalAddProductProps) => {
               className="rounded-lg border-gray-300"
             />
           </Form.Item>
-          <Form.Item
-            label="SKU"
-            name="sku"
-            rules={[{ required: true, message: "Please enter the SKU" }]}
-          >
-            <Input
-              placeholder="Enter product SKU"
-              className="rounded-lg border-gray-300"
-            />
-          </Form.Item>
+
           <Form.Item label="Sizes">
             <div className="flex flex-wrap gap-3">
-              {sizes.map((size) => (
+              {dataSize?.map((size: any) => (
                 <button
-                  key={size}
+                  key={size?.id}
                   className={`rounded-full px-4 py-2 text-sm ${
-                    selectedSize === size
+                    selectedSize === size?.id
                       ? "bg-blue-500 text-white"
                       : "bg-gray-200 hover:bg-gray-300"
                   }`}
-                  onClick={() => setSelectedSize(size)}
+                  onClick={() => setSelectedSize(size.id)}
                 >
-                  {size}
+                  {size?.size}
                 </button>
               ))}
             </div>
           </Form.Item>
           <Form.Item label="Colors">
             <div className="flex flex-wrap gap-3">
-              {colors.map((color) => (
+              {dataColor?.map((color: any) => (
                 <button
-                  key={color.name}
+                  key={color.id}
                   className={`rounded-full w-10 h-10 border ${
-                    selectedColor === color.name ? "ring-2 ring-blue-500" : ""
+                    selectedColor === color.id ? "ring-2 ring-blue-500" : ""
                   }`}
                   style={{
-                    background: color.filterGroup,
+                    background: color.name,
                     color: ["white", "yellow", "gold", "beige"].includes(
                       color.name
                     )
                       ? "#000"
                       : "#FFF",
                   }}
-                  onClick={() => setSelectedColor(color.name)}
+                  onClick={() => setSelectedColor(color.id)}
                 ></button>
               ))}
             </div>
@@ -280,22 +255,23 @@ const ModalAddProduct = (props: ModalAddProductProps) => {
               placeholder="Select Parent Category"
               onChange={handleParentChange}
             >
-              {parentCategories.map((cat) => (
-                <Option key={cat.id} value={cat.id}>
-                  {cat.name}
+              {dataCategory?.map((cat: any) => (
+                <Option key={cat?.id} value={cat?.id}>
+                  {_startCase(_toLower(cat?.name))}
                 </Option>
               ))}
             </Select>
-            {childCategories.length > 0 && (
+
+            {childCategories?.length > 0 && (
               <Select
                 placeholder="Select Subcategory"
                 onChange={handleChildChange}
                 value={selectedChild}
                 style={{ marginTop: "10px" }}
               >
-                {childCategories.map((child) => (
-                  <Option key={child.id} value={child.id}>
-                    {child.name}
+                {childCategories?.map((child: any) => (
+                  <Option key={child?.id} value={child?.id}>
+                    {child?.name}
                   </Option>
                 ))}
               </Select>

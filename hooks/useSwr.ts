@@ -1,13 +1,9 @@
 import useSWR from "swr";
-import Cookies from "js-cookie";
-
-const authToken = Cookies.get("accessToken");
 
 const fetcher = async (url: string) => {
   const response = await fetch(url, {
     method: "GET",
     headers: {
-      Authorization: `Bearer ${authToken}`,
       "Content-Type": "application/json",
     },
     credentials: "include",
@@ -20,7 +16,7 @@ const fetcher = async (url: string) => {
   return response.json();
 };
 
-const useSwr = (url: string) => {
+const useHookSwr = (url: string) => {
   const { data, error, isLoading, mutate } = useSWR(url, fetcher);
 
   return {
@@ -31,4 +27,4 @@ const useSwr = (url: string) => {
   };
 };
 
-export default useSwr;
+export default useHookSwr;
