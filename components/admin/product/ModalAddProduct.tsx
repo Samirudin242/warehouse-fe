@@ -1,40 +1,22 @@
-import React, { useEffect, useState } from "react";
-import { Modal, Form, Input, Button, Select } from "antd";
+import React, { useState } from "react";
+import { Modal, Form, Input, Select, Upload, Button, Image } from "antd";
+import { toast, ToastContainer } from "react-toastify";
+import { UploadOutlined, DeleteOutlined } from "@ant-design/icons";
+import axiosRequest from "@/hooks/useAxios";
 import _startCase from "lodash/startCase";
 import _toLower from "lodash/toLower";
 import useHookSwr from "@/hooks/useSwr";
 import { configUrl } from "@/config/configUrl";
+import GlobalModal from "@/components/modal/GlobalModal";
 
 const { TextArea } = Input;
 const { Option } = Select;
-
-type Size = {
-  id: string;
-  size: string;
-};
-
-type brand = {
-  id: string;
-  brand: string;
-};
-
-type Color = {
-  id: string;
-  name: string;
-};
-
-type Category = {
-  id: string;
-  parentId: string;
-  name: string;
-  slug: string;
-};
 
 interface ModalAddProductProps {
   isOpen: boolean;
   content?: React.ReactNode;
   onOk?: () => void;
-  onCancel?: () => void;
+  onCancel: () => void;
 }
 
 const ModalAddProduct = (props: ModalAddProductProps) => {
@@ -61,13 +43,18 @@ const ModalAddProduct = (props: ModalAddProductProps) => {
     `${configUrl.apiUrlWarehouseService}/warehouse?name=`
   );
 
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isOpenModal, setIsOpenModal] = useState(false);
+  const [body, setBody] = useState({});
+
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
 
   const [selectedParent, setSelectedParent] = useState<string | null>(null);
   const [selectedChild, setSelectedChild] = useState<string | null>(null);
   const [selectedSubChild, setSelectedSubChild] = useState<string | null>(null);
+
+  const [profilePicture, setProfilePicture] = useState<File[]>([]);
+  const [urlProfilePicture, setUrlProfilePicture] = useState<string[]>([]);
 
   const handleParentChange = (value: string) => {
     setSelectedParent(value);
@@ -105,12 +92,10 @@ const ModalAddProduct = (props: ModalAddProductProps) => {
         ?.children.find((cc: any) => cc.id === selectedChild)
     )?.children || [];
 
-  const handleOpenModal = () => setIsModalVisible(true);
   const handleCloseModal = () => {
     form.resetFields();
     setSelectedSize(null);
     setSelectedColor(null);
-    setIsModalVisible(false);
   };
 
   const formatCurrency = (num: any) => {
@@ -125,13 +110,85 @@ const ModalAddProduct = (props: ModalAddProductProps) => {
     form.setFieldsValue({ price: formattedValue });
   };
 
-  const handleFormSubmit = (values: any) => {
-    console.log("Submitted Product:", {
-      ...values,
-      size: selectedSize,
-      color: selectedColor,
+  const handleUpload = async (file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const { response, error } = await axiosRequest({
+      url: `${configUrl.apiUrlUserService}/auth/profile-photo`,
+      method: "POST",
+      body: formData,
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     });
-    handleCloseModal();
+
+    if (response) {
+      const pushFile = [...profilePicture, file];
+      setProfilePicture(pushFile);
+      const url = [...urlProfilePicture, response?.data?.url];
+      setUrlProfilePicture(url);
+    } else {
+      console.error("Upload error:", error);
+    }
+  };
+
+  const handleDelete = (idx: number) => {
+    const updatedPictures = profilePicture.filter((_, i) => i !== idx);
+    const updatedUrls = urlProfilePicture.filter((_, i) => i !== idx);
+
+    setProfilePicture(updatedPictures);
+    setUrlProfilePicture(updatedUrls);
+  };
+
+  const handleFormSubmit = (values: any) => {
+    const body = {
+      name: values.name,
+      description: values.description,
+      sku: values.sku,
+      price: Number(values.price),
+      brand_id: values.brand_id,
+      product_categories_id: values.product_categories_id,
+      size_id: selectedSize,
+      color_id: selectedColor,
+      image_url: urlProfilePicture,
+      warehouse_id: selectedSubChild,
+      quantity: Number(values.quantity),
+    };
+
+    setBody(body);
+    setIsOpenModal(true);
+  };
+
+  const onSubmitData = async () => {
+    try {
+      // Hit the API
+      const { response, error } = await axiosRequest({
+        url: `${configUrl.apiUrlProductService}/product`,
+        method: "POST",
+        body: body,
+      });
+
+      if (error?.response?.data) {
+        const errorMessage: any = error?.response?.data;
+        toast.error(errorMessage?.message, {
+          position: "top-center",
+        });
+        return;
+      }
+
+      // refresh();
+      toast.success("User successfully registered!", {
+        position: "top-center",
+      });
+      setIsOpenModal(false);
+      props.onCancel();
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("Failed to register user. Please try again.", {
+        position: "top-center",
+      });
+    }
   };
 
   return (
@@ -165,6 +222,7 @@ const ModalAddProduct = (props: ModalAddProductProps) => {
         ]}
         width={1000}
       >
+        <ToastContainer />
         <Form
           form={form}
           layout="vertical"
@@ -234,7 +292,7 @@ const ModalAddProduct = (props: ModalAddProductProps) => {
             />
           </Form.Item>
 
-          <Form.Item label="Sizes">
+          <Form.Item label="Sizes" name="size_id">
             <div className="flex flex-wrap gap-3">
               {dataSize?.map((size: any) => (
                 <button
@@ -251,7 +309,7 @@ const ModalAddProduct = (props: ModalAddProductProps) => {
               ))}
             </div>
           </Form.Item>
-          <Form.Item label="Colors">
+          <Form.Item label="Colors" name="color_id">
             <div className="flex flex-wrap gap-3">
               {dataColor?.map((color: any) => (
                 <button
@@ -274,6 +332,7 @@ const ModalAddProduct = (props: ModalAddProductProps) => {
           </Form.Item>
           <Form.Item
             label="Category"
+            name="product_categories_id"
             rules={[{ required: true, message: "Please select a category" }]}
           >
             <Select
@@ -318,15 +377,18 @@ const ModalAddProduct = (props: ModalAddProductProps) => {
             )}
           </Form.Item>
           <Form.Item
-            label="Category"
-            rules={[{ required: true, message: "Please select a category" }]}
+            label="Warehouse"
+            name="warehouse_id"
+            rules={[{ required: true, message: "Please select a warehouse" }]}
           >
             <Select
-              placeholder="Search Warehouse"
+              placeholder="Select or Search Warehouse"
               showSearch
               onSearch={(e) => {
                 handleSearchWarehouse(e);
               }}
+              filterOption={false}
+
               // onChange={handleParentChange}
             >
               {dataWarehouse?.content?.map((war: any) => (
@@ -336,7 +398,67 @@ const ModalAddProduct = (props: ModalAddProductProps) => {
               ))}
             </Select>
           </Form.Item>
+          <Form.Item
+            label="Brand"
+            name="brand_id"
+            rules={[{ required: true, message: "Please select a brand" }]}
+          >
+            <Select
+              placeholder="Select Brand"
+
+              // onChange={handleParentChange}
+            >
+              {dataBrand?.map((brand: any) => (
+                <Option key={brand?.id} value={brand?.id}>
+                  {_startCase(_toLower(brand?.brand))}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
+          <Form.Item label="Profile Picture" name="profile_picture">
+            <Upload
+              customRequest={({ file }) => handleUpload(file as File)}
+              showUploadList={false}
+              accept=".jpg,.png"
+            >
+              <Button icon={<UploadOutlined />}>Click to Upload</Button>
+            </Upload>
+            {profilePicture.length && (
+              <div className="mt-2 flex gap-2">
+                {profilePicture?.map((picture: File, idx) => {
+                  return (
+                    <div key={idx} className="relative">
+                      <Image
+                        src={URL.createObjectURL(picture)}
+                        alt="Profile Preview"
+                        width={100}
+                        height={100}
+                        style={{ borderRadius: "50%" }}
+                      />
+                      <Button
+                        icon={<DeleteOutlined />}
+                        type="primary"
+                        danger
+                        size="small"
+                        onClick={() => handleDelete(idx)}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </Form.Item>
         </Form>
+        {isOpenModal && (
+          <GlobalModal
+            isVisible={true}
+            title="Confirmation"
+            content="Are you sure you want to create an account?"
+            icon="product"
+            onOk={onSubmitData}
+            onCancel={() => setIsOpenModal(false)}
+          />
+        )}
       </Modal>
     </>
   );

@@ -11,7 +11,7 @@ interface GlobalModalProps {
   okText?: string;
   cancelText?: string;
   type?: "confirm" | "info" | "success" | "error" | "warning";
-  icon?: "user" | "warehouse";
+  icon?: "user" | "warehouse" | "product";
 }
 
 const GlobalModal: React.FC<GlobalModalProps> = ({
@@ -25,7 +25,11 @@ const GlobalModal: React.FC<GlobalModalProps> = ({
   icon,
 }) => {
   const pathImage =
-    icon == "warehouse" ? "/images/warehouse.png" : "/images/self.png";
+    icon == "warehouse"
+      ? "/images/warehouse.png"
+      : icon == "product"
+      ? "/images/product.png"
+      : "/images/self.png";
 
   return (
     <Modal

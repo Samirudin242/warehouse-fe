@@ -1,3 +1,5 @@
+"use client";
+import { useState } from "react";
 import useSWR from "swr";
 
 const fetcher = async (url: string) => {
@@ -16,8 +18,9 @@ const fetcher = async (url: string) => {
   return response.json();
 };
 
-const useHookSwr = (url: string) => {
-  const { data, error, isLoading, mutate } = useSWR(url, fetcher, {
+const useHookSwr = (initialUrl: string | null) => {
+  const [currentUrl, setCurrentUrl] = useState(initialUrl);
+  const { data, error, isLoading, mutate } = useSWR(currentUrl, fetcher, {
     revalidateOnFocus: false,
     revalidateIfStale: false,
   });
@@ -26,7 +29,11 @@ const useHookSwr = (url: string) => {
     data,
     error,
     isLoading,
-    refresh: mutate,
+    refresh: (newUrl?: string) => {
+      const urlToUse = newUrl || currentUrl;
+      setCurrentUrl(urlToUse);
+      return mutate(fetcher(urlToUse!));
+    },
   };
 };
 
