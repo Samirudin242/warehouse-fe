@@ -154,6 +154,7 @@ const ModalAddProduct = (props: ModalAddProductProps) => {
       image_url: urlProfilePicture,
       warehouse_id: selectedSubChild,
       quantity: Number(values.quantity),
+      gender: "unisex",
     };
 
     setBody(body);
