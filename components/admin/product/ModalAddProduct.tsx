@@ -46,8 +46,8 @@ const ModalAddProduct = (props: ModalAddProductProps) => {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [body, setBody] = useState({});
 
-  const [selectedSize, setSelectedSize] = useState<string | null>(null);
-  const [selectedColor, setSelectedColor] = useState<string | null>(null);
+  const [selectedSize, setSelectedSize] = useState<string[]>([]);
+  const [selectedColor, setSelectedColor] = useState<string[]>([]);
 
   const [selectedParent, setSelectedParent] = useState<string | null>(null);
   const [selectedChild, setSelectedChild] = useState<string | null>(null);
@@ -94,8 +94,8 @@ const ModalAddProduct = (props: ModalAddProductProps) => {
 
   const handleCloseModal = () => {
     form.resetFields();
-    setSelectedSize(null);
-    setSelectedColor(null);
+    setSelectedSize([]);
+    setSelectedColor([]);
   };
 
   const formatCurrency = (num: any) => {
@@ -141,6 +141,28 @@ const ModalAddProduct = (props: ModalAddProductProps) => {
     setUrlProfilePicture(updatedUrls);
   };
 
+  const handleSelectMultipleSize = (id: string) => {
+    const isInclude = [...selectedSize].includes(id);
+    if (isInclude) {
+      const data = [...selectedSize].filter((i: string) => i != id);
+      setSelectedSize(data);
+    } else {
+      const data = [...selectedSize, id];
+      setSelectedSize(data);
+    }
+  };
+
+  const handleSelectMultipleColor = (id: string) => {
+    const isInclude = [...selectedColor].includes(id);
+    if (isInclude) {
+      const data = [...selectedColor].filter((i: string) => i != id);
+      setSelectedColor(data);
+    } else {
+      const data = [...selectedColor, id];
+      setSelectedColor(data);
+    }
+  };
+
   const handleFormSubmit = (values: any) => {
     const body = {
       name: values.name,
@@ -148,11 +170,11 @@ const ModalAddProduct = (props: ModalAddProductProps) => {
       sku: values.sku,
       price: Number(values.price),
       brand_id: values.brand_id,
-      product_categories_id: values.product_categories_id,
+      product_categories_id: selectedSubChild,
       size_id: selectedSize,
       color_id: selectedColor,
       image_url: urlProfilePicture,
-      warehouse_id: selectedSubChild,
+      warehouse_id: values.warehouse_id,
       quantity: Number(values.quantity),
       gender: "unisex",
     };
@@ -299,11 +321,11 @@ const ModalAddProduct = (props: ModalAddProductProps) => {
                 <button
                   key={size?.id}
                   className={`rounded-full px-4 py-2 text-sm ${
-                    selectedSize === size?.id
+                    selectedSize.includes(size.id)
                       ? "bg-blue-500 text-white"
                       : "bg-gray-200 hover:bg-gray-300"
                   }`}
-                  onClick={() => setSelectedSize(size.id)}
+                  onClick={() => handleSelectMultipleSize(size.id)}
                 >
                   {size?.size}
                 </button>
@@ -316,7 +338,9 @@ const ModalAddProduct = (props: ModalAddProductProps) => {
                 <button
                   key={color.id}
                   className={`rounded-full w-10 h-10 border ${
-                    selectedColor === color.id ? "ring-2 ring-blue-500" : ""
+                    selectedColor.includes(color.id)
+                      ? "ring-2 ring-blue-500"
+                      : ""
                   }`}
                   style={{
                     background: color.name,
@@ -326,7 +350,7 @@ const ModalAddProduct = (props: ModalAddProductProps) => {
                       ? "#000"
                       : "#FFF",
                   }}
-                  onClick={() => setSelectedColor(color.id)}
+                  onClick={() => handleSelectMultipleColor(color.id)}
                 ></button>
               ))}
             </div>
@@ -389,8 +413,6 @@ const ModalAddProduct = (props: ModalAddProductProps) => {
                 handleSearchWarehouse(e);
               }}
               filterOption={false}
-
-              // onChange={handleParentChange}
             >
               {dataWarehouse?.content?.map((war: any) => (
                 <Option key={war?.id} value={war?.id}>

@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Modal, Form, Input, Select, Upload, Button, Image } from "antd";
 import { toast, ToastContainer } from "react-toastify";
 import { UploadOutlined } from "@ant-design/icons";
 import { configUrl } from "@/config/configUrl";
 import { provinces } from "@/data/provinces";
-import { City } from "@/types/city";
 import axiosRequest from "@/hooks/useAxios";
 import GlobalModal from "@/components/modal/GlobalModal";
 import { useCitySelector } from "@/hooks/useCitySelector";
