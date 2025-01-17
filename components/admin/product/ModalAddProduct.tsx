@@ -17,6 +17,7 @@ interface ModalAddProductProps {
   content?: React.ReactNode;
   onOk?: () => void;
   onCancel: () => void;
+  refresh: () => void;
 }
 
 const ModalAddProduct = (props: ModalAddProductProps) => {
@@ -168,9 +169,9 @@ const ModalAddProduct = (props: ModalAddProductProps) => {
       name: values.name,
       description: values.description,
       sku: values.sku,
-      price: Number(values.price),
+      price: Number(values.price.toString().replace(".", "")),
       brand_id: values.brand_id,
-      product_categories_id: selectedSubChild,
+      product_categories_id: selectedSubChild || selectedChild,
       size_id: selectedSize,
       color_id: selectedColor,
       image_url: urlProfilePicture,
@@ -200,7 +201,7 @@ const ModalAddProduct = (props: ModalAddProductProps) => {
         return;
       }
 
-      // refresh();
+      props.refresh();
       toast.success("User successfully registered!", {
         position: "top-center",
       });
@@ -426,11 +427,7 @@ const ModalAddProduct = (props: ModalAddProductProps) => {
             name="brand_id"
             rules={[{ required: true, message: "Please select a brand" }]}
           >
-            <Select
-              placeholder="Select Brand"
-
-              // onChange={handleParentChange}
-            >
+            <Select placeholder="Select Brand">
               {dataBrand?.map((brand: any) => (
                 <Option key={brand?.id} value={brand?.id}>
                   {_startCase(_toLower(brand?.brand))}

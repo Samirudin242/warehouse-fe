@@ -1,11 +1,13 @@
 "use client";
 
 import React, { useState } from "react";
-import { Table, Dropdown, Menu, Button } from "antd";
+import { Table, Dropdown, Menu, Button, Select } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import { createStyles } from "antd-style";
 import ModalAddProduct from "./ModalAddProduct";
+
+const { Option } = Select;
 
 const useStyle = createStyles(({ css, token }) => {
   const antCls = ".ant";
@@ -221,45 +223,27 @@ const ProductList = () => {
       <h1 className="text-xl font-semibold mb-4">Product List</h1>
 
       {/* Filter UI */}
-      <div className="flex items-center space-x-4 mb-6">
-        <select
-          value={categoryFilter}
-          onChange={(e) => setCategoryFilter(e.target.value)}
-          className="p-2 border rounded-md shadow-sm focus:outline-none"
-        >
-          {categories.map((category) => (
-            <option key={category} value={category}>
-              {category}
-            </option>
-          ))}
-        </select>
-        <div className="flex space-x-2">
-          <input
-            type="number"
-            value={minPrice}
-            onChange={(e) => setMinPrice(Number(e.target.value))}
-            className="p-2 border rounded-md shadow-sm focus:outline-none"
-            placeholder="Min Price"
-          />
-          <input
-            type="number"
-            value={maxPrice}
-            onChange={(e) => setMaxPrice(Number(e.target.value))}
-            className="p-2 border rounded-md shadow-sm focus:outline-none"
-            placeholder="Max Price"
-          />
+      <div className="mb-3">Filter Product</div>
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <Select
+            value={categoryFilter}
+            onChange={(value) => setCategoryFilter(value)}
+            className="w-44"
+          >
+            {categories.map((category) => (
+              <Option key={category} value={category}>
+                {category}
+              </Option>
+            ))}
+          </Select>
+        </div>
+        <div className="mb-4">
+          <Button onClick={() => setIsAddProduct(true)}>Add Product</Button>
         </div>
       </div>
 
       {/* Add Product Button */}
-      <div className="mb-4">
-        <button
-          className="bg-blue-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-600"
-          onClick={() => setIsAddProduct(true)}
-        >
-          Add Product
-        </button>
-      </div>
 
       {/* Product Table */}
       <Table
