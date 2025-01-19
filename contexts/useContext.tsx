@@ -50,7 +50,6 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-// Hook to use the context
 export const useAppContext = () => {
   const context = useContext(AppContext);
   if (!context) {

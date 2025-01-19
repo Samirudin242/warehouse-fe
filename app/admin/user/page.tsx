@@ -3,29 +3,32 @@ import React, { useEffect, useState } from "react";
 import { Table, Button, Select, Input } from "antd";
 import { configUrl } from "@/config/configUrl";
 import useSwr from "@/hooks/useSwr";
-import axiosRequest from "@/hooks/useAxios";
-import { City, Role } from "@/types/city";
 import AddUserModal from "@/components/admin/user/ModalAddUser";
+import { useAppContext } from "@/contexts/useContext";
 
 const { Option } = Select;
 
 const page = () => {
-  const [roleFilter, setRoleFilter] = useState<string | null>(null);
+  const { roles } = useAppContext();
+  const warehouseAdminRoleId = roles?.find(
+    (r) => r.role_name == "WAREHOUSE_ADMIN"
+  )?.id;
+
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [isAddModal, setIsAddModal] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pageSize] = useState<number>(5);
 
   const { data, error, isLoading, refresh } = useSwr(
-    `${configUrl.apiUrlUserService}/user`
+    warehouseAdminRoleId
+      ? `${configUrl.apiUrlUserService}/user?role=${warehouseAdminRoleId}`
+      : null
   );
 
   const users = data?.content || [];
   const totalUsers = data?.totalElements || 0;
-  const [listRoles, setListRoles] = useState<Role[]>([]);
 
   const handleRoleFilterChange = (value: string | null) => {
-    setRoleFilter(value);
     setCurrentPage(1);
   };
 
@@ -35,16 +38,12 @@ const page = () => {
   };
 
   useEffect(() => {
-    const fetchRoles = async () => {
-      const { response } = await axiosRequest({
-        url: `${configUrl.apiUrlUserService}/auth/get-roles`,
-      });
-      console.log("response", response?.data);
-      setListRoles(response?.data);
-    };
-
-    fetchRoles();
-  }, []);
+    if (warehouseAdminRoleId) {
+      refresh(
+        `${configUrl.apiUrlUserService}/user?role=${warehouseAdminRoleId}`
+      );
+    }
+  }, [warehouseAdminRoleId]);
 
   const columns = [
     {
@@ -131,7 +130,7 @@ const page = () => {
           isOpen={isAddModal}
           onCancel={() => setIsAddModal(false)}
           refresh={refresh}
-          roles={listRoles || []}
+          roles={roles || []}
         />
       )}
 

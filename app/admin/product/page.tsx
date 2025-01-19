@@ -89,6 +89,12 @@ const Page = () => {
     </Menu>
   );
 
+  const handleChangePage = (page: any) => {
+    setCurrentPage(page);
+    const url = `${configUrl.apiUrlProductService}/product?page=${page}`;
+    refresh(url);
+  };
+
   const columns: (ColumnType<Product> | ColumnGroupType<Product>)[] = [
     {
       title: "Name",
@@ -177,7 +183,7 @@ const Page = () => {
           current: currentPage,
           pageSize,
           total: totalProduct,
-          onChange: (page) => setCurrentPage(page),
+          onChange: (page) => handleChangePage(page),
         }}
         rowKey="key"
         className={styles.customTable}

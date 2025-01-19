@@ -1,12 +1,15 @@
 "use client";
 
 import React from "react";
+import { useRouter, usePathname } from "next/navigation";
 import { Dropdown, MenuProps } from "antd";
 import { CiSearch } from "react-icons/ci";
 import { FaRegCircleUser } from "react-icons/fa6";
-import { RiAdminFill } from "react-icons/ri";
+import { BsShop } from "react-icons/bs";
 
 export default function TopBarAdmin() {
+  const router = useRouter();
+
   // Dropdown menu items
   const accountMenuItems: MenuProps["items"] = [
     { key: "1", label: "My Account" },
@@ -35,8 +38,11 @@ export default function TopBarAdmin() {
         </Dropdown>
 
         {/* Admin Icon */}
-        <button className="p-2 hover:bg-gray-300 rounded-full">
-          <RiAdminFill className="w-5 h-5 text-gray-700" />
+        <button
+          onClick={() => router.push("/")}
+          className="p-2 hover:bg-gray-300 rounded-full"
+        >
+          <BsShop className="w-5 h-5 text-gray-700" />
         </button>
       </div>
     </div>
