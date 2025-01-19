@@ -1,46 +1,64 @@
 "use client";
 import React, { useState } from "react";
 import ProductCard from "../ProductCard";
-import Pagination from "@/components/globals/Pagination";
+import { Pagination } from "antd";
+import useHookSwr from "@/hooks/useSwr";
+import { configUrl } from "@/config/configUrl";
+import ProductCardSkeleton from "../ProductCardSkeleton";
+
+type Product = {
+  name: string;
+  description: string;
+  price: number;
+  totalSell: number;
+  rating: number;
+  imageUrl: string;
+};
 
 function ListProducts() {
-  const url = [
-    "https://res.cloudinary.com/hilnmyskv/image/upload/v1638374505/flagship_sunrise/M0E20000000EHIZ_0.jpg",
-    "https://res.cloudinary.com/hilnmyskv/image/upload/v1638371728/flagship_sunrise/M0E20000000EL27_0.jpg",
-    "https://res.cloudinary.com/hilnmyskv/image/upload/v1638376213/flagship_sunrise/M0E20000000EL43_0.jpg",
-    "https://res.cloudinary.com/hilnmyskv/image/upload/v1638376213/flagship_sunrise/M0E20000000EL43_0.jpg",
-    "https://res.cloudinary.com/hilnmyskv/image/upload/v1638376213/flagship_sunrise/M0E20000000EL43_0.jpg",
-    "https://res.cloudinary.com/hilnmyskv/image/upload/v1638376213/flagship_sunrise/M0E20000000EL43_0.jpg",
-    "https://res.cloudinary.com/hilnmyskv/image/upload/v1638376213/flagship_sunrise/M0E20000000EL43_0.jpg",
-    "https://res.cloudinary.com/hilnmyskv/image/upload/v1638376213/flagship_sunrise/M0E20000000EL43_0.jpg",
-    "https://res.cloudinary.com/hilnmyskv/image/upload/v1638376213/flagship_sunrise/M0E20000000EL43_0.jpg",
-    "https://res.cloudinary.com/hilnmyskv/image/upload/v1638376213/flagship_sunrise/M0E20000000EL43_0.jpg",
-  ];
-  const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = 10;
+  const { data, error, isLoading, refresh } = useHookSwr(
+    `${configUrl.apiUrlProductService}/product?size=${12}`
+  );
+
+  const [curentPage, setCurrentPage] = useState<number>(1);
+
+  const products = data?.content || [];
+
+  const handleChangePage = (page: number) => {
+    setCurrentPage(page);
+    refresh(
+      `${configUrl.apiUrlProductService}/product?size=${12}&page=${page}`
+    );
+  };
+
+  if (isLoading) {
+    return <ProductCardSkeleton />;
+  }
   return (
     <div className="text-black w-full">
       <div className="mb-4 text-xl font-bold">Casual</div>
       <div className="grid grid-cols-3 gap-y-3 w-full">
-        {url.map((u, i) => {
+        {products?.map((product: Product, i: number) => {
           return (
             <div key={i}>
               <ProductCard
-                imageSrc={u}
-                title="Baju kaos"
-                rating={4}
-                reviews={4}
-                price={1000}
+                imageSrc={product.imageUrl}
+                title={product.name}
+                rating={product.rating}
+                price={product.price}
               />
             </div>
           );
         })}
       </div>
-      <div>
+      <div className="mt-10">
         <Pagination
-          totalPages={totalPages}
-          currentPage={currentPage}
-          onPageChange={(page) => setCurrentPage(page)}
+          current={curentPage}
+          defaultCurrent={1}
+          defaultPageSize={12}
+          total={data?.totalElements || 0}
+          showSizeChanger={false}
+          onChange={handleChangePage}
         />
       </div>
     </div>

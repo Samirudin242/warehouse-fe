@@ -1,7 +1,14 @@
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 export default function Carousel2() {
+  const router = useRouter();
+
+  const handleClickShop = () => {
+    router.push("/product/list-product/all");
+  };
+
   return (
     <div
       style={{
@@ -9,7 +16,6 @@ export default function Carousel2() {
       }}
       className="bg-slate-100 h-full px-28 w-full flex justify-between"
     >
-      {/** component */}
       <div
         style={{
           width: "600px",
@@ -24,7 +30,10 @@ export default function Carousel2() {
             Explore our curated collection of premium apparel, where every piece
             tells a story and aligns with your unique personality.
           </h3>
-          <button className="bg-black text-white py-3 px-10 rounded-3xl mt-5">
+          <button
+            onClick={handleClickShop}
+            className="bg-black text-white py-3 px-10 rounded-3xl mt-5"
+          >
             Start Exploring
           </button>
           <div className="flex justify-between mt-10">

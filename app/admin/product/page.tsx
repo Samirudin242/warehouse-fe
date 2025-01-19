@@ -184,6 +184,7 @@ const Page = () => {
           pageSize,
           total: totalProduct,
           onChange: (page) => handleChangePage(page),
+          showSizeChanger: false,
         }}
         rowKey="key"
         className={styles.customTable}

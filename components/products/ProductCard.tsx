@@ -1,23 +1,24 @@
+import { formatToRupiah } from "@/app/utils/formatPrice";
 import React from "react";
-import { IoStarSharp, IoStarHalfSharp } from "react-icons/io5";
+import { PiStarFill } from "react-icons/pi";
 
 interface ProductCardProps {
   title: string;
   price: number;
   rating?: number;
-  reviews?: number;
   imageSrc: string;
+  totalSell?: number;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
   title,
   price,
   rating,
-  reviews,
   imageSrc,
+  totalSell,
 }) => {
   return (
-    <div className="w-64 bg-white hover:shadow-md rounded-lg overflow-hidden hover:border">
+    <div className="w-64 bg-white hover:shadow-md rounded-lg overflow-hidden hover:border cursor-pointer">
       <div className="bg-customGray overflow-hidden">
         <img
           src={imageSrc}
@@ -27,18 +28,22 @@ const ProductCard: React.FC<ProductCardProps> = ({
       </div>
 
       <div className="p-4">
-        <h3 className="text-base font-semibold text-gray-800 mb-2">{title}</h3>
-        <div className="flex items-center mb-2">
-          {[...Array(4)].map((_, i) => (
-            <IoStarSharp key={i} className="text-amber-300" />
-          ))}
-          {[...Array(1)].map((_, i) => (
-            <IoStarHalfSharp key={i} className="text-amber-300" />
-          ))}
-          <span className="text-sm text-gray-500 ml-2">{rating}/5</span>
+        <h3 className="text-base font-semibold text-gray-800 mb-2 truncate">
+          {title}
+        </h3>
+
+        <div className="text-md font-bold text-gray-900">
+          {formatToRupiah(price, true)}
         </div>
 
-        <div className="text-xl font-bold text-gray-900">${price}</div>
+        <div className="flex justify-items-center mb-2 gap-3 mt-3 text-gray-500">
+          <div className="flex justify-center items-center gap-1">
+            <PiStarFill className="text-amber-400" />
+            {rating ? rating : "not rated yet"}
+          </div>
+          <div>|</div>
+          <div>{totalSell ? totalSell : 0} sold</div>
+        </div>
       </div>
     </div>
   );

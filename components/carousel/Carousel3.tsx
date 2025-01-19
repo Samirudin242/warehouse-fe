@@ -1,7 +1,14 @@
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 export default function Carousel3() {
+  const router = useRouter();
+
+  const handleClickShop = () => {
+    router.push("/product/list-product/all");
+  };
+
   return (
     <div
       style={{
@@ -25,7 +32,10 @@ export default function Carousel3() {
             Transform your wardrobe into a true reflection of your style and
             confidence.
           </h3>
-          <button className="bg-black text-white py-3 px-10 rounded-3xl mt-5">
+          <button
+            onClick={handleClickShop}
+            className="bg-black text-white py-3 px-10 rounded-3xl mt-5"
+          >
             Explore Collection
           </button>
           <div className="flex justify-between mt-10">

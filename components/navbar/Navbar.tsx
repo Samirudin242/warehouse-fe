@@ -30,6 +30,9 @@ export default function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [roleUser, setRoleUser] = useState<string>("");
   const [idUser, setIdUser] = useState<string>("");
+
+  const [isHideMenu, setIsHideMenu] = useState<boolean>(false);
+
   // Check token existence and validity
   useEffect(() => {
     const token = Cookies.get("accessToken");
@@ -90,47 +93,60 @@ export default function Navbar() {
       {/* Navbar */}
       <nav className="flex items-center text-center px-20 py-4">
         {/* Logo */}
-        <div className="text-2xl text-black flex items-center content-center text-center w-full">
+        <div className="text-2xl text-black">
           <Link className="mr-20" href="/">
             <span className="font-extrabold">YAKUSHOP.CO</span>
           </Link>
-          {/* Nav Links */}
-          <ul className="hidden md:flex space-x-6 text-sm font-medium items-center m-0">
-            <li>
-              <Link href="/shop" className="p-1 hover:bg-gray-100 rounded">
-                Shop
-              </Link>
-            </li>
-            <li>
-              <Link href="/on-sale" className="p-1 hover:bg-gray-100 rounded">
-                On Sale
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/new-arrivals"
-                className="p-1 hover:bg-gray-100 rounded"
-              >
-                New Arrivals
-              </Link>
-            </li>
-            <li>
-              <Link href="/brands" className="p-1 hover:bg-gray-100 rounded">
-                Brands
-              </Link>
-            </li>
-          </ul>
         </div>
+        {!isHideMenu && (
+          <div className="text-2xl text-black flex items-center content-center text-center w-full">
+            {/* Nav Links */}
+            <ul className="hidden md:flex space-x-6 text-sm font-medium items-center m-0">
+              <li>
+                <Link
+                  href="/product/list-product/all"
+                  className="p-1 hover:bg-gray-100 rounded"
+                >
+                  Shop
+                </Link>
+              </li>
+              <li>
+                <Link href="/on-sale" className="p-1 hover:bg-gray-100 rounded">
+                  On Sale
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/new-arrivals"
+                  className="p-1 hover:bg-gray-100 rounded"
+                >
+                  New Arrivals
+                </Link>
+              </li>
+              <li>
+                <Link href="/brands" className="p-1 hover:bg-gray-100 rounded">
+                  Brands
+                </Link>
+              </li>
+            </ul>
+          </div>
+        )}
 
         {/* Search + Icons */}
-        <div className="flex items-center space-x-4  w-full">
+        <div className="flex items-center space-x-4 w-full">
           {/* Search Input */}
-          <div className="flex items-center border rounded-full w-full bg-slate-100">
-            <CiSearch className="w-6 h-6 text-black ml-3 " />
+          <div
+            className={`flex items-center border rounded-full bg-slate-100 transition-all duration-300 ease-in-out ${
+              isHideMenu ? "w-full" : "w-96"
+            }`}
+          >
+            <CiSearch className="w-6 h-6 text-black ml-3" />
             <input
+              onBlur={() => setIsHideMenu(false)}
+              onClick={() => setIsHideMenu(true)}
               type="text"
               placeholder="Search for products..."
-              className="hidden md:block w-64 rounded-full px-4 py-2 text-sm focus:outline-none text-black bg-slate-100"
+              className="hidden md:block rounded-full px-4 py-2 text-sm focus:outline-none text-black bg-slate-100 w-full"
             />
           </div>
 
