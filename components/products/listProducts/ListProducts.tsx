@@ -4,9 +4,10 @@ import ProductCard from "../ProductCard";
 import { Pagination } from "antd";
 import useHookSwr from "@/hooks/useSwr";
 import { configUrl } from "@/config/configUrl";
-import ProductCardSkeleton from "../ProductCardSkeleton";
+import ProductCardSkeleton from "../../skeletonLoading/ProductCardSkeleton";
 
 type Product = {
+  id: string;
   name: string;
   description: string;
   price: number;
@@ -46,6 +47,7 @@ function ListProducts() {
                 title={product.name}
                 rating={product.rating}
                 price={product.price}
+                id={product.id}
               />
             </div>
           );

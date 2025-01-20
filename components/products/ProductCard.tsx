@@ -1,8 +1,12 @@
+"use client";
+
+import { useRouter } from "next/navigation";
 import { formatToRupiah } from "@/app/utils/formatPrice";
 import React from "react";
 import { PiStarFill } from "react-icons/pi";
 
 interface ProductCardProps {
+  id?: string;
   title: string;
   price: number;
   rating?: number;
@@ -11,14 +15,24 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
+  id,
   title,
   price,
   rating,
   imageSrc,
   totalSell,
 }) => {
+  const router = useRouter();
+
+  const handleClickCard = () => {
+    router.push(`/product/product-detail/${id}`);
+  };
+
   return (
-    <div className="w-64 bg-white hover:shadow-md rounded-lg overflow-hidden hover:border cursor-pointer">
+    <div
+      onClick={handleClickCard}
+      className="w-64 bg-white hover:shadow-md rounded-lg overflow-hidden hover:border cursor-pointer"
+    >
       <div className="bg-customGray overflow-hidden">
         <img
           src={imageSrc}
