@@ -18,7 +18,7 @@ type Product = {
 
 function ListProducts() {
   const { data, error, isLoading, refresh } = useHookSwr(
-    `${configUrl.apiUrlProductService}/product?size=${12}`
+    `${configUrl.apiUrlProductService}/product-public?size=${12}`
   );
 
   const [curentPage, setCurrentPage] = useState<number>(1);
@@ -28,7 +28,7 @@ function ListProducts() {
   const handleChangePage = (page: number) => {
     setCurrentPage(page);
     refresh(
-      `${configUrl.apiUrlProductService}/product?size=${12}&page=${page}`
+      `${configUrl.apiUrlProductService}/product-public?size=${12}&page=${page}`
     );
   };
 

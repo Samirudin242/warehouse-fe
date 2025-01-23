@@ -1,17 +1,15 @@
-import { jwtDecode } from "jwt-decode"; // For decoding JWT
-import Cookies from "js-cookie"; // Client-side cookie management
+import { jwtDecode } from "jwt-decode";
+import Cookies from "js-cookie";
 
-// Define the token payload interface
 interface TokenPayload {
-  sub: string; // User ID
-  username: string; // Username
-  email: string; // Email
-  role: string; // Role
-  iat: number; // Issued at (epoch time)
-  exp: number; // Expiration time (epoch time)
+  sub: string;
+  username: string;
+  email: string;
+  role: string;
+  iat: number;
+  exp: number;
 }
 
-// Function to decode the token
 const decodeToken = (token: string): TokenPayload | null => {
   try {
     const decoded = jwtDecode<TokenPayload>(token);
@@ -22,11 +20,9 @@ const decodeToken = (token: string): TokenPayload | null => {
   }
 };
 
-// Retrieve the token from cookies
 const token = Cookies.get("accessToken");
 
 if (token) {
-  // Decode the token if it exists in the cookie
   const payload = decodeToken(token);
 
   if (payload) {

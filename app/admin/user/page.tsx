@@ -5,6 +5,7 @@ import { configUrl } from "@/config/configUrl";
 import useSwr from "@/hooks/useSwr";
 import AddUserModal from "@/components/admin/user/ModalAddUser";
 import { useAppContext } from "@/contexts/useContext";
+import SkeletonTable from "@/components/skeletonLoading/TableSkeleton";
 
 const { Option } = Select;
 
@@ -77,6 +78,10 @@ const page = () => {
       key: "address",
     },
   ];
+
+  if (isLoading) {
+    return <SkeletonTable />;
+  }
 
   return (
     <div className="p-5">

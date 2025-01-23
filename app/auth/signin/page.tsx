@@ -1,9 +1,9 @@
 "use client";
 
 import React from "react";
-import Cookies from "js-cookie"; // Client-side cookie management
+import Cookies from "js-cookie";
 import { toast, Bounce, ToastContainer } from "react-toastify";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Col, Form, Image, Input, Button, Row } from "antd";
 import axiosRequest from "@/hooks/useAxios";
 import { configUrl } from "@/config/configUrl";
@@ -89,7 +89,7 @@ function page() {
   return (
     <div className="flex items-center h-screen bg-gray-100 text-black">
       <div className="w-4/6 bg-white p-10 rounded-lg shadow-lg mx-auto">
-        <ToastContainer /> {/* Ensure this is included */}
+        <ToastContainer />
         <div className="flex justify-between">
           <div className="flex items-center">
             <Image

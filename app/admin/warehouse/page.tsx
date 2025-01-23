@@ -9,8 +9,7 @@ import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import useSwr from "@/hooks/useSwr";
 import { configUrl } from "@/config/configUrl";
 import ModalAddWarehouse from "@/components/admin/warehouse/ModalAddWarehouse";
-
-const { Option } = Select;
+import SkeletonTable from "@/components/skeletonLoading/TableSkeleton";
 
 export default function page() {
   const { data, error, isLoading, refresh } = useSwr(
@@ -74,6 +73,10 @@ export default function page() {
       ),
     },
   ];
+
+  if (isLoading) {
+    return <SkeletonTable />;
+  }
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">

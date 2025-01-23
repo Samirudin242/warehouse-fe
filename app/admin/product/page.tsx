@@ -11,6 +11,7 @@ import _toLower from "lodash/toLower";
 import ModalAddProduct from "../../../components/admin/product/ModalAddProduct";
 import useHookSwr from "@/hooks/useSwr";
 import { configUrl } from "@/config/configUrl";
+import SkeletonTable from "@/components/skeletonLoading/TableSkeleton";
 
 const { Option } = Select;
 
@@ -149,6 +150,10 @@ const Page = () => {
       ),
     },
   ];
+
+  if (isLoading) {
+    return <SkeletonTable />;
+  }
 
   return (
     <div className="p-6 text-black">

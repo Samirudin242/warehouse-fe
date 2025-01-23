@@ -1,42 +1,14 @@
 "use client";
-import { formatToRupiah } from "@/app/utils/formatPrice";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
+import { toast, ToastContainer } from "react-toastify";
 import { FaStar } from "react-icons/fa6";
-import { IoIosCheckmark } from "react-icons/io";
-
-type DescriptionProps = {
-  id: string;
-  name: string;
-  description: string;
-  rating: number;
-  stock: number;
-  price: Price;
-  colors: Color[];
-  sizes: Size[];
-};
-
-type Price = {
-  id: string;
-  productId: string;
-  currency: string;
-  price: number;
-  discountedValue: number;
-  onSales: boolean;
-};
-
-type Color = {
-  id: string;
-  product_id: string;
-  color_id: string;
-  color: string;
-};
-
-type Size = {
-  id: string;
-  product_id: string;
-  size_id: string;
-  size: string;
-};
+import { formatToRupiah } from "@/app/utils/formatPrice";
+import { useAppContext } from "@/contexts/useContext";
+import { DescriptionProps } from "@/types/ProductDescription";
+import axiosRequest from "@/hooks/useAxios";
+import { configUrl } from "@/config/configUrl";
 
 export default function ProductDetailDescription({
   id,
@@ -48,6 +20,11 @@ export default function ProductDetailDescription({
   rating,
   stock,
 }: DescriptionProps) {
+  const { user } = useAppContext();
+  const token = Cookies.get("accessToken");
+
+  const router = useRouter();
+
   const [selectedSize, setSelectedSize] = useState<string>("");
   const [selectedColor, setSelectedColor] = useState<string>("");
 
@@ -61,8 +38,63 @@ export default function ProductDetailDescription({
     setSelectedSize(id);
   };
 
+  const handleAddProductToCart = async () => {
+    if (!user || !token) {
+      router.push("/auth/signin");
+      return;
+    }
+
+    if (!selectedSize || !selectedColor) {
+      toast.error("Select both a product size and color to continue", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "colored",
+      });
+
+      return;
+    }
+    const body = {
+      user_id: user.id,
+      product_id: id,
+      selected_color: selectedColor,
+      selected_size: selectedSize,
+      quantity: totalProduct,
+      price: price.price,
+    };
+
+    const { response, error } = await axiosRequest({
+      url: `${configUrl.apiUrlProductService}/cart`,
+      method: "POST",
+      body,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (response) {
+      toast.success("Succesfully add product to cart", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "colored",
+      });
+    }
+
+    console.log(body);
+  };
+
   return (
     <div>
+      <ToastContainer />
       <h1 className="text-2xl font-bold">{name}</h1>
       {rating && (
         <div className="flex gap-2">
@@ -90,7 +122,7 @@ export default function ProductDetailDescription({
             <button
               key={color.id}
               className={`rounded-full w-10 h-10 border ${
-                selectedColor == color.id ? "ring-2 ring-blue-500" : ""
+                selectedColor == color.color_id ? "ring-2 ring-black" : ""
               }`}
               style={{
                 background:
@@ -103,7 +135,7 @@ export default function ProductDetailDescription({
                     ? "#000"
                     : "#FFF",
               }}
-              onClick={() => handleSelectColor(color.id)}
+              onClick={() => handleSelectColor(color.color_id)}
             ></button>
           ))}
         </div>
@@ -116,11 +148,11 @@ export default function ProductDetailDescription({
             <button
               key={size?.id}
               className={`rounded-full px-4 py-2 text-sm ${
-                selectedSize.includes(size.id)
-                  ? "bg-blue-500 text-white"
+                selectedSize.includes(size.size_id)
+                  ? "bg-black text-white"
                   : "bg-gray-200 hover:bg-gray-300"
               }`}
-              onClick={() => handleSelectSize(size.id)}
+              onClick={() => handleSelectSize(size.size_id)}
             >
               {size?.size}
             </button>
@@ -128,9 +160,9 @@ export default function ProductDetailDescription({
         </div>
       </div>
       <div className="border mt-3"></div>
-      <div className="mt-3 flex w-full gap-5">
-        <div>Stock total: {stock}</div>
-        <div className="px-5 flex content-center align-middle border gap-16 rounded-3xl py-2 bg-customGray">
+      <div className="mt-3 flex w-full gap-5 content-center items-center">
+        <div className="w-44">Stock total: {stock}</div>
+        <div className="px-5 flex content-center justify-center align-middle border gap-16 rounded-3xl py-2 bg-customGray w-full">
           <button
             onClick={() => {
               if (totalProduct > 1) {
@@ -154,7 +186,10 @@ export default function ProductDetailDescription({
           </button>
         </div>
         <div className="w-full">
-          <button className="w-full bg-black px-10 text-white rounded-3xl py-2">
+          <button
+            onClick={handleAddProductToCart}
+            className=" w-full bg-black px-10 text-white rounded-3xl py-2"
+          >
             Add to Cart
           </button>
         </div>

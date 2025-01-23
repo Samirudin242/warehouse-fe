@@ -6,7 +6,7 @@ interface AxiosRequestProps {
   body?: any;
   config?: AxiosRequestConfig;
   headers?: Record<string, string>;
-  withCredentials?: boolean; // Include credentials
+  withCredentials?: boolean;
 }
 
 const axiosRequest = async ({

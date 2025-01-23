@@ -13,6 +13,13 @@ type AppContextType = {
   setLastUrl: (url: string) => void;
   roles: Role[];
   fetchRoles: () => void;
+  user: User;
+  setUser: React.Dispatch<React.SetStateAction<User>>;
+};
+
+type User = {
+  id: string;
+  role: string;
 };
 
 type Role = {
@@ -25,6 +32,7 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 export const AppContextProvider = ({ children }: { children: ReactNode }) => {
   const [lastUrl, setLastUrl] = useState("/");
   const [roles, setRoles] = useState<Role[]>([]);
+  const [user, setUser] = useState<User>({ id: "", role: "" });
 
   const fetchRoles = async () => {
     const { response, error } = await axiosRequest({
@@ -44,7 +52,9 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   return (
-    <AppContext.Provider value={{ lastUrl, setLastUrl, roles, fetchRoles }}>
+    <AppContext.Provider
+      value={{ lastUrl, setLastUrl, roles, fetchRoles, user, setUser }}
+    >
       {children}
     </AppContext.Provider>
   );

@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast, ToastContainer } from "react-toastify";
+import Cookies from "js-cookie";
 
 import { Col, Form, Image, Input, Button, Row, Upload, Select } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
@@ -53,6 +54,7 @@ function page() {
       const fetchCities = async () => {
         const { response } = await axiosRequest({
           url: `${configUrl.rajaOngkirUrl}/city/?provinceId=${selectedProvince}`,
+          withCredentials: false,
         });
 
         setSelectedCity(undefined);
@@ -85,7 +87,6 @@ function page() {
     });
 
     if (response) {
-      console.log("Upload success:", response?.data);
       setProfilePicture(file);
       setUrlProfilePicture(response?.data?.url);
     } else {
@@ -137,12 +138,13 @@ function page() {
 
       if (error?.response?.data) {
         const errorMessage: any = error?.response?.data;
-        // Show error notification
         toast.error(errorMessage?.message, {
           position: "top-center",
         });
         return;
       }
+
+      Cookies.set("accessToken", response?.data.accessToken);
 
       // Show success notification
       toast.success("User successfully registered!", {
@@ -153,7 +155,6 @@ function page() {
     } catch (error) {
       console.error("Error:", error);
 
-      // Show error notification
       toast.error("Failed to register user. Please try again.", {
         position: "top-center",
       });
@@ -165,7 +166,7 @@ function page() {
   };
 
   return (
-    <div className="flex items-center h-full bg-gray-100 text-black overflow-auto">
+    <div className="flex items-center bg-gray-100 text-black overflow-auto">
       <div className="w-4/6 bg-white px-7 py-2  rounded-lg shadow-lg mx-auto">
         <ToastContainer />
         <div className="flex justify-between">

@@ -6,13 +6,13 @@ import Link from "next/link";
 import { Dropdown, Menu } from "antd";
 import { useRouter, usePathname } from "next/navigation";
 import { RiAdminFill } from "react-icons/ri";
-import { LuShoppingCart } from "react-icons/lu";
 import { FaRegCircleUser } from "react-icons/fa6";
 import { CiSearch } from "react-icons/ci";
 import { IoIosClose } from "react-icons/io";
 import { useAppContext } from "@/contexts/useContext";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
+import CardIcon from "./CardIcon";
 
 interface TokenPayload {
   sub: string;
@@ -25,7 +25,9 @@ interface TokenPayload {
 
 export default function Navbar() {
   const router = useRouter();
-  const { setLastUrl } = useAppContext();
+  const token = Cookies.get("accessToken");
+
+  const { setLastUrl, setUser } = useAppContext();
   const currentUrl = usePathname();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [roleUser, setRoleUser] = useState<string>("");
@@ -35,8 +37,6 @@ export default function Navbar() {
 
   // Check token existence and validity
   useEffect(() => {
-    const token = Cookies.get("accessToken");
-    console.log("Token:", token);
     if (token) {
       try {
         const decoded = jwtDecode<TokenPayload>(token);
@@ -45,6 +45,7 @@ export default function Navbar() {
           setIsLoggedIn(true);
           setRoleUser(decoded.role);
           setIdUser(decoded.sub);
+          setUser({ id: decoded.sub, role: decoded.role });
         }
       } catch (error) {
         console.error("Invalid token:", error);
@@ -56,7 +57,11 @@ export default function Navbar() {
   }, []);
 
   const handleOnClickCart = () => {
-    router.push("/cart/1");
+    if (token) {
+      router.push(`/cart/${idUser}`);
+    } else {
+      router.push("/auth/signin");
+    }
   };
 
   const handlePageAdmin = () => {
@@ -155,7 +160,7 @@ export default function Navbar() {
             onClick={handleOnClickCart}
             className="p-1 hover:bg-gray-100 rounded"
           >
-            <LuShoppingCart className="w-6 h-6 text-black" />
+            <CardIcon idUser={idUser} />
           </button>
 
           {/* User Icon */}

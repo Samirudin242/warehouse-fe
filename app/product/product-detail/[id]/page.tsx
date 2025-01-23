@@ -1,4 +1,5 @@
 "use client";
+import React from "react";
 
 import { useParams } from "next/navigation";
 import Breadcrumbs from "@/components/bredcrumbs/Bredcrumbs";
@@ -8,7 +9,6 @@ import ProductRelated from "@/components/products/product-detail/ProductRelated"
 import ProductReview from "@/components/products/product-detail/ProductReview";
 import ProductDetailSkeleton from "@/components/skeletonLoading/ProductDetailSkeleton";
 import useHookSwr from "@/hooks/useSwr";
-import React from "react";
 import { configUrl } from "@/config/configUrl";
 
 function page() {
@@ -17,7 +17,7 @@ function page() {
   console.log(id);
 
   const { data, isLoading, refresh } = useHookSwr(
-    `${configUrl.apiUrlProductService}/product/${id}`
+    `${configUrl.apiUrlProductService}/product-public/${id}`
   );
 
   if (isLoading) {
