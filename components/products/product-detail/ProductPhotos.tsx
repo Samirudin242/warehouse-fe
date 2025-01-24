@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 type ProductPhotoProps = {
   id: string;
@@ -12,9 +12,13 @@ type ProductPhotosProps = {
 };
 
 export default function ProductPhotos({ listPhoto }: ProductPhotosProps) {
-  const [mainImageUrl, setMainImageUrl] = useState<string>(
-    listPhoto ? listPhoto[0]?.imageUrl : ""
-  );
+  const [mainImageUrl, setMainImageUrl] = useState<string>();
+
+  useEffect(() => {
+    if (listPhoto) {
+      setMainImageUrl(listPhoto[0].imageUrl);
+    }
+  }, [listPhoto]);
 
   return (
     <div className="flex gap-5">

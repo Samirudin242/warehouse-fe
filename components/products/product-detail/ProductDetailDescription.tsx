@@ -9,6 +9,7 @@ import { useAppContext } from "@/contexts/useContext";
 import { DescriptionProps } from "@/types/ProductDescription";
 import axiosRequest from "@/hooks/useAxios";
 import { configUrl } from "@/config/configUrl";
+import { mutate } from "swr";
 
 export default function ProductDetailDescription({
   id,
@@ -37,7 +38,6 @@ export default function ProductDetailDescription({
   const handleSelectSize = (id: string) => {
     setSelectedSize(id);
   };
-
   const handleAddProductToCart = async () => {
     if (!user || !token) {
       router.push("/auth/signin");
@@ -87,9 +87,8 @@ export default function ProductDetailDescription({
         progress: undefined,
         theme: "colored",
       });
+      mutate(`${configUrl.apiUrlProductService}/cart/${user.id}`);
     }
-
-    console.log(body);
   };
 
   return (

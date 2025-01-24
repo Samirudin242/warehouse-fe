@@ -4,9 +4,10 @@ import { useRouter } from "next/navigation";
 import { formatToRupiah } from "@/app/utils/formatPrice";
 import React from "react";
 import { PiStarFill } from "react-icons/pi";
+import { setCookie } from "nookies";
 
 interface ProductCardProps {
-  id?: string;
+  id: string;
   title: string;
   price: number;
   rating?: number;
@@ -25,7 +26,11 @@ const ProductCard: React.FC<ProductCardProps> = ({
   const router = useRouter();
 
   const handleClickCard = () => {
-    router.push(`/product/product-detail/${id}`);
+    console.log("HALL");
+
+    setCookie(null, "productId", id, { path: "/" });
+
+    router.push(`/product/product-detail/${title}`);
   };
 
   return (

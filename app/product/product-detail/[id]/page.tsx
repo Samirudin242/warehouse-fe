@@ -1,7 +1,9 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 
 import { useParams } from "next/navigation";
+import { parseCookies } from "nookies";
+
 import Breadcrumbs from "@/components/bredcrumbs/Bredcrumbs";
 import ProductDetailDescription from "@/components/products/product-detail/ProductDetailDescription";
 import ProductPhotos from "@/components/products/product-detail/ProductPhotos";
@@ -12,13 +14,20 @@ import useHookSwr from "@/hooks/useSwr";
 import { configUrl } from "@/config/configUrl";
 
 function page() {
-  const { id } = useParams();
-
-  console.log(id);
+  const cookies = parseCookies();
+  const productId = cookies.productId;
 
   const { data, isLoading, refresh } = useHookSwr(
-    `${configUrl.apiUrlProductService}/product-public/${id}`
+    productId
+      ? `${configUrl.apiUrlProductService}/product-public/${productId}`
+      : null
   );
+
+  useEffect(() => {
+    if (productId) {
+      refresh(`${configUrl.apiUrlProductService}/product-public/${productId}`);
+    }
+  }, [productId]);
 
   if (isLoading) {
     return <ProductDetailSkeleton />;

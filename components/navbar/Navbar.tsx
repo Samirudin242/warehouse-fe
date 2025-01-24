@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { setCookie } from "nookies";
 
 import Link from "next/link";
 import { Dropdown, Menu } from "antd";
@@ -9,6 +10,8 @@ import { RiAdminFill } from "react-icons/ri";
 import { FaRegCircleUser } from "react-icons/fa6";
 import { CiSearch } from "react-icons/ci";
 import { IoIosClose } from "react-icons/io";
+import { toast, Bounce, ToastContainer } from "react-toastify";
+
 import { useAppContext } from "@/contexts/useContext";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
@@ -32,8 +35,10 @@ export default function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [roleUser, setRoleUser] = useState<string>("");
   const [idUser, setIdUser] = useState<string>("");
-
+  const [username, setUsername] = useState<string>("");
   const [isHideMenu, setIsHideMenu] = useState<boolean>(false);
+
+  const [showBanner, setShowBaner] = useState<boolean>(true);
 
   // Check token existence and validity
   useEffect(() => {
@@ -46,6 +51,7 @@ export default function Navbar() {
           setRoleUser(decoded.role);
           setIdUser(decoded.sub);
           setUser({ id: decoded.sub, role: decoded.role });
+          setUsername(decoded.username);
         }
       } catch (error) {
         console.error("Invalid token:", error);
@@ -58,7 +64,7 @@ export default function Navbar() {
 
   const handleOnClickCart = () => {
     if (token) {
-      router.push(`/cart/${idUser}`);
+      router.push(`/cart/${username}`);
     } else {
       router.push("/auth/signin");
     }
@@ -78,22 +84,40 @@ export default function Navbar() {
     Cookies.remove("accessToken");
     setIsLoggedIn(false);
     router.push("/");
+    toast.warning("Succesfully logout!", {
+      position: "top-center",
+      autoClose: 1000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      transition: Bounce,
+    });
   };
 
   return (
     <header className="w-full border-b bg-white">
+      <ToastContainer />
       {/* Top Announcement Bar */}
-      <div className="bg-black text-white flex px-6 py-2 text-sm">
-        <div className="flex-1 text-center">
-          <span>Sign up and get 20% off on your first order.</span>
-          <button className="underline ml-2 ">
-            <Link href="/">Sign Up Now</Link>
+      {showBanner && !token && (
+        <div className="bg-black text-white flex px-6 py-2 text-sm">
+          <div className="flex-1 text-center">
+            <span>Sign up and get 20% off on your first order.</span>
+            <button
+              onClick={() => setShowBaner(false)}
+              className="underline ml-2 "
+            >
+              <Link href="/auth/signup">Sign Up Now</Link>
+            </button>
+          </div>
+
+          <button onClick={() => setShowBaner(false)}>
+            <IoIosClose className="w-4 h-4 text-white" />
           </button>
         </div>
-        <button>
-          <IoIosClose className="w-4 h-4 text-white" />
-        </button>
-      </div>
+      )}
 
       {/* Navbar */}
       <nav className="flex items-center text-center px-20 py-4">
@@ -156,12 +180,14 @@ export default function Navbar() {
           </div>
 
           {/* Cart Icon */}
-          <button
-            onClick={handleOnClickCart}
-            className="p-1 hover:bg-gray-100 rounded"
-          >
-            <CardIcon idUser={idUser} />
-          </button>
+          {token && (
+            <button
+              onClick={handleOnClickCart}
+              className="p-1 hover:bg-gray-100 rounded"
+            >
+              <CardIcon />
+            </button>
+          )}
 
           {/* User Icon */}
           <Dropdown
