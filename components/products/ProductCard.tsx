@@ -26,10 +26,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   const router = useRouter();
 
   const handleClickCard = () => {
-    console.log("HALL");
-
     setCookie(null, "productId", id, { path: "/" });
-
     router.push(`/product/product-detail/${title}`);
   };
 
