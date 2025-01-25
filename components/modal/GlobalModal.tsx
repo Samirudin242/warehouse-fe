@@ -11,7 +11,7 @@ interface GlobalModalProps {
   okText?: string;
   cancelText?: string;
   type?: "confirm" | "info" | "success" | "error" | "warning";
-  icon?: "user" | "warehouse" | "product";
+  icon?: "user" | "warehouse" | "product" | "cart";
 }
 
 const GlobalModal: React.FC<GlobalModalProps> = ({
@@ -29,6 +29,8 @@ const GlobalModal: React.FC<GlobalModalProps> = ({
       ? "/images/warehouse.png"
       : icon == "product"
       ? "/images/product.png"
+      : icon == "cart"
+      ? "/empty-cart.png"
       : "/images/self.png";
 
   return (

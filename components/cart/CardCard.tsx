@@ -1,9 +1,10 @@
 import { formatToRupiah } from "@/app/utils/formatPrice";
-import React from "react";
+import React, { useState } from "react";
 import { MdDelete } from "react-icons/md";
 import { useAppContext } from "@/contexts/useContext";
 import axiosRequest from "@/hooks/useAxios";
 import { configUrl } from "@/config/configUrl";
+import GlobalModal from "../modal/GlobalModal";
 
 type CartProps = {
   id: string;
@@ -38,6 +39,8 @@ function CardCard({
 
   const userId = user?.id;
 
+  const [openModal, setOpenModal] = useState<boolean>(false);
+
   const handleChangeQuantity = async (
     totalPrice: number,
     currentQuantity: number,
@@ -63,6 +66,17 @@ function CardCard({
 
     if (response) {
       refresh(`${configUrl.apiUrlProductService}/cart/${userId}`);
+    }
+  };
+
+  const handleDeleteCart = async () => {
+    const { response, error } = await axiosRequest({
+      url: `${configUrl.apiUrlProductService}/cart/${id}`,
+      method: "DELETE",
+    });
+    if (response) {
+      refresh(`${configUrl.apiUrlProductService}/cart/${userId}`);
+      setOpenModal(false);
     }
   };
 
@@ -93,7 +107,10 @@ function CardCard({
         </div>
       </div>
       <div className="flex flex-col content-between justify-between">
-        <div className="self-end rounded-md px-1 hover:bg-red-100 cursor-pointer">
+        <div
+          onClick={() => setOpenModal(true)}
+          className="self-end rounded-md px-1 hover:bg-red-100 cursor-pointer"
+        >
           <MdDelete className="text-red-600 text-2xl" />
         </div>
         <div className="flex justify-between border py-2 gap-5 px-4 rounded-3xl bg-customGray">
@@ -114,6 +131,14 @@ function CardCard({
           </button>
         </div>
       </div>
+      <GlobalModal
+        isVisible={openModal}
+        icon="cart"
+        onCancel={() => setOpenModal(false)}
+        title={`Delete cart item ${name}`}
+        content={`Are you sure delete cart item ${name}`}
+        onOk={handleDeleteCart}
+      />
     </div>
   );
 }

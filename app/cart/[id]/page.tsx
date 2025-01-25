@@ -9,11 +9,14 @@ import OrderSummary from "@/components/cart/OrderSummary";
 import { useAppContext } from "@/contexts/useContext";
 import { configUrl } from "@/config/configUrl";
 import useHookSwr from "@/hooks/useSwr";
+import CartSkeleton from "@/components/skeletonLoading/CartSkeleton";
 
 function Cart() {
   const { user } = useAppContext();
 
   const userId = user?.id;
+
+  const [totalOrder, setTotalOrder] = useState<number>(0);
 
   const { data, refresh, error, isLoading } = useHookSwr(
     userId ? `${configUrl.apiUrlProductService}/cart/${userId}` : null
@@ -27,10 +30,22 @@ function Cart() {
     }
   }, [userId]);
 
+  useEffect(() => {
+    const total = dataCart.reduce((acc: any, curr: any) => {
+      return acc + curr?.price;
+    }, 0);
+
+    setTotalOrder(total);
+  }, [dataCart]);
+
+  if (isLoading) {
+    return <CartSkeleton />;
+  }
+
   return (
     <div className="px-20 text-black">
       <Breadcrumbs isHideLast={true} />
-      {dataCart.length ? (
+      {dataCart.length && !isLoading ? (
         <div>
           <h1 className="text-3xl font-bold mb-4">YOUR CART</h1>
           <div className="flex justify-between">
@@ -64,7 +79,7 @@ function Cart() {
             </div>
             {/* Order */}
             <div className="border p-5 rounded-2xl flex-initial w-1/3 h-fit">
-              <OrderSummary />
+              <OrderSummary totalOrder={totalOrder} />
             </div>
           </div>
         </div>

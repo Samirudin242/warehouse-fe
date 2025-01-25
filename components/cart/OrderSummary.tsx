@@ -1,18 +1,23 @@
+import { formatToRupiah } from "@/app/utils/formatPrice";
 import React from "react";
 import { FaArrowRight } from "react-icons/fa6";
 
-function OrderSummary() {
+type OrderProps = {
+  totalOrder: number;
+};
+
+function OrderSummary({ totalOrder }: OrderProps) {
   return (
     <div>
       <h1 className="text-2xl mb-5">Order Summary</h1>
       <div className="space-y-3">
         <div className="flex justify-between">
           <h1 className="font-thin">Subtotal</h1>
-          <h1 className="font-bold">$565</h1>
+          <h1 className="font-bold">{formatToRupiah(totalOrder, true)}</h1>
         </div>
         <div className="flex justify-between">
-          <h1 className="font-thin">Discount (-20%)</h1>
-          <h1 className="font-bold text-red-400">$565</h1>
+          <h1 className="font-thin">Discount (0%)</h1>
+          <h1 className="font-bold text-red-400">Rp-</h1>
         </div>
         <div className="flex justify-between">
           <h1 className="font-thin">Delivery Fee</h1>
