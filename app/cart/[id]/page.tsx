@@ -22,10 +22,10 @@ function Cart() {
   const dataCart = data || [];
 
   useEffect(() => {
-    if (userId) {
+    if (userId && !data) {
       refresh(`${configUrl.apiUrlProductService}/cart/${userId}`);
     }
-  }, [userId, refresh]);
+  }, [userId]);
 
   return (
     <div className="px-20 text-black">
@@ -44,10 +44,15 @@ function Cart() {
                         id={cart?.id}
                         name={cart?.product?.name}
                         size={cart?.size?.size}
+                        sizeId={cart?.size?.id}
                         color={cart?.colors?.originalName}
+                        colorId={cart?.colors?.id}
                         price={cart?.price}
                         quantity={cart?.quantity}
                         imageUrl={cart?.product?.imageUrl}
+                        productId={cart?.product?.id}
+                        stock={cart?.product?.stock}
+                        refresh={refresh}
                       />
                     </div>
                     {i != dataCart?.length - 1 && (

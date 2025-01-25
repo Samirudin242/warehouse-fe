@@ -1,26 +1,71 @@
 import { formatToRupiah } from "@/app/utils/formatPrice";
 import React from "react";
 import { MdDelete } from "react-icons/md";
+import { useAppContext } from "@/contexts/useContext";
+import axiosRequest from "@/hooks/useAxios";
+import { configUrl } from "@/config/configUrl";
 
 type CartProps = {
   id: string;
   name: string;
   size: string;
-  quantity: string;
+  sizeId: string;
+  quantity: number;
   price: number;
   color: string;
+  colorId: string;
   imageUrl: string;
+  productId: string;
+  stock: number;
+  refresh: (url: string) => void;
 };
 
 function CardCard({
   id,
   name,
   size,
+  sizeId,
   quantity,
   color,
+  colorId,
   price,
   imageUrl,
+  productId,
+  stock,
+  refresh,
 }: CartProps) {
+  const { user } = useAppContext();
+
+  const userId = user?.id;
+
+  const handleChangeQuantity = async (
+    totalPrice: number,
+    currentQuantity: number,
+    isAdd: boolean
+  ) => {
+    const pricePerProduct = totalPrice / currentQuantity;
+    const quantityProduct = isAdd ? currentQuantity + 1 : currentQuantity - 1;
+
+    const body = {
+      user_id: userId,
+      product_id: productId,
+      selected_color: colorId,
+      selected_size: sizeId,
+      quantity: quantityProduct,
+      price: pricePerProduct * quantityProduct,
+    };
+
+    const { response, error } = await axiosRequest({
+      url: `${configUrl.apiUrlProductService}/cart/${id}`,
+      method: "PUT",
+      body: body,
+    });
+
+    if (response) {
+      refresh(`${configUrl.apiUrlProductService}/cart/${userId}`);
+    }
+  };
+
   return (
     <div className="flex justify-between">
       <div className="flex">
@@ -52,9 +97,21 @@ function CardCard({
           <MdDelete className="text-red-600 text-2xl" />
         </div>
         <div className="flex justify-between border py-2 gap-5 px-4 rounded-3xl bg-customGray">
-          <button className="hover:bg-gray-200 px-2 rounded-lg">-</button>
+          <button
+            onClick={() => handleChangeQuantity(price, quantity, false)}
+            className="hover:bg-gray-200 px-2 rounded-lg"
+            disabled={quantity == 1}
+          >
+            -
+          </button>
           <span>{quantity}</span>
-          <button className="hover:bg-gray-200 px-2 rounded-lg">+</button>
+          <button
+            onClick={() => handleChangeQuantity(price, quantity, true)}
+            className="hover:bg-gray-200 px-2 rounded-lg"
+            disabled={stock == quantity}
+          >
+            +
+          </button>
         </div>
       </div>
     </div>

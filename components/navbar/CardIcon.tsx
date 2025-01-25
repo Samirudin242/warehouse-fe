@@ -18,10 +18,10 @@ export default function CardIcon() {
   );
 
   useEffect(() => {
-    if (userId) {
+    if (userId && !data) {
       refresh(`${configUrl.apiUrlProductService}/cart/${userId}`);
     }
-  }, [userId, refresh]);
+  }, [userId]);
 
   if (!userId || isLoading) {
     return <Spin />;
