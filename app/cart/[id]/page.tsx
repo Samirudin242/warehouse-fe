@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { parseCookies } from "nookies";
 
 import Breadcrumbs from "@/components/bredcrumbs/Bredcrumbs";
 import CardCard from "@/components/cart/CardCard";
@@ -83,8 +82,10 @@ function Cart() {
             </div>
           </div>
         </div>
-      ) : (
+      ) : data?.length === 0 ? (
         <EmptyCard />
+      ) : (
+        <CartSkeleton />
       )}
     </div>
   );

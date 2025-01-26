@@ -1,12 +1,20 @@
+import React, { useState } from "react";
+import { Button } from "antd";
 import { formatToRupiah } from "@/app/utils/formatPrice";
-import React from "react";
 import { FaArrowRight } from "react-icons/fa6";
+import ListAddress from "./ListAddress";
 
 type OrderProps = {
   totalOrder: number;
 };
 
 function OrderSummary({ totalOrder }: OrderProps) {
+  const [openModalAddress, setOpenModalAddress] = useState<boolean>(false);
+
+  const [selectedUserAddress, setSelectedUserAddress] = useState<string>(
+    "caa9476f-4a02-48f2-9185-5013fc913139"
+  );
+
   return (
     <div>
       <h1 className="text-2xl mb-5">Order Summary</h1>
@@ -21,7 +29,14 @@ function OrderSummary({ totalOrder }: OrderProps) {
         </div>
         <div className="flex justify-between">
           <h1 className="font-thin">Delivery Fee</h1>
-          <h1 className="font-bold">$15</h1>
+          {false ? (
+            <h1 className="font-bold">$15</h1>
+          ) : (
+            <Button onClick={() => setOpenModalAddress(true)}>
+              {" "}
+              Select Address
+            </Button>
+          )}
         </div>
         <div className="border"></div>
       </div>
@@ -37,6 +52,12 @@ function OrderSummary({ totalOrder }: OrderProps) {
           </span>
         </button>
       </div>
+      <ListAddress
+        isOpen={openModalAddress}
+        onClose={() => setOpenModalAddress(false)}
+        setSelectedUserAddress={setSelectedUserAddress}
+        selectedAddressId={selectedUserAddress}
+      />
     </div>
   );
 }
