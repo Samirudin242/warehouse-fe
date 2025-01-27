@@ -6,6 +6,8 @@ import { useAppContext } from "@/contexts/useContext";
 import { useCitySelector } from "@/hooks/useCitySelector";
 import axiosRequest from "@/hooks/useAxios";
 import { configUrl } from "@/config/configUrl";
+import GoogleMapPicker from "../location/GoogleMapPicker";
+import TextArea from "antd/es/input/TextArea";
 
 const { Option } = Select;
 
@@ -24,10 +26,20 @@ function ModalAddNewAddress({ isOpen, onClose, refresh }: PropsAddress) {
   const [selectedProvince, setSelectedProvince] = useState<string | undefined>(
     undefined
   );
+
+  const [selectedLocation, setSelectedLocation] = useState<{
+    lat: number;
+    lng: number;
+  } | null>(null);
+
   const { selectedCity, setSelectedCity, listCity } = useCitySelector({
     provinceId: selectedProvince,
     form,
   });
+
+  const handleLocationSelect = (lat: number, lng: number) => {
+    setSelectedLocation({ lat, lng });
+  };
 
   const handleProvinceChange = (value: string) => {
     setSelectedProvince(value);
@@ -70,14 +82,24 @@ function ModalAddNewAddress({ isOpen, onClose, refresh }: PropsAddress) {
         onClose();
       }}
       footer={null}
+      width={700}
     >
-      <Form form={form} layout="vertical" onFinish={handleSubmit}>
+      <GoogleMapPicker onLocationSelect={handleLocationSelect} form={form} />
+      <Form
+        form={form}
+        layout="vertical"
+        onFinish={handleSubmit}
+        className="mt-3"
+      >
         <Form.Item
           label="Address"
           name="address"
           rules={[{ required: true, message: "Please input address" }]}
         >
-          <Input placeholder="Enter name" />
+          <TextArea
+            disabled={!selectedLocation?.lat || !selectedLocation.lng}
+            placeholder="Enter address"
+          />
         </Form.Item>
         <Form.Item
           label="Province"

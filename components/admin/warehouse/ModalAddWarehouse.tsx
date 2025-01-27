@@ -7,6 +7,7 @@ import { useAppContext } from "@/contexts/useContext";
 import axiosRequest from "@/hooks/useAxios";
 import { configUrl } from "@/config/configUrl";
 import GlobalModal from "@/components/modal/GlobalModal";
+import ModalSelectAddress from "./ModalSelectAddress";
 const { Option } = Select;
 
 interface AddWarehouseModalProps {
@@ -31,9 +32,16 @@ export default function ModalAddWarehouse(props: AddWarehouseModalProps) {
 
   const [body, setBody] = useState<any>({});
 
+  const [openModal, setOpenModal] = useState<boolean>(false);
+
   const [listUser, setListUser] = useState<User[]>();
 
   const [openGlobalModal, setOpenGlobalModal] = useState<boolean>(false);
+
+  const [selectedLocation, setSelectedLocation] = useState<{
+    lat: number;
+    lng: number;
+  } | null>(null);
 
   const [selectedProvince, setSelectedProvince] = useState<string | undefined>(
     undefined
@@ -68,6 +76,10 @@ export default function ModalAddWarehouse(props: AddWarehouseModalProps) {
     fetch();
   }, []);
 
+  const handleLocationSelect = (lat: number, lng: number) => {
+    setSelectedLocation({ lat, lng });
+  };
+
   const handleFormSubmit = (values: any) => {
     const data = {
       name: values.name,
@@ -76,7 +88,11 @@ export default function ModalAddWarehouse(props: AddWarehouseModalProps) {
       city_id: values.city_id,
       address: values.address,
       postal_code: values.postal_code,
+      latitude: selectedLocation?.lat,
+      longitude: selectedLocation?.lng,
     };
+
+    console.log(data);
     setOpenGlobalModal(true);
     setBody(data);
   };
@@ -153,11 +169,22 @@ export default function ModalAddWarehouse(props: AddWarehouseModalProps) {
           </Form.Item>
 
           <Form.Item
-            label="Address"
+            label={
+              <div className="flex gap-2">
+                <div>Address</div>
+                <Button onClick={() => setOpenModal(true)}>
+                  Pick address from map
+                </Button>
+              </div>
+            }
             name="address"
             rules={[{ required: true, message: "Please enter the address" }]}
           >
-            <Input.TextArea placeholder="Enter warehouse address" rows={3} />
+            <Input.TextArea
+              disabled={!selectedLocation?.lat || !selectedLocation?.lng}
+              placeholder="Enter warehouse address"
+              rows={3}
+            />
           </Form.Item>
           <Form.Item
             label="Province"
@@ -238,6 +265,12 @@ export default function ModalAddWarehouse(props: AddWarehouseModalProps) {
           />
         )}
       </Modal>
+      <ModalSelectAddress
+        form={form}
+        onLocationSelect={handleLocationSelect}
+        isOpen={openModal}
+        onClose={() => setOpenModal(false)}
+      />
     </div>
   );
 }

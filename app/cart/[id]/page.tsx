@@ -49,7 +49,7 @@ function Cart() {
           <h1 className="text-3xl font-bold mb-4">YOUR CART</h1>
           <div className="flex justify-between">
             {/* Cart*/}
-            <div className="border p-5 rounded-2xl flex-initial w-3/5">
+            <div className="border p-5 rounded-2xl flex-initial w-3/5 h-fit">
               {dataCart?.map((cart: any, i: number) => {
                 return (
                   <div key={i}>
