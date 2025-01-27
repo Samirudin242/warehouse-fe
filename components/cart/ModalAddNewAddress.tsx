@@ -59,8 +59,9 @@ function ModalAddNewAddress({ isOpen, onClose, refresh }: PropsAddress) {
       postal_code: selectedCity?.postal_code,
       user_id: userId,
       phone_number: values?.phone_number,
+      latitude: selectedLocation?.lat,
+      longitude: selectedLocation?.lng,
     };
-    console.log(body);
 
     const { response, error } = await axiosRequest({
       url: `${configUrl.apiUrlUserService}/address`,

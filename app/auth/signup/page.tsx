@@ -13,6 +13,8 @@ import { configUrl } from "@/config/configUrl";
 import GlobalModal from "@/components/modal/GlobalModal";
 import axiosRequest from "@/hooks/useAxios";
 import { useAppContext } from "@/contexts/useContext";
+import TextArea from "antd/es/input/TextArea";
+import ModalSelectAddress from "@/components/admin/warehouse/ModalSelectAddress";
 const { Option } = Select;
 
 function page() {
@@ -36,6 +38,13 @@ function page() {
   const [urlProfilePicture, setUrlProfilePicture] = useState<string | null>(
     null
   );
+
+  const [openModalMap, setOpenModalMap] = useState<boolean>(false);
+
+  const [selectedLocation, setSelectedLocation] = useState<{
+    lat: number;
+    lng: number;
+  } | null>(null);
 
   useEffect(() => {
     const fetchRoles = async () => {
@@ -100,6 +109,10 @@ function page() {
     router.push(href);
   };
 
+  const handleLocationSelect = (lat: number, lng: number) => {
+    setSelectedLocation({ lat, lng });
+  };
+
   const onFinish = async (values: any) => {
     setOpenGlobalModal(true);
     const body = {
@@ -117,6 +130,8 @@ function page() {
       postal_code: selectedCity?.postal_code,
       is_verified: false,
       password: values.password,
+      latitude: selectedLocation?.lat,
+      longitude: selectedLocation?.lng,
     };
 
     setBody(body);
@@ -313,7 +328,14 @@ function page() {
               <Row className="w-full">
                 <Col className="w-full">
                   <Form.Item
-                    label="Address"
+                    label={
+                      <div className="flex gap-2">
+                        <div>Address</div>
+                        <Button onClick={() => setOpenModalMap(true)}>
+                          Pick address from map
+                        </Button>
+                      </div>
+                    }
                     name="address"
                     rules={[
                       {
@@ -322,7 +344,9 @@ function page() {
                       },
                     ]}
                   >
-                    <Input />
+                    <TextArea
+                      disabled={!selectedLocation?.lat || !selectedLocation.lng}
+                    />
                   </Form.Item>
                 </Col>
               </Row>
@@ -431,6 +455,12 @@ function page() {
         content="Are you sure you want to create an account?"
         onOk={onSubmitData}
         onCancel={() => setOpenGlobalModal(false)}
+      />
+      <ModalSelectAddress
+        form={form}
+        onLocationSelect={handleLocationSelect}
+        isOpen={openModalMap}
+        onClose={() => setOpenModalMap(false)}
       />
     </div>
   );

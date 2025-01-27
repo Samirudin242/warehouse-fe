@@ -21,6 +21,8 @@ function Cart() {
     userId ? `${configUrl.apiUrlProductService}/cart/${userId}` : null
   );
 
+  const [listWarehouseId, setListWarehouseId] = useState<string[]>([]);
+
   const dataCart = data || [];
 
   useEffect(() => {
@@ -35,6 +37,17 @@ function Cart() {
     }, 0);
 
     setTotalOrder(total);
+
+    const listId = dataCart?.map((d: any) => {
+      const ids = d?.product?.warehouseProduct?.map((w: any) => {
+        return w.id;
+      });
+
+      return [...ids];
+    });
+
+    const flatId = listId?.flat();
+    setListWarehouseId(flatId);
   }, [dataCart]);
 
   if (isLoading) {
@@ -78,7 +91,10 @@ function Cart() {
             </div>
             {/* Order */}
             <div className="border p-5 rounded-2xl flex-initial w-1/3 h-fit">
-              <OrderSummary totalOrder={totalOrder} />
+              <OrderSummary
+                totalOrder={totalOrder}
+                listWarehouseId={listWarehouseId}
+              />
             </div>
           </div>
         </div>
