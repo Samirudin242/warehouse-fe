@@ -94,6 +94,7 @@ function Cart() {
               <OrderSummary
                 totalOrder={totalOrder}
                 listWarehouseId={listWarehouseId}
+                dataCart={dataCart}
               />
             </div>
           </div>

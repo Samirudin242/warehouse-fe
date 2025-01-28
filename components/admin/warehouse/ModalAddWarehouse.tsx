@@ -99,7 +99,6 @@ export default function ModalAddWarehouse(props: AddWarehouseModalProps) {
 
   const onSubmitData = async () => {
     try {
-      // Hit the API
       const { response, error } = await axiosRequest({
         url: `${configUrl.apiUrlWarehouseService}/warehouse`,
         method: "POST",

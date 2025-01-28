@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal } from "antd";
+import { Modal, Spin } from "antd";
 import Image from "next/image";
 
 interface GlobalModalProps {
@@ -11,7 +11,8 @@ interface GlobalModalProps {
   okText?: string;
   cancelText?: string;
   type?: "confirm" | "info" | "success" | "error" | "warning";
-  icon?: "user" | "warehouse" | "product" | "cart";
+  icon?: "user" | "warehouse" | "product" | "cart" | "checkout";
+  loadingButton?: boolean;
 }
 
 const GlobalModal: React.FC<GlobalModalProps> = ({
@@ -23,6 +24,7 @@ const GlobalModal: React.FC<GlobalModalProps> = ({
   okText = "Confirm",
   cancelText = "Cancel",
   icon,
+  loadingButton,
 }) => {
   const pathImage =
     icon == "warehouse"
@@ -31,6 +33,8 @@ const GlobalModal: React.FC<GlobalModalProps> = ({
       ? "/images/product.png"
       : icon == "cart"
       ? "/empty-cart.png"
+      : icon == "checkout"
+      ? "/images/transaction.png"
       : "/images/self.png";
 
   return (
@@ -52,7 +56,7 @@ const GlobalModal: React.FC<GlobalModalProps> = ({
             onClick={onOk}
             className="bg-blue-400 text-white py-2 px-6 rounded-lg hover:bg-blue-500 focus:outline-none"
           >
-            {okText}
+            {loadingButton ? <Spin /> : okText}
           </button>
           <button
             onClick={onCancel}

@@ -21,3 +21,24 @@ export type NearestWarehouse = {
   latitude: number;
   longitude: number;
 };
+
+export type ShippingProps = {
+  isOpen: boolean;
+  onClose: () => void;
+  selectedAddress?: SelectedAddress;
+  selectedWarehouse?: NearestWarehouse;
+  setSelectedUserShipping: (obj: any) => void;
+  selectedOptionCourier?: OptionShipping;
+};
+
+export type OptionShipping = {
+  service: string;
+  description: string;
+  cost: Cost[];
+};
+
+export type Cost = {
+  value: number;
+  etd: string;
+  note: string;
+};

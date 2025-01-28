@@ -1,42 +1,24 @@
 import React, { useState } from "react";
-import { Modal, Button, Spin } from "antd";
+import { Modal } from "antd";
 import axios from "axios";
-import { SelectedAddress, NearestWarehouse } from "@/types/Order";
+import { ShippingProps, OptionShipping } from "@/types/Order";
 import { configUrl } from "@/config/configUrl";
 import { formatToRupiah } from "@/app/utils/formatPrice";
 import ListOptionSkeleton from "../skeletonLoading/ListOptionSkeleton";
-
-type ShippingProps = {
-  isOpen: boolean;
-  onClose: () => void;
-  selectedAddress?: SelectedAddress;
-  selectedWarehouse?: NearestWarehouse;
-};
-
-type OptionShipping = {
-  service: string;
-  description: string;
-  cost: Cost[];
-};
-
-type Cost = {
-  value: number;
-  etd: string;
-  note: string;
-};
 
 function ListShipping({
   isOpen,
   onClose,
   selectedAddress,
   selectedWarehouse,
+  setSelectedUserShipping,
+  selectedOptionCourier,
+  selectedCourier,
+  setSelectedCourier,
 }: ShippingProps) {
   const [listOptionShipping, setListOptionShipping] =
     useState<OptionShipping[]>();
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedCourier, setSelectedCourier] = useState<string | null>(null);
-  const [selectedOptionCourier, setSelectedOptionCourier] =
-    useState<OptionShipping>();
 
   const handleSelectCourier = async (type: string) => {
     setIsLoading(true);
@@ -71,7 +53,7 @@ function ListShipping({
             ? "border-2 border-blue-500"
             : "border"
         } rounded-lg shadow-sm hover:shadow-md transition cursor-pointer mb-2`}
-        onClick={() => setSelectedOptionCourier(option)}
+        onClick={() => setSelectedUserShipping(option)}
       >
         <div className="flex justify-between items-center">
           <div>
@@ -153,23 +135,6 @@ function ListShipping({
               Select a courier to view options.
             </div>
           )}
-        </div>
-
-        {/* Footer Section */}
-        <div className="text-right">
-          <Button onClick={onClose} className="mr-2">
-            Cancel
-          </Button>
-          <Button
-            type="primary"
-            disabled={
-              !selectedCourier ||
-              !selectedOptionCourier ||
-              !listOptionShipping?.length
-            }
-          >
-            Confirm
-          </Button>
         </div>
       </div>
     </Modal>
