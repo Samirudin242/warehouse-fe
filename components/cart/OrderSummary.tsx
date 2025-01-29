@@ -53,6 +53,9 @@ function OrderSummary({ totalOrder, listWarehouseId, dataCart }: OrderProps) {
         price: d?.price,
         size_id: d?.size?.id,
         color_id: d?.colors?.id,
+        warehouse_id: d?.product?.warehouseProduct?.map((w: any) => {
+          return w?.id;
+        }),
       };
     });
 

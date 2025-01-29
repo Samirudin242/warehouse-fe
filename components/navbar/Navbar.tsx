@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { setCookie } from "nookies";
 
 import Link from "next/link";
 import { Dropdown, Menu } from "antd";
@@ -16,6 +15,7 @@ import { useAppContext } from "@/contexts/useContext";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
 import CardIcon from "./CardIcon";
+import OrderIcon from "./OrderIcon";
 
 interface TokenPayload {
   sub: string;
@@ -65,6 +65,14 @@ export default function Navbar() {
   const handleOnClickCart = () => {
     if (token) {
       router.push(`/cart/${username}`);
+    } else {
+      router.push("/auth/signin");
+    }
+  };
+
+  const handleOnClickOrder = () => {
+    if (token) {
+      router.push(`/order/list-order/${username}`);
     } else {
       router.push("/auth/signin");
     }
@@ -180,14 +188,20 @@ export default function Navbar() {
           </div>
 
           {/* Cart Icon */}
-          {token && (
-            <button
-              onClick={handleOnClickCart}
-              className="p-1 hover:bg-gray-100 rounded"
-            >
-              <CardIcon />
-            </button>
-          )}
+
+          <button
+            onClick={handleOnClickCart}
+            className="p-1 hover:bg-gray-100 rounded"
+          >
+            <CardIcon />
+          </button>
+
+          <button
+            onClick={handleOnClickOrder}
+            className="p-1 hover:bg-gray-100 rounded"
+          >
+            <OrderIcon />
+          </button>
 
           {/* User Icon */}
           <Dropdown

@@ -1,15 +1,16 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { LuShoppingCart } from "react-icons/lu";
+import { TbTruckDelivery } from "react-icons/tb";
+
 import { Spin } from "antd";
-import Cookies from "js-cookie";
 
 import useHookSwr from "@/hooks/useSwr";
 import { configUrl } from "@/config/configUrl";
 import { useAppContext } from "@/contexts/useContext";
+import Cookies from "js-cookie";
 
-export default function CardIcon() {
+export default function OrderIcon() {
   const token = Cookies.get("accessToken");
   const { user } = useAppContext();
 
@@ -31,7 +32,7 @@ export default function CardIcon() {
 
   return (
     <div className="flex items-center">
-      <LuShoppingCart className="w-6 h-6 text-black" />
+      <TbTruckDelivery className="w-7 h-7 text-black" />
       {data?.length > 0 && (
         <div className="text-red-500 border-red-500 rounded-xl text-xs px-1 -ml-2 bg-red-200">
           {data.length}

@@ -29,6 +29,8 @@ export type ShippingProps = {
   selectedWarehouse?: NearestWarehouse;
   setSelectedUserShipping: (obj: any) => void;
   selectedOptionCourier?: OptionShipping;
+  selectedCourier: string;
+  setSelectedCourier: (courier: string) => void;
 };
 
 export type OptionShipping = {
@@ -41,4 +43,51 @@ export type Cost = {
   value: number;
   etd: string;
   note: string;
+};
+
+export type OrderUser = {
+  id: string;
+  order_date: string;
+  total_amount: number;
+  total_shipping: number;
+  user_address: string;
+  user_latitude: number;
+  user_longitude: number;
+  status: string;
+  payment: Payment;
+  order_items: OrderItem[];
+};
+
+type Payment = {
+  id: string;
+  payment_type: string;
+  payment_date: string;
+  payment_proof: string;
+};
+
+type OrderItem = {
+  id: string;
+  quantity: number;
+  price: number;
+  warehouse_id: string;
+  product: Product;
+  productColor: ProductColor;
+  productSize: ProductSize;
+};
+
+type Product = {
+  id: string;
+  sku: string;
+  name: string;
+  imageUrl: string;
+};
+
+type ProductSize = {
+  id: string;
+  originalName: string;
+};
+
+type ProductColor = {
+  id: string;
+  size: string;
 };
