@@ -45,6 +45,13 @@ export type Cost = {
   note: string;
 };
 
+export type Order = {
+  id: string;
+  order_date: string;
+  total_amount: number;
+  status: string;
+};
+
 export type OrderUser = {
   id: string;
   order_date: string;

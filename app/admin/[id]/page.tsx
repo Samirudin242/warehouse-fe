@@ -1,25 +1,69 @@
-import CommentList from "@/components/admin/dashboard/CommentList";
-import DashboardOverview from "@/components/admin/dashboard/Overview";
-import PopularProductsList from "@/components/admin/dashboard/PopularProduct";
-import TotalIncomeChart from "@/components/admin/dashboard/TotalIncomeChart";
-import React from "react";
+"use client";
 
-function page() {
+import React, { Suspense } from "react";
+import { DashboardSkeleton } from "@/components/skeletonLoading/DashboardSkeleton";
+import dynamic from "next/dynamic";
+
+const DashboardOverview = dynamic(
+  () => import("@/components/admin/dashboard/Overview"),
+  {
+    loading: () => <DashboardSkeleton type="overview" />,
+    ssr: false,
+  }
+);
+
+const TotalIncomeChart = dynamic(
+  () => import("@/components/admin/dashboard/TotalIncomeChart"),
+  {
+    loading: () => <DashboardSkeleton type="chart" />,
+    ssr: false,
+  }
+);
+
+const PopularProductsList = dynamic(
+  () => import("@/components/admin/dashboard/PopularProduct"),
+  {
+    loading: () => <DashboardSkeleton type="list" />,
+    ssr: false,
+  }
+);
+
+const CommentList = dynamic(
+  () => import("@/components/admin/dashboard/CommentList"),
+  {
+    loading: () => <DashboardSkeleton type="list" />,
+    ssr: false,
+  }
+);
+
+function DashboardPage() {
   return (
-    <div className="text-black p-5">
-      <h1 className="text-2xl">Dashborad</h1>
-      <div className="flex justify-between gap-4">
-        <div className="w-2/3">
-          <DashboardOverview />
-          <TotalIncomeChart />
+    <div className="text-black p-5 space-y-6">
+      <h1 className="text-2xl font-semibold">Dashboard</h1>
+
+      <div className="flex flex-col md:flex-row gap-6">
+        <div className="w-full md:w-2/3 space-y-6">
+          <Suspense fallback={<DashboardSkeleton type="overview" />}>
+            <DashboardOverview />
+          </Suspense>
+
+          <Suspense fallback={<DashboardSkeleton type="chart" />}>
+            <TotalIncomeChart />
+          </Suspense>
         </div>
-        <div className="w-1/3">
-          <PopularProductsList />
-          <CommentList />
+
+        <div className="w-full md:w-1/3 space-y-6">
+          <Suspense fallback={<DashboardSkeleton type="list" />}>
+            <PopularProductsList />
+          </Suspense>
+
+          <Suspense fallback={<DashboardSkeleton type="list" />}>
+            <CommentList />
+          </Suspense>
         </div>
       </div>
     </div>
   );
 }
 
-export default page;
+export default DashboardPage;
