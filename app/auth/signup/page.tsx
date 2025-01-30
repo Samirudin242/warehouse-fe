@@ -17,7 +17,7 @@ import TextArea from "antd/es/input/TextArea";
 import ModalSelectAddress from "@/components/admin/warehouse/ModalSelectAddress";
 const { Option } = Select;
 
-function page() {
+function SingUpPage() {
   const router = useRouter();
   const [form] = Form.useForm();
   const { lastUrl } = useAppContext();
@@ -139,17 +139,11 @@ function page() {
 
   const onSubmitData = async () => {
     try {
-      // Hit the API
-      console.log("Body:", body);
       const { response, error } = await axiosRequest({
         url: `${configUrl.apiUrlUserService}/auth/register`,
         method: "POST",
         body: body,
       });
-
-      console.log("error", error?.response?.data);
-
-      console.log("Response:", response?.data);
 
       if (error?.response?.data) {
         const errorMessage: any = error?.response?.data;
@@ -168,8 +162,6 @@ function page() {
       router.push(lastUrl || "/");
       setOpenGlobalModal(false);
     } catch (error) {
-      console.error("Error:", error);
-
       toast.error("Failed to register user. Please try again.", {
         position: "top-center",
       });
@@ -466,4 +458,4 @@ function page() {
   );
 }
 
-export default page;
+export default SingUpPage;

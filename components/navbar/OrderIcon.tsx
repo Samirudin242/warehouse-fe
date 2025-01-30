@@ -17,12 +17,18 @@ export default function OrderIcon() {
   const userId = user?.id;
 
   const { data, refresh, error, isLoading } = useHookSwr(
-    userId && token ? `${configUrl.apiUrlProductService}/cart/${userId}` : null
+    userId && token
+      ? `${configUrl.apiUrlWarehouseService}/order/${userId}`
+      : null
   );
+
+  const dataOrder = data?.filter((d: any) => {
+    return d?.status == "PAYMENT_WAITING";
+  });
 
   useEffect(() => {
     if (userId && !data && token) {
-      refresh(`${configUrl.apiUrlProductService}/cart/${userId}`);
+      refresh(`${configUrl.apiUrlWarehouseService}/order/${userId}`);
     }
   }, [userId]);
 
@@ -33,9 +39,9 @@ export default function OrderIcon() {
   return (
     <div className="flex items-center">
       <TbTruckDelivery className="w-7 h-7 text-black" />
-      {data?.length > 0 && (
+      {dataOrder?.length > 0 && (
         <div className="text-red-500 border-red-500 rounded-xl text-xs px-1 -ml-2 bg-red-200">
-          {data.length}
+          {dataOrder.length}
         </div>
       )}
     </div>

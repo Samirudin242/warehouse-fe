@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 
-export default function page() {
+export default function CheckoutPage() {
   const [products] = useState([
     {
       id: 1,

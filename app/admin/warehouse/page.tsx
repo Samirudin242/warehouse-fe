@@ -11,7 +11,7 @@ import { configUrl } from "@/config/configUrl";
 import ModalAddWarehouse from "@/components/admin/warehouse/ModalAddWarehouse";
 import SkeletonTable from "@/components/skeletonLoading/TableSkeleton";
 
-export default function page() {
+export default function AdminWarehousePage() {
   const { data, error, isLoading, refresh } = useSwr(
     `${configUrl.apiUrlWarehouseService}/warehouse`
   );

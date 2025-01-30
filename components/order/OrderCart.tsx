@@ -1,14 +1,19 @@
+import { useState, lazy, Suspense } from "react";
+
 import { formatToRupiah } from "@/app/utils/formatPrice";
-import React, { useState } from "react";
 import { HiDotsVertical, HiX } from "react-icons/hi";
 import { MdCancel } from "react-icons/md";
 import { MdOutlineUploadFile } from "react-icons/md";
 
 import moment from "moment";
 import { OrderUser } from "@/types/Order";
-import ModalOrderDetail from "./ModalOrderDetail";
-import ModalUploadPayment from "./ModalUploadPayment";
-import { Button, Tooltip } from "antd";
+import { Button, Spin, Tooltip, Image } from "antd";
+
+const ModalOrderDetail = lazy(
+  () => import("@/components/order/ModalOrderDetail")
+);
+
+const ModalUploadPayment = lazy(() => import("./ModalUploadPayment"));
 
 type OrderCartProps = {
   order: OrderUser;
@@ -17,6 +22,9 @@ type OrderCartProps = {
 export default function OrderCart({ order }: OrderCartProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+
+  const [visible, setVisible] = useState(false);
+  const [scaleStep, setScaleStep] = useState(0.5);
 
   return (
     <>
@@ -51,6 +59,29 @@ export default function OrderCart({ order }: OrderCartProps) {
                 {order.status.replace("_", " ")}
               </span>
             </div>
+            {order.status == "PAYMENT_WAITING" && (
+              <div>
+                <button
+                  onClick={() => setVisible(true)}
+                  className="border mt-2 px-1 rounded bg-green-200 text-green-700 text-sm"
+                >
+                  Payment proof
+                </button>
+                <Image
+                  width={200}
+                  style={{ display: "none" }}
+                  src={order?.payment?.payment_proof}
+                  preview={{
+                    visible,
+                    scaleStep,
+                    src: order?.payment?.payment_proof,
+                    onVisibleChange: (value) => {
+                      setVisible(value);
+                    },
+                  }}
+                />
+              </div>
+            )}
           </div>
         </div>
 
@@ -93,12 +124,17 @@ export default function OrderCart({ order }: OrderCartProps) {
 
       {/* Transaction Detail Modal */}
       {isModalOpen && (
-        <ModalOrderDetail order={order} setIsModalOpen={setIsModalOpen} />
+        <Suspense fallback={<Spin />}>
+          <ModalOrderDetail order={order} setIsModalOpen={setIsModalOpen} />
+        </Suspense>
       )}
-      <ModalUploadPayment
-        setIsPaymentModalOpen={setIsPaymentModalOpen}
-        isPaymentModalOpen={isPaymentModalOpen}
-      />
+      <Suspense fallback={<Spin />}>
+        <ModalUploadPayment
+          setIsPaymentModalOpen={setIsPaymentModalOpen}
+          isPaymentModalOpen={isPaymentModalOpen}
+          orderId={order.id}
+        />
+      </Suspense>
     </>
   );
 }

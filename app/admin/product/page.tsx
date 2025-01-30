@@ -50,7 +50,7 @@ type Product = {
 
 const categories = ["All", "Electronics", "Clothing", "Groceries", "Toys"];
 
-const Page = () => {
+function AdminProductPage() {
   const { styles } = useStyle();
 
   const { data, error, isLoading, refresh } = useHookSwr(
@@ -204,6 +204,6 @@ const Page = () => {
       )}
     </div>
   );
-};
+}
 
-export default Page;
+export default AdminProductPage;

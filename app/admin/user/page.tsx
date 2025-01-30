@@ -9,7 +9,7 @@ import SkeletonTable from "@/components/skeletonLoading/TableSkeleton";
 
 const { Option } = Select;
 
-const page = () => {
+function AdminUserPage() {
   const { roles } = useAppContext();
   const warehouseAdminRoleId = roles?.find(
     (r) => r.role_name == "WAREHOUSE_ADMIN"
@@ -142,6 +142,6 @@ const page = () => {
       {error && <div className="text-red-500">Failed to load data</div>}
     </div>
   );
-};
+}
 
-export default page;
+export default AdminUserPage;

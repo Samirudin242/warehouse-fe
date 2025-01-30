@@ -15,7 +15,7 @@ interface IFormLogin {
   password: string;
 }
 
-function page() {
+function SignInPage() {
   const router = useRouter();
   const [formLogin] = Form.useForm();
   const { lastUrl } = useAppContext();
@@ -164,4 +164,4 @@ function page() {
   );
 }
 
-export default page;
+export default SignInPage;

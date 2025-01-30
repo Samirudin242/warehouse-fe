@@ -20,7 +20,7 @@ type Order = {
   detail: string;
 };
 
-const page = () => {
+function ListOrderPage() {
   const { user } = useAppContext();
 
   const userId = user?.id;
@@ -36,43 +36,12 @@ const page = () => {
   const { data, refresh, error, isLoading } = useHookSwr(
     userId ? `${configUrl.apiUrlWarehouseService}/order/${userId}` : null
   );
-  const dataCart = data || [];
 
   useEffect(() => {
     if (userId && !data) {
       refresh(`${configUrl.apiUrlWarehouseService}/order/${userId}`);
     }
   }, [userId]);
-
-  const orders: Order[] = [
-    {
-      id: 1,
-      status: "berhasil",
-      date: "24 Jan 2025",
-      description: "Tokopedia Card",
-      total: "Rp439.419",
-      type: "Kartu Kredit",
-      detail: "IVR/20250124/XXV/I/2435941423",
-    },
-    {
-      id: 2,
-      status: "berhasil",
-      date: "20 Jan 2025",
-      description: "DKI Jakcard 20.000",
-      total: "Rp21.500",
-      type: "Uang Elektronik",
-      detail: "IVR/20250120/XXV/I/2430855982",
-    },
-    {
-      id: 3,
-      status: "berhasil",
-      date: "20 Jan 2025",
-      description: "BCA Flazz 20.000",
-      total: "Rp21.500",
-      type: "Uang Elektronik",
-      detail: "IVR/20250120/XXV/I/2430854386",
-    },
-  ];
 
   const filteredOrders =
     filter === "All Transaction"
@@ -124,6 +93,6 @@ const page = () => {
       </div>
     </div>
   );
-};
+}
 
-export default page;
+export default ListOrderPage;

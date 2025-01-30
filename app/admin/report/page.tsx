@@ -3,7 +3,7 @@ import ReportFilters from "@/components/admin/report/ReportFilters";
 import SalesChart from "@/components/admin/report/SalesChart";
 import React, { useState } from "react";
 
-const Reports = () => {
+function AdminReportsPage() {
   const warehouses = ["Warehouse A", "Warehouse B", "Warehouse C"];
   const categories = ["Electronics", "Clothing", "Furniture"];
   const products = ["Product 1", "Product 2", "Product 3"];
@@ -21,8 +21,7 @@ const Reports = () => {
   };
 
   const labels = ["January", "February", "March", "April", "May"];
-  const data = [500, 700, 600, 800, 900]; // Replace with dynamic data
-
+  const data = [500, 700, 600, 800, 900];
   return (
     <div className="p-6 text-black">
       <h1 className="text-2xl font-bold mb-4">Sales Reports</h1>
@@ -40,6 +39,6 @@ const Reports = () => {
       <SalesChart labels={labels} data={data} title="Monthly Sales Report" />
     </div>
   );
-};
+}
 
-export default Reports;
+export default AdminReportsPage;

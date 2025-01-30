@@ -37,7 +37,12 @@ function OrderManagementPage() {
   const [scaleStep, setScaleStep] = useState(0.5);
 
   const { data, refresh, error, isLoading } = useHookSwr(
-    `${configUrl.apiUrlWarehouseService}/order`
+    `${configUrl.apiUrlWarehouseService}/order`,
+    {
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    }
   );
 
   const dataOrders = data?.content;
@@ -180,11 +185,11 @@ function OrderManagementPage() {
                 <Image
                   width={200}
                   style={{ display: "none" }}
-                  src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png?x-oss-process=image/blur,r_50,s_50/quality,q_1/resize,m_mfit,h_200,w_200"
+                  src={record?.payment?.payment_proof}
                   preview={{
                     visible,
                     scaleStep,
-                    src: "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
+                    src: record?.payment?.payment_proof,
                     onVisibleChange: (value) => {
                       setVisible(value);
                     },
