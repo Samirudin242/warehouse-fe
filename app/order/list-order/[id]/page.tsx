@@ -79,7 +79,14 @@ function ListOrderPage() {
       {/* Order Cards */}
       <div className="grid gap-6">
         {filteredOrders?.length > 0 ? (
-          filteredOrders?.map((order: OrderUser) => <OrderCart order={order} />)
+          filteredOrders?.map((order: OrderUser) => (
+            <OrderCart
+              order={order}
+              userId={userId}
+              refresh={refresh}
+              setFilter={setFilter}
+            />
+          ))
         ) : data?.length == 0 || filteredOrders?.length == 0 ? (
           <div className="m-auto">
             <p className="text-gray-500 mt-3">

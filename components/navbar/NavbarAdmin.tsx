@@ -27,6 +27,11 @@ const NavbarAdmin: React.FC<NavbarAdminProps> = ({
   const menuItems = [
     { name: "Home", path: "/admin/1", icon: <FaHome className="text-xl" /> },
     {
+      name: "Order",
+      path: "/admin/order",
+      icon: <FaShippingFast className="text-xl" />,
+    },
+    {
       name: "Product",
       path: "/admin/product",
       icon: <FaBox className="text-xl" />,
@@ -41,11 +46,7 @@ const NavbarAdmin: React.FC<NavbarAdminProps> = ({
       path: "/admin/warehouse",
       icon: <MdWarehouse className="text-xl" />,
     },
-    {
-      name: "Order",
-      path: "/admin/order",
-      icon: <FaShippingFast className="text-xl" />,
-    },
+
     {
       name: "Report",
       path: "/admin/report",

@@ -5,6 +5,7 @@ import { useAppContext } from "@/contexts/useContext";
 import axiosRequest from "@/hooks/useAxios";
 import { configUrl } from "@/config/configUrl";
 import GlobalModal from "../modal/GlobalModal";
+import Image from "next/image";
 
 type CartProps = {
   id: string;
@@ -84,11 +85,12 @@ function CardCard({
     <div className="flex justify-between">
       <div className="flex">
         <div className="bg-customGray overflow-hidden content-center rounded-lg">
-          <img
+          <Image
             className="h-32 w-36 aspect-[3/2] object-contain mix-blend-multiply transform transition-transform duration-300 ease-in-out hover:scale-110"
             src={imageUrl}
             width={100}
             height={50}
+            alt="product-image"
           />
         </div>
         <div className="ml-4">

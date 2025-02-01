@@ -71,7 +71,12 @@ export default function Carousel1() {
           height={70}
         />
         <div className="-m-1">
-          <Image src="/photo1.png" alt="photo1" width={500} height={400} />
+          <Image
+            src="https://storage.googleapis.com/theyaku-bucket11/products/160cbef5-b712-4cdd-90dc-7890fed18219/photo1.png"
+            alt="photo1"
+            width={500}
+            height={400}
+          />
         </div>
       </div>
     </div>

@@ -70,7 +70,7 @@ export default function Carousel2() {
         />
         <div className="-mt-32">
           <Image
-            src="/photo2.png"
+            src="https://storage.googleapis.com/theyaku-bucket11/products/160cbef5-b712-4cdd-90dc-7890fed18219/photo2.png"
             alt="highlighted outfit"
             width={500}
             height={400}

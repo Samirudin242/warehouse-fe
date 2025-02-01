@@ -72,7 +72,7 @@ export default function Carousel3() {
         />
         <div>
           <Image
-            src="/photo3.png"
+            src="https://storage.googleapis.com/theyaku-bucket11/products/160cbef5-b712-4cdd-90dc-7890fed18219/photo3.png"
             alt="luxury outfit"
             width={500}
             height={400}

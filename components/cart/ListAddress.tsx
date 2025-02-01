@@ -54,8 +54,6 @@ export default function ListAddress({
       warehouse: listWarehouseId,
     };
 
-    console.log(body);
-
     const { response } = await axiosRequest({
       url: `${configUrl.apiUrlWarehouseService}/order/nearest-warehouse`,
       method: "POST",

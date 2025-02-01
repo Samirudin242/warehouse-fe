@@ -17,10 +17,13 @@ import { OrderUser } from "@/types/Order";
 import { configUrl } from "@/config/configUrl";
 import useHookSwr from "@/hooks/useSwr";
 import SkeletonTable from "@/components/skeletonLoading/TableSkeleton";
+import axiosRequest from "@/hooks/useAxios";
 
 const ModalOrderDetail = lazy(
   () => import("@/components/order/ModalOrderDetail")
 );
+
+const GlobalModal = lazy(() => import("@/components/modal/GlobalModal"));
 
 const PAGE_SIZE = 10;
 
@@ -36,6 +39,10 @@ function OrderManagementPage() {
   const [visible, setVisible] = useState(false);
   const [scaleStep, setScaleStep] = useState(0.5);
 
+  const [openModalApprove, setOpenModalApprove] = useState<boolean>(false);
+  const [bodyShipping, setBodyShipping] = useState<any>();
+  const [loadingButton, setLoadingButton] = useState<boolean>(false);
+
   const { data, refresh, error, isLoading } = useHookSwr(
     `${configUrl.apiUrlWarehouseService}/order`,
     {
@@ -47,9 +54,12 @@ function OrderManagementPage() {
 
   const dataOrders = data?.content;
 
-  const handleTableChange = (pagination: TablePaginationConfig) => {
-    if (pagination.current) setCurrentPage(pagination.current);
-    if (pagination.pageSize) setPageSize(pagination.pageSize);
+  const totalOrders = data?.totalElements || 0;
+
+  const handleChangePage = (page: any) => {
+    setCurrentPage(page);
+    const url = `${configUrl.apiUrlProductService}/product?page=${page}`;
+    refresh(url);
   };
 
   type OrderStatus = "PAYMENT_WAITING" | "SHIPPING" | "COMPLETED" | "CANCELLED";
@@ -76,6 +86,47 @@ function OrderManagementPage() {
         }
       },
     });
+  };
+
+  const handleOpenModalShipping = (order: OrderUser) => {
+    setOpenModalApprove(true);
+
+    const body = {
+      user_id: order?.user?.id,
+      order_id: order?.id,
+      order_date: order?.order_date,
+      orders: order?.order_items?.map((o) => {
+        return {
+          id: o.id,
+          order_id: order?.id,
+          product_id: o?.product?.id,
+          quantity: o?.quantity,
+          warehouse_id: o?.warehouse_id,
+          price: o?.price,
+        };
+      }),
+    };
+
+    setBodyShipping(body);
+  };
+
+  const onSubmitChangeStatusToShipping = async () => {
+    try {
+      setLoadingButton(true);
+      const { response, error } = await axiosRequest({
+        url: `${configUrl.apiUrlWarehouseService}/order/shipped-order`,
+        method: "POST",
+        body: bodyShipping,
+      });
+
+      if (response?.data) {
+        setOpenModalApprove(false);
+        refresh(`${configUrl.apiUrlWarehouseService}/order`);
+        setLoadingButton(false);
+      }
+    } catch (error) {
+      setLoadingButton(false);
+    }
   };
 
   const statusFilters = [
@@ -131,7 +182,7 @@ function OrderManagementPage() {
       title: "User",
       dataIndex: "user",
       key: "user",
-      width: 300,
+      width: 250,
       render: (user: { name: string; profile_picture: string }) => (
         <div className="flex items-center space-x-4">
           {user?.profile_picture && (
@@ -213,13 +264,25 @@ function OrderManagementPage() {
             Detail
           </Button>
           {record.status === "PAYMENT_WAITING" && (
-            <Button
-              danger
-              icon={<MdCancel />}
-              onClick={() => handleCancelOrder(record.id)}
-            >
-              Cancel
-            </Button>
+            <>
+              {record.payment?.payment_proof && (
+                <Button
+                  type="primary"
+                  className="bg-green-600"
+                  icon={<MdLocalShipping />}
+                  onClick={() => handleOpenModalShipping(record)}
+                >
+                  Shipping
+                </Button>
+              )}
+              <Button
+                danger
+                icon={<MdCancel />}
+                onClick={() => handleCancelOrder(record.id)}
+              >
+                Cancel
+              </Button>
+            </>
           )}
         </div>
       ),
@@ -263,12 +326,11 @@ function OrderManagementPage() {
           loading={isLoading}
           pagination={{
             current: currentPage,
-            pageSize: pageSize,
-            total: data?.total,
+            pageSize,
+            total: totalOrders,
             showSizeChanger: false,
-            pageSizeOptions: ["10", "20", "50"],
+            onChange: (page) => handleChangePage(page),
           }}
-          onChange={handleTableChange}
           scroll={{ x: true }}
         />
 
@@ -277,6 +339,24 @@ function OrderManagementPage() {
             <ModalOrderDetail
               order={selectedOrder}
               setIsModalOpen={() => setSelectedOrder(null)}
+            />
+          </Suspense>
+        )}
+
+        {openModalApprove && (
+          <Suspense fallback={<div></div>}>
+            <GlobalModal
+              isVisible={openModalApprove}
+              icon="shipping"
+              content={
+                <div>
+                  Are you sure change status to{" "}
+                  <span className="font-bold">Shipping</span>
+                </div>
+              }
+              onCancel={() => setOpenModalApprove(false)}
+              loadingButton={loadingButton}
+              onOk={onSubmitChangeStatusToShipping}
             />
           </Suspense>
         )}

@@ -25,10 +25,10 @@ const useHookSwr = (
   const [currentUrl, setCurrentUrl] = useState(initialUrl);
 
   const mergedOptions: SWRConfiguration = {
-    refreshInterval: 5000,
-    revalidateIfStale: false,
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
+    refreshInterval: 0,
+    revalidateIfStale: true,
+    revalidateOnFocus: true,
+    revalidateOnReconnect: true,
     ...swrOptions,
   };
 

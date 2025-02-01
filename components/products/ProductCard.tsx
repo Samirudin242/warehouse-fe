@@ -1,8 +1,9 @@
 "use client";
 
+import React from "react";
 import { useRouter } from "next/navigation";
 import { formatToRupiah } from "@/app/utils/formatPrice";
-import React from "react";
+import Image from "next/image";
 import { PiStarFill } from "react-icons/pi";
 import { setCookie } from "nookies";
 
@@ -36,10 +37,12 @@ const ProductCard: React.FC<ProductCardProps> = ({
       className="w-64 bg-white hover:shadow-md rounded-lg overflow-hidden hover:border cursor-pointer"
     >
       <div className="bg-customGray overflow-hidden">
-        <img
+        <Image
           src={imageSrc}
           alt={title}
           className="w-full h-64 aspect-[3/2] object-contain mix-blend-multiply transform transition-transform duration-300 ease-in-out hover:scale-110"
+          width={200}
+          height={200}
         />
       </div>
 

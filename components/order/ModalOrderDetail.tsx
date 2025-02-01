@@ -104,7 +104,7 @@ export default function ModalOrderDetail({
             </h4>
             <div className="flex justify-between text-sm text-gray-600">
               <span>Payment Method</span>
-              <span>{order.payment.payment_type}</span>
+              <span>BANK Transfer</span>
             </div>
           </div>
         </div>

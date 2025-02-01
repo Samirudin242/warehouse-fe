@@ -50,7 +50,11 @@ export default function Navbar() {
           setIsLoggedIn(true);
           setRoleUser(decoded.role);
           setIdUser(decoded.sub);
-          setUser({ id: decoded.sub, role: decoded.role });
+          setUser({
+            id: decoded.sub,
+            role: decoded.role,
+            user_name: decoded?.username,
+          });
           setUsername(decoded.username);
         }
       } catch (error) {

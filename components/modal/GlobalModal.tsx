@@ -11,7 +11,15 @@ interface GlobalModalProps {
   okText?: string;
   cancelText?: string;
   type?: "confirm" | "info" | "success" | "error" | "warning";
-  icon?: "user" | "warehouse" | "product" | "cart" | "checkout";
+  icon?:
+    | "user"
+    | "warehouse"
+    | "product"
+    | "cart"
+    | "checkout"
+    | "shipping"
+    | "deliver"
+    | "cancel";
   loadingButton?: boolean;
 }
 
@@ -35,6 +43,12 @@ const GlobalModal: React.FC<GlobalModalProps> = ({
       ? "/empty-cart.png"
       : icon == "checkout"
       ? "/images/transaction.png"
+      : icon == "shipping"
+      ? "/images/order-on-its-way.png"
+      : icon == "deliver"
+      ? "/images/processing-order.png"
+      : icon == "cancel"
+      ? "/images/order-failed.png"
       : "/images/self.png";
 
   return (
@@ -49,8 +63,8 @@ const GlobalModal: React.FC<GlobalModalProps> = ({
       footer={null}
     >
       <div className="flex flex-col items-center justify-center border-t border-gray-200 pt-4">
-        <Image src={pathImage} height={200} width={200} alt="image self" />
         <div className="mt-4 text-center text-2xl">{content}</div>
+        <Image src={pathImage} height={200} width={350} alt="image self" />
         <div className="mt-4 flex justify-center gap-4">
           <button
             onClick={onOk}

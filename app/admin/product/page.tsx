@@ -54,7 +54,7 @@ function AdminProductPage() {
   const { styles } = useStyle();
 
   const { data, error, isLoading, refresh } = useHookSwr(
-    `${configUrl.apiUrlProductService}/product`
+    `${configUrl.apiUrlProductService}/product-public`
   );
 
   const products = data?.content || [];
@@ -92,7 +92,7 @@ function AdminProductPage() {
 
   const handleChangePage = (page: any) => {
     setCurrentPage(page);
-    const url = `${configUrl.apiUrlProductService}/product?page=${page}`;
+    const url = `${configUrl.apiUrlProductService}/product-public?page=${page}`;
     refresh(url);
   };
 

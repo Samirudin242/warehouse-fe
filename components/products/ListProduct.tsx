@@ -15,24 +15,28 @@ function ListProduct({ title, isHideBorder }: Props) {
       </h1>
       <div className="flex justify-between">
         <ProductCard
+          id="1"
           title="Down jacket ”Arsenal” Moncler brown"
           imageSrc="https://res.cloudinary.com/hilnmyskv/image/upload/v1638376445/flagship_sunrise/M0E20000000DTVF_0.jpg"
           price={1000}
           rating={4}
         />
         <ProductCard
+          id="2"
           title="Down jacket ”Arsenal” Moncler brown"
           imageSrc="https://res.cloudinary.com/hilnmyskv/image/upload/v1638374296/flagship_sunrise/M0E20000000DU7X_0.jpg"
           price={1000}
           rating={4}
         />
         <ProductCard
+          id="3"
           title="Down jacket ”Arsenal” Moncler brown"
           imageSrc="https://res.cloudinary.com/hilnmyskv/image/upload/v1638374942/flagship_sunrise/M0E20000000DU7G_0.jpg"
           price={1000}
           rating={4}
         />
         <ProductCard
+          id="4"
           title="Down jacket ”Arsenal” Moncler brown"
           imageSrc="https://res.cloudinary.com/hilnmyskv/image/upload/v1638371385/flagship_sunrise/M0E20000000DTSX_1.jpg"
           price={1000}

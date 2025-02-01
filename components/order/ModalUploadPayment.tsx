@@ -14,12 +14,16 @@ type PaymentUploadProps = {
   isPaymentModalOpen: boolean;
   setIsPaymentModalOpen: (open: boolean) => void;
   orderId: string;
+  refresh: (url: string) => void;
+  userId: string;
 };
 
 export default function ModalUploadPayment({
   isPaymentModalOpen,
   setIsPaymentModalOpen,
   orderId,
+  userId,
+  refresh,
 }: PaymentUploadProps) {
   const [paymentProof, setPaymentProof] = useState<File | null>(null);
   const [urlPaymentProof, setUrlPaymentProof] = useState<string | null>(null);
@@ -86,7 +90,7 @@ export default function ModalUploadPayment({
         return;
       }
 
-      mutate(`${configUrl.apiUrlWarehouseService}/order`);
+      refresh(`${configUrl.apiUrlWarehouseService}/order/${userId}`);
       toast.success(
         "Successfully upload payment proof, admin will verify your payment soon!",
         {

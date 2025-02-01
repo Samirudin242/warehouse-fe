@@ -88,7 +88,7 @@ function OrderSummary({ totalOrder, listWarehouseId, dataCart }: OrderProps) {
 
       if (response?.data) {
         setLoadingButton(false);
-        router.push("/order/checkout");
+        router.push(`/order/list-order/${user?.user_name}`);
       }
     } catch (error) {
       setLoadingButton(false);

@@ -20,6 +20,7 @@ type AppContextType = {
 type User = {
   id: string;
   role: string;
+  user_name: string;
 };
 
 type Role = {
@@ -32,7 +33,7 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 export const AppContextProvider = ({ children }: { children: ReactNode }) => {
   const [lastUrl, setLastUrl] = useState("/");
   const [roles, setRoles] = useState<Role[]>([]);
-  const [user, setUser] = useState<User>({ id: "", role: "" });
+  const [user, setUser] = useState<User>({ id: "", role: "", user_name: "" });
 
   const fetchRoles = async () => {
     const { response, error } = await axiosRequest({
