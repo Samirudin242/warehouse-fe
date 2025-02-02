@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, lazy, Suspense } from "react";
+import { useState, lazy, Suspense, useEffect } from "react";
 import { Table, Tag, Segmented, Input, Button, Modal, Spin, Image } from "antd";
 import type { ColumnsType, TablePaginationConfig } from "antd/es/table";
 import {
@@ -18,6 +18,7 @@ import { configUrl } from "@/config/configUrl";
 import useHookSwr from "@/hooks/useSwr";
 import SkeletonTable from "@/components/skeletonLoading/TableSkeleton";
 import axiosRequest from "@/hooks/useAxios";
+import { useAppContext } from "@/contexts/useContext";
 
 const ModalOrderDetail = lazy(
   () => import("@/components/order/ModalOrderDetail")
@@ -28,6 +29,8 @@ const GlobalModal = lazy(() => import("@/components/modal/GlobalModal"));
 const PAGE_SIZE = 10;
 
 function OrderManagementPage() {
+  const { setLoading } = useAppContext();
+
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(PAGE_SIZE);
   const [selectedStatus, setSelectedStatus] =
@@ -55,6 +58,10 @@ function OrderManagementPage() {
   const dataOrders = data?.content;
 
   const totalOrders = data?.totalElements || 0;
+
+  useEffect(() => {
+    setLoading(false);
+  }, []);
 
   const handleChangePage = (page: any) => {
     setCurrentPage(page);

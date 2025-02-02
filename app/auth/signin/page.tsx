@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import Cookies from "js-cookie";
 import { toast, Bounce, ToastContainer } from "react-toastify";
 import { useRouter } from "next/navigation";
@@ -19,7 +19,11 @@ interface IFormLogin {
 function SignInPage() {
   const router = useRouter();
   const [formLogin] = Form.useForm();
-  const { lastUrl } = useAppContext();
+  const { lastUrl, setLoading } = useAppContext();
+
+  useEffect(() => {
+    setLoading(false);
+  }, []);
 
   const onFinish = async (values: IFormLogin) => {
     try {
@@ -82,6 +86,7 @@ function SignInPage() {
   };
 
   const handleClickRouter = (e: any) => {
+    setLoading(true);
     e.preventDefault();
     const href = e.currentTarget.href;
     router.push(href);

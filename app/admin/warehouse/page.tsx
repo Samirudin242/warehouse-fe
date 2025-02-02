@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Table, Dropdown, Menu, Button, Select, Input } from "antd";
 import { ColumnType } from "antd/es/table";
@@ -10,8 +10,11 @@ import useSwr from "@/hooks/useSwr";
 import { configUrl } from "@/config/configUrl";
 import ModalAddWarehouse from "@/components/admin/warehouse/ModalAddWarehouse";
 import SkeletonTable from "@/components/skeletonLoading/TableSkeleton";
+import { useAppContext } from "@/contexts/useContext";
 
 export default function AdminWarehousePage() {
+  const { setLoading } = useAppContext();
+
   const { data, error, isLoading, refresh } = useSwr(
     `${configUrl.apiUrlWarehouseService}/warehouse`
   );
@@ -19,6 +22,10 @@ export default function AdminWarehousePage() {
   const warehouses = data?.content || [];
 
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
+
+  useEffect(() => {
+    setLoading(false);
+  }, []);
 
   const handleEditClick = (key: string) => {
     console.log(`Edit warehouse with key: ${key}`);

@@ -20,7 +20,7 @@ const { Option } = Select;
 function SingUpPage() {
   const router = useRouter();
   const [form] = Form.useForm();
-  const { lastUrl } = useAppContext();
+  const { lastUrl, setLoading } = useAppContext();
 
   const [openGlobalModal, setOpenGlobalModal] = useState<boolean>(false);
 
@@ -47,6 +47,7 @@ function SingUpPage() {
   } | null>(null);
 
   useEffect(() => {
+    setLoading(false);
     const fetchRoles = async () => {
       const { response } = await axiosRequest({
         url: `${configUrl.apiUrlUserService}/auth/get-roles`,

@@ -1,9 +1,12 @@
 "use client";
 import ReportFilters from "@/components/admin/report/ReportFilters";
 import SalesChart from "@/components/admin/report/SalesChart";
-import React, { useState } from "react";
+import { useAppContext } from "@/contexts/useContext";
+import React, { useEffect, useState } from "react";
 
 function AdminReportsPage() {
+  const { setLoading } = useAppContext();
+
   const warehouses = ["Warehouse A", "Warehouse B", "Warehouse C"];
   const categories = ["Electronics", "Clothing", "Furniture"];
   const products = ["Product 1", "Product 2", "Product 3"];
@@ -13,6 +16,10 @@ function AdminReportsPage() {
   );
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
+
+  useEffect(() => {
+    setLoading(false);
+  }, []);
 
   const handleFilterChange = (type: string, value: string | null) => {
     if (type === "warehouse") setSelectedWarehouse(value);

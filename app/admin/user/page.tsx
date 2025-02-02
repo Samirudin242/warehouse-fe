@@ -10,7 +10,7 @@ import SkeletonTable from "@/components/skeletonLoading/TableSkeleton";
 const { Option } = Select;
 
 function AdminUserPage() {
-  const { roles } = useAppContext();
+  const { roles, setLoading } = useAppContext();
   const warehouseAdminRoleId = roles?.find(
     (r) => r.role_name == "WAREHOUSE_ADMIN"
   )?.id;
@@ -39,6 +39,7 @@ function AdminUserPage() {
   };
 
   useEffect(() => {
+    setLoading(false);
     if (warehouseAdminRoleId) {
       refresh(
         `${configUrl.apiUrlUserService}/user?role=${warehouseAdminRoleId}`

@@ -1,10 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
-
 import { useAppContext } from "@/contexts/useContext";
-import { Spin } from "antd";
 
 const LoadingOverlay = () => {
   const { loading } = useAppContext();

@@ -1,8 +1,9 @@
 "use client";
 
-import React, { Suspense } from "react";
+import React, { Suspense, useEffect } from "react";
 import { DashboardSkeleton } from "@/components/skeletonLoading/DashboardSkeleton";
 import dynamic from "next/dynamic";
+import { useAppContext } from "@/contexts/useContext";
 
 const DashboardOverview = dynamic(
   () => import("@/components/admin/dashboard/Overview"),
@@ -37,6 +38,12 @@ const CommentList = dynamic(
 );
 
 function DashboardPage() {
+  const { setLoading } = useAppContext();
+
+  useEffect(() => {
+    setLoading(false);
+  }, []);
+
   return (
     <div className="text-black p-5 space-y-6">
       <h1 className="text-2xl font-semibold">Dashboard</h1>

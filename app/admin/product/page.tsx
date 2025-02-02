@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Table, Dropdown, Menu, Button, Select } from "antd";
 import type { ColumnType, ColumnGroupType } from "antd/es/table";
 import { DownOutlined } from "@ant-design/icons";
@@ -12,6 +12,7 @@ import ModalAddProduct from "../../../components/admin/product/ModalAddProduct";
 import useHookSwr from "@/hooks/useSwr";
 import { configUrl } from "@/config/configUrl";
 import SkeletonTable from "@/components/skeletonLoading/TableSkeleton";
+import { useAppContext } from "@/contexts/useContext";
 
 const { Option } = Select;
 
@@ -52,6 +53,7 @@ const categories = ["All", "Electronics", "Clothing", "Groceries", "Toys"];
 
 function AdminProductPage() {
   const { styles } = useStyle();
+  const { setLoading } = useAppContext();
 
   const { data, error, isLoading, refresh } = useHookSwr(
     `${configUrl.apiUrlProductService}/product-public`
@@ -66,6 +68,10 @@ function AdminProductPage() {
 
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pageSize] = useState<number>(10);
+
+  useEffect(() => {
+    setLoading(false);
+  }, []);
 
   const handleEditClick = (sku: string) => {
     console.log(`Edit product with SKU: ${sku}`);

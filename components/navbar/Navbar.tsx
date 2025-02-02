@@ -106,6 +106,7 @@ export default function Navbar() {
   };
 
   const handleClickRegister = (type: string) => {
+    setLoading(true);
     setLastUrl(currentUrl);
     if (type === "register") router.push("/auth/signup");
     else router.push("/auth/signin");

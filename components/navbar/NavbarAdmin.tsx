@@ -11,6 +11,7 @@ import {
   FaShippingFast,
 } from "react-icons/fa";
 import { MdWarehouse } from "react-icons/md";
+import { useAppContext } from "@/contexts/useContext";
 
 type NavbarAdminProps = {
   isMinimized: boolean;
@@ -21,6 +22,8 @@ const NavbarAdmin: React.FC<NavbarAdminProps> = ({
   isMinimized,
   toggleSidebar,
 }) => {
+  const { setLoading } = useAppContext();
+
   const router = useRouter();
   const pathname = usePathname();
 
@@ -78,7 +81,10 @@ const NavbarAdmin: React.FC<NavbarAdminProps> = ({
           {menuItems.map((item) => (
             <li key={item.name} className="mb-2">
               <button
-                onClick={() => router.push(item.path)}
+                onClick={() => {
+                  router.push(item.path);
+                  setLoading(true);
+                }}
                 className={`w-full flex items-center px-4 py-2 hover:bg-gray-300 transition ${
                   pathname === item.path ? "bg-gray-700 text-white" : ""
                 }`}
