@@ -9,6 +9,7 @@ import axiosRequest from "@/hooks/useAxios";
 import { configUrl } from "@/config/configUrl";
 import "react-toastify/dist/ReactToastify.css";
 import { useAppContext } from "@/contexts/useContext";
+import GoogleLoginButton from "@/components/auth/GoogleLoginButton";
 
 interface IFormLogin {
   usernameEmail: string;
@@ -149,6 +150,11 @@ function SignInPage() {
                 <Button htmlType="submit">Login</Button>
               </Form.Item>
             </Form>
+            <div className="w-full mb-3 -mt-3flex items-center justify-center content-center place-items-center">
+              <div>
+                <GoogleLoginButton />
+              </div>
+            </div>
             <div className="flex flex-col items-center justify-center text-center">
               <div className="text-sm">Don't have an account?</div>
               <div className="mt-3">

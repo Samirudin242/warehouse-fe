@@ -7,7 +7,6 @@ import { Dropdown, Menu } from "antd";
 import { useRouter, usePathname } from "next/navigation";
 import { RiAdminFill } from "react-icons/ri";
 import { FaRegCircleUser } from "react-icons/fa6";
-import { CiSearch } from "react-icons/ci";
 import { IoIosClose } from "react-icons/io";
 import { toast, Bounce, ToastContainer } from "react-toastify";
 
@@ -16,6 +15,7 @@ import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
 import CardIcon from "./CardIcon";
 import OrderIcon from "./OrderIcon";
+import SearchInput from "./SearchInput";
 
 interface TokenPayload {
   sub: string;
@@ -36,11 +36,10 @@ export default function Navbar() {
   const [roleUser, setRoleUser] = useState<string>("");
   const [idUser, setIdUser] = useState<string>("");
   const [username, setUsername] = useState<string>("");
-  const [isHideMenu, setIsHideMenu] = useState<boolean>(false);
+  const [isHideMenu, setIsHideMenu] = useState<boolean>(true);
 
-  const [showBanner, setShowBaner] = useState<boolean>(true);
+  const [showBanner, setShowBaner] = useState<boolean>(false);
 
-  // Check token existence and validity
   useEffect(() => {
     if (token) {
       try {
@@ -175,24 +174,9 @@ export default function Navbar() {
 
         {/* Search + Icons */}
         <div className="flex items-center space-x-4 w-full">
-          {/* Search Input */}
-          <div
-            className={`flex items-center border rounded-full bg-slate-100 transition-all duration-300 ease-in-out ${
-              isHideMenu ? "w-full" : "w-96"
-            }`}
-          >
-            <CiSearch className="w-6 h-6 text-black ml-3" />
-            <input
-              onBlur={() => setIsHideMenu(false)}
-              onClick={() => setIsHideMenu(true)}
-              type="text"
-              placeholder="Search for products..."
-              className="hidden md:block rounded-full px-4 py-2 text-sm focus:outline-none text-black bg-slate-100 w-full"
-            />
-          </div>
+          <SearchInput setIsHideMenu={setIsHideMenu} isHideMenu={isHideMenu} />
 
           {/* Cart Icon */}
-
           <button
             onClick={handleOnClickCart}
             className="p-1 hover:bg-gray-100 rounded"

@@ -1,9 +1,12 @@
 "use client";
 import React, { useState } from "react";
-import ProductCard from "../ProductCard";
+import { useSearchParams } from "next/navigation";
 import { Pagination } from "antd";
+
+import ProductCard from "../ProductCard";
 import useHookSwr from "@/hooks/useSwr";
 import { configUrl } from "@/config/configUrl";
+
 import ProductCardSkeleton from "../../skeletonLoading/ProductCardSkeleton";
 
 type Product = {
@@ -17,9 +20,17 @@ type Product = {
 };
 
 function ListProducts() {
-  const { data, error, isLoading, refresh } = useHookSwr(
-    `${configUrl.apiUrlProductService}/product-public?size=${12}`
-  );
+  const searchParams = useSearchParams();
+  const name = searchParams.get("name");
+  const cleanedName = name ? name.replace(/^"|"$/g, "") : "";
+
+  const url = name
+    ? `${
+        configUrl.apiUrlProductService
+      }/product-public?size=${12}&name=${cleanedName}`
+    : `${configUrl.apiUrlProductService}/product-public?size=${12}`;
+
+  const { data, error, isLoading, refresh } = useHookSwr(url);
 
   const [curentPage, setCurrentPage] = useState<number>(1);
 
