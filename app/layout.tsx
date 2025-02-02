@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import "./globals.css";
 import AppLayoutAdmin from "@/components/layout/AppLayoutAdmin";
 import { AppContextProvider } from "@/contexts/useContext";
+import LoadingOverlay from "@/components/skeletonLoading/LoadingOverlay";
 
 export default function RootLayout({
   children,
@@ -24,6 +25,7 @@ export default function RootLayout({
       />
       <body>
         <AppContextProvider>
+          <LoadingOverlay />
           {isAuthRoute ? (
             children
           ) : isAdminPage ? (

@@ -6,6 +6,7 @@ import { formatToRupiah } from "@/app/utils/formatPrice";
 import Image from "next/image";
 import { PiStarFill } from "react-icons/pi";
 import { setCookie } from "nookies";
+import { useAppContext } from "@/contexts/useContext";
 
 interface ProductCardProps {
   id: string;
@@ -24,9 +25,12 @@ const ProductCard: React.FC<ProductCardProps> = ({
   imageSrc,
   totalSell,
 }) => {
+  const { setLoading } = useAppContext();
+
   const router = useRouter();
 
   const handleClickCard = () => {
+    setLoading(true);
     setCookie(null, "productId", id, { path: "/" });
     router.push(`/product/product-detail/${title}`);
   };

@@ -1,5 +1,31 @@
-const nextConfig = {
+import { NextConfig } from "next";
+
+const withBundleAnalyzer = require("@next/bundle-analyzer")({
+  enabled: process.env.ANALYZE === "true",
+});
+
+const nextConfig: NextConfig = withBundleAnalyzer({
   reactStrictMode: false,
+  swcMinify: true,
+
+  future: {
+    webpack5: true,
+  },
+
+  experimental: {
+    scrollRestoration: true,
+    optimizeCss: true,
+    legacyBrowsers: false,
+  },
+
+  webpack(config: any) {
+    config.resolve.alias = {
+      ...config.resolve.alias,
+    };
+
+    return config;
+  },
+
   async headers() {
     return [
       {
@@ -15,15 +41,14 @@ const nextConfig = {
             value: "Content-Type, Authorization",
           },
           { key: "Access-Control-Allow-Credentials", value: "true" },
-          // { key: "Cross-Origin-Embedder-Policy", value: "require-corp" },
-          // { key: "Cross-Origin-Resource-Policy", value: "cross-origin" },
         ],
       },
     ];
   },
+
   images: {
     domains: ["storage.googleapis.com", "res.cloudinary.com"],
   },
-};
+});
 
 export default nextConfig;

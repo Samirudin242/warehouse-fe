@@ -1,9 +1,18 @@
+"use client";
+
 import Breadcrumbs from "@/components/bredcrumbs/Bredcrumbs";
 import FilterProduct from "@/components/products/listProducts/filterProduct/FilterProduct";
 import ListProducts from "@/components/products/listProducts/ListProducts";
-import React from "react";
+import { useAppContext } from "@/contexts/useContext";
+import React, { useEffect } from "react";
 
 export default function ListProduct() {
+  const { setLoading } = useAppContext();
+
+  useEffect(() => {
+    setLoading(false);
+  }, []);
+
   return (
     <div className="px-20">
       <Breadcrumbs isHideLast={true} />

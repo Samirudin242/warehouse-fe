@@ -8,6 +8,7 @@ import { setCookie } from "nookies";
 
 import { configUrl } from "@/config/configUrl";
 import axiosRequest from "@/hooks/useAxios";
+import { useAppContext } from "@/contexts/useContext";
 
 type SearchInputProps = {
   setIsHideMenu: (p: boolean) => void;
@@ -15,6 +16,7 @@ type SearchInputProps = {
 };
 
 function SearchInput({ setIsHideMenu, isHideMenu }: SearchInputProps) {
+  const { setLoading } = useAppContext();
   const router = useRouter();
 
   const [searchResults, setSearchResults] = useState<any[]>([]);
@@ -40,10 +42,12 @@ function SearchInput({ setIsHideMenu, isHideMenu }: SearchInputProps) {
   };
 
   const handleShowAllProduct = () => {
+    setLoading(true);
     router.push(`/product/list-product/all?name=${searchInput}`);
   };
 
   const handleDetailProduct = (id: string, title: string) => {
+    setLoading(true);
     setCookie(null, "productId", id, { path: "/" });
     router.push(`/product/product-detail/${title}`);
   };

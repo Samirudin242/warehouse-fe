@@ -11,7 +11,7 @@ import useHookSwr from "@/hooks/useSwr";
 import CartSkeleton from "@/components/skeletonLoading/CartSkeleton";
 
 function Cart() {
-  const { user } = useAppContext();
+  const { user, setLoading } = useAppContext();
 
   const userId = user?.id;
 
@@ -26,6 +26,7 @@ function Cart() {
   const dataCart = data || [];
 
   useEffect(() => {
+    setLoading(false);
     if (userId && !data) {
       refresh(`${configUrl.apiUrlProductService}/cart/${userId}`);
     }

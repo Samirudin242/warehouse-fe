@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { Dropdown, Menu } from "antd";
 import { useRouter, usePathname } from "next/navigation";
+
 import { RiAdminFill } from "react-icons/ri";
 import { FaRegCircleUser } from "react-icons/fa6";
 import { IoIosClose } from "react-icons/io";
@@ -27,16 +28,20 @@ interface TokenPayload {
 }
 
 export default function Navbar() {
+  const { setLoading } = useAppContext();
+
   const router = useRouter();
   const token = Cookies.get("accessToken");
 
   const { setLastUrl, setUser } = useAppContext();
   const currentUrl = usePathname();
+  console.log(currentUrl, "<<");
+
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [roleUser, setRoleUser] = useState<string>("");
   const [idUser, setIdUser] = useState<string>("");
   const [username, setUsername] = useState<string>("");
-  const [isHideMenu, setIsHideMenu] = useState<boolean>(true);
+  const [isHideMenu, setIsHideMenu] = useState<boolean>(false);
 
   const [showBanner, setShowBaner] = useState<boolean>(false);
 
@@ -67,22 +72,37 @@ export default function Navbar() {
 
   const handleOnClickCart = () => {
     if (token) {
-      router.push(`/cart/${username}`);
+      setLoading(true);
+      router.push(`/cart/${username}`); // Shallow routing
     } else {
+      setLoading(true);
+
       router.push("/auth/signin");
     }
   };
 
   const handleOnClickOrder = () => {
     if (token) {
+      setLoading(true);
+
       router.push(`/order/list-order/${username}`);
     } else {
+      setLoading(true);
+
       router.push("/auth/signin");
     }
   };
 
   const handlePageAdmin = () => {
+    setLoading(true);
+
     router.push(`/admin/${idUser}`);
+  };
+
+  const handlePageProfileUser = () => {
+    setLoading(true);
+
+    router.push(`/user/${username}`);
   };
 
   const handleClickRegister = (type: string) => {
@@ -133,7 +153,12 @@ export default function Navbar() {
       {/* Navbar */}
       <nav className="flex items-center text-center px-20 py-4">
         {/* Logo */}
-        <div className="text-2xl text-black">
+        <div
+          onClick={() => {
+            if (currentUrl !== "/") setLoading(true);
+          }}
+          className="text-2xl text-black"
+        >
           <Link className="mr-20" href="/">
             <span className="font-extrabold">YAKUSHOP.CO</span>
           </Link>
@@ -197,7 +222,9 @@ export default function Navbar() {
               <Menu>
                 {isLoggedIn ? (
                   <>
-                    <Menu.Item key="2">My Account</Menu.Item>
+                    <Menu.Item onClick={handlePageProfileUser} key="2">
+                      My Account
+                    </Menu.Item>
                     <Menu.Item key="1" onClick={handleLogout}>
                       Logout
                     </Menu.Item>

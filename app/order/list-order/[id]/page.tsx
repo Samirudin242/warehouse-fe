@@ -21,7 +21,7 @@ type Order = {
 };
 
 function ListOrderPage() {
-  const { user } = useAppContext();
+  const { user, setLoading } = useAppContext();
 
   const userId = user?.id;
 
@@ -38,6 +38,7 @@ function ListOrderPage() {
   );
 
   useEffect(() => {
+    setLoading(false);
     if (userId && !data) {
       refresh(`${configUrl.apiUrlWarehouseService}/order/${userId}`);
     }

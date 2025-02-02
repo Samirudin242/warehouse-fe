@@ -12,8 +12,10 @@ import ProductReview from "@/components/products/product-detail/ProductReview";
 import ProductDetailSkeleton from "@/components/skeletonLoading/ProductDetailSkeleton";
 import useHookSwr from "@/hooks/useSwr";
 import { configUrl } from "@/config/configUrl";
+import { useAppContext } from "@/contexts/useContext";
 
-function page() {
+function ProductDetail() {
+  const { setLoading } = useAppContext();
   const cookies = parseCookies();
   const productId = cookies.productId;
 
@@ -24,6 +26,7 @@ function page() {
   );
 
   useEffect(() => {
+    setLoading(false);
     if (productId) {
       refresh(`${configUrl.apiUrlProductService}/product-public/${productId}`);
     }
@@ -67,4 +70,4 @@ function page() {
   );
 }
 
-export default page;
+export default ProductDetail;

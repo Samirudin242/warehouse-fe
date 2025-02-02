@@ -1,8 +1,9 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { SkeletonLoader } from "@/components/skeletonLoading/SkeletonLoader";
+import { useAppContext } from "@/contexts/useContext";
 
 const ClientCarousel = dynamic(
   () => import("@/components/carousel/CarouselTemplate"),
@@ -34,6 +35,12 @@ const ClientComments = dynamic(() => import("@/components/comments/Comments"), {
 });
 
 export default function Home() {
+  const { setLoading } = useAppContext();
+
+  useEffect(() => {
+    setLoading(false);
+  }, []);
+
   return (
     <div className="space-y-8">
       <Suspense fallback={<SkeletonLoader type="carousel" />}>
