@@ -1,12 +1,14 @@
 import React from "react";
 import { Input, Button, Upload } from "antd";
 import { EditOutlined, UploadOutlined } from "@ant-design/icons";
+import Image from "next/image";
 
 type UserInfo = {
   name: string;
   username: string;
   email: string;
   phone: string;
+  profilePicture: string;
 };
 
 type UserInfoEdit = {
@@ -24,6 +26,8 @@ type PersonalProps = {
     p2: string
   ) => void;
   toggleEdit: (p: "name" | "email" | "username" | "phone") => void;
+  handleSaveUser: () => void;
+  handleUpload: (file: File) => void;
 };
 
 export default function PersonalInformation({
@@ -31,20 +35,31 @@ export default function PersonalInformation({
   formData,
   handleChange,
   toggleEdit,
+  handleSaveUser,
+  handleUpload,
 }: PersonalProps) {
   return (
     <div className="flex gap-6">
       <div className="w-1/3">
-        <Upload>
-          <Button icon={<UploadOutlined />}>Select Photo</Button>
-        </Upload>
-        <p className="text-xs mt-2 text-gray-500">
-          Max 10MB, format: JPG, JPEG, PNG
-        </p>
-        <Button className="w-full mt-4">Change Password</Button>
+        <Image
+          src={formData?.profilePicture}
+          width={300}
+          height={300}
+          alt="profile picture"
+        />
+        <div className="mt-3">
+          <Upload
+            showUploadList={false}
+            customRequest={({ file }) => handleUpload(file as File)}
+          >
+            <Button icon={<UploadOutlined />}>Select Photo</Button>
+          </Upload>
+          <p className="text-xs mt-2 text-gray-500">
+            Max 1MB, format: JPG, JPEG, PNG
+          </p>
+        </div>
       </div>
 
-      {/* --- PERSONAL DETAILS --- */}
       <div className="flex-1 space-y-4">
         <div className="flex items-center">
           <span className="w-40 font-semibold">Name</span>
@@ -64,7 +79,7 @@ export default function PersonalInformation({
         </div>
 
         <div className="flex items-center">
-          <span className="w-40 font-semibold">Birthdate</span>
+          <span className="w-40 font-semibold">User Name</span>
           {editing.username ? (
             <Input
               value={formData.username}
@@ -117,7 +132,7 @@ export default function PersonalInformation({
         </div>
 
         <div className="flex items-end  justify-end mt-10">
-          <Button>Save</Button>
+          <Button onClick={handleSaveUser}>Save</Button>
         </div>
       </div>
     </div>

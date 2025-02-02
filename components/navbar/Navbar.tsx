@@ -35,7 +35,6 @@ export default function Navbar() {
 
   const { setLastUrl, setUser } = useAppContext();
   const currentUrl = usePathname();
-  console.log(currentUrl, "<<");
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [roleUser, setRoleUser] = useState<string>("");
@@ -49,7 +48,6 @@ export default function Navbar() {
     if (token) {
       try {
         const decoded = jwtDecode<TokenPayload>(token);
-        console.log("Decoded token:", decoded);
         if (decoded && decoded.exp * 1000 > Date.now()) {
           setIsLoggedIn(true);
           setRoleUser(decoded.role);
@@ -62,7 +60,6 @@ export default function Navbar() {
           setUsername(decoded.username);
         }
       } catch (error) {
-        console.error("Invalid token:", error);
         setIsLoggedIn(false);
       }
     } else {
@@ -73,7 +70,7 @@ export default function Navbar() {
   const handleOnClickCart = () => {
     if (token) {
       setLoading(true);
-      router.push(`/cart/${username}`); // Shallow routing
+      router.push(`/cart/${username}`);
     } else {
       setLoading(true);
 
