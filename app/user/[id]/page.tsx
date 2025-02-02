@@ -7,6 +7,7 @@ import { useAppContext } from "@/contexts/useContext";
 import { configUrl } from "@/config/configUrl";
 import useHookSwr from "@/hooks/useSwr";
 import axiosRequest from "@/hooks/useAxios";
+import ListAddressUser from "@/components/user/ListAddressUser";
 
 export default function ProfilePage() {
   const { setLoading, roles, user } = useAppContext();
@@ -126,7 +127,7 @@ export default function ProfilePage() {
         </Tabs.TabPane>
 
         <Tabs.TabPane tab="Address List" key="2">
-          <p>The address list will be displayed here.</p>
+          <ListAddressUser />
         </Tabs.TabPane>
       </Tabs>
     </div>
