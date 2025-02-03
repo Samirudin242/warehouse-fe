@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Pagination } from "antd";
 
@@ -8,6 +8,7 @@ import useHookSwr from "@/hooks/useSwr";
 import { configUrl } from "@/config/configUrl";
 
 import ProductCardSkeleton from "../../skeletonLoading/ProductCardSkeleton";
+import { useAppContext } from "@/contexts/useContext";
 
 type Product = {
   id: string;
@@ -20,6 +21,8 @@ type Product = {
 };
 
 function ListProducts() {
+  const { setLoading } = useAppContext();
+
   const searchParams = useSearchParams();
   const name = searchParams.get("name");
   const cleanedName = name ? name.replace(/^"|"$/g, "") : "";
@@ -35,6 +38,18 @@ function ListProducts() {
   const [curentPage, setCurrentPage] = useState<number>(1);
 
   const products = data?.content || [];
+
+  useEffect(() => {
+    refresh(
+      `${
+        configUrl.apiUrlProductService
+      }/product-public?size=${12}&name=${cleanedName}`
+    );
+  }, [name]);
+
+  useEffect(() => {
+    setLoading(false);
+  }, [data, name]);
 
   const handleChangePage = (page: number) => {
     setCurrentPage(page);

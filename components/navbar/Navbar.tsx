@@ -85,7 +85,6 @@ export default function Navbar() {
       router.push(`/order/list-order/${username}`);
     } else {
       setLoading(true);
-
       router.push("/auth/signin");
     }
   };
@@ -98,7 +97,6 @@ export default function Navbar() {
 
   const handlePageProfileUser = () => {
     setLoading(true);
-
     router.push(`/user/${username}`);
   };
 
@@ -129,7 +127,6 @@ export default function Navbar() {
   return (
     <header className="w-full border-b bg-white">
       <ToastContainer />
-      {/* Top Announcement Bar */}
       {showBanner && !token && (
         <div className="bg-black text-white flex px-6 py-2 text-sm">
           <div className="flex-1 text-center">
@@ -148,9 +145,7 @@ export default function Navbar() {
         </div>
       )}
 
-      {/* Navbar */}
       <nav className="flex items-center text-center px-20 py-4">
-        {/* Logo */}
         <div
           onClick={() => {
             if (currentUrl !== "/") setLoading(true);
@@ -163,12 +158,19 @@ export default function Navbar() {
         </div>
         {!isHideMenu && (
           <div className="text-2xl text-black flex items-center content-center text-center w-full">
-            {/* Nav Links */}
             <ul className="hidden md:flex space-x-6 text-sm font-medium items-center m-0">
               <li>
                 <Link
                   href="/product/list-product/all"
                   className="p-1 hover:bg-gray-100 rounded"
+                  onClick={() => {
+                    const url = currentUrl?.split("/");
+                    console.log(url);
+
+                    if (url[2] !== "list-product") {
+                      setLoading(true);
+                    }
+                  }}
                 >
                   Shop
                 </Link>
@@ -184,11 +186,6 @@ export default function Navbar() {
                   className="p-1 hover:bg-gray-100 rounded"
                 >
                   New Arrivals
-                </Link>
-              </li>
-              <li>
-                <Link href="/brands" className="p-1 hover:bg-gray-100 rounded">
-                  Brands
                 </Link>
               </li>
             </ul>

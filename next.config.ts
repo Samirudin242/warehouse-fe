@@ -47,7 +47,11 @@ const nextConfig: NextConfig = withBundleAnalyzer({
   },
 
   images: {
-    domains: ["storage.googleapis.com", "res.cloudinary.com"],
+    domains: [
+      "storage.googleapis.com",
+      "res.cloudinary.com",
+      "https://www.google.com",
+    ],
   },
 });
 
