@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import Breadcrumbs from "@/components/bredcrumbs/Bredcrumbs";
 import FilterProduct from "@/components/products/listProducts/filterProduct/FilterProduct";
@@ -12,6 +12,7 @@ import { configUrl } from "@/config/configUrl";
 import useHookSwr from "@/hooks/useSwr";
 
 export default function ListProduct() {
+  const router = useRouter();
   const { setLoading } = useAppContext();
 
   const searchParams = useSearchParams();
@@ -19,7 +20,7 @@ export default function ListProduct() {
   const cleanedName = name ? name.replace(/^"|"$/g, "") : "";
 
   const [listFilter, setListFilter] = useState<any>({
-    name: "",
+    productName: "",
     categories: [],
   });
 
@@ -32,44 +33,103 @@ export default function ListProduct() {
   const { data, error, isLoading, refresh } = useHookSwr(url);
 
   useEffect(() => {
+    setLoading(false);
     refresh(
       `${
         configUrl.apiUrlProductService
       }/product-public?size=${12}&name=${cleanedName}`
     );
 
-    if (cleanedName) {
+    if (cleanedName.length > 0) {
       const filterName = {
-        name: cleanedName,
+        productName: cleanedName,
       };
       setListFilter({
         ...listFilter,
-        listFilter,
+        ...filterName,
       });
     }
   }, [name]);
 
-  const handleFilterCategory = (id: string, name: string) => {};
+  const handleFilterCategory = (id: string, name: string) => {
+    const filter = listFilter?.categories;
+    let isPush = filter.find((f: any) => f.id == id);
+
+    if (!isPush) {
+      filter.push({ id, name });
+      const listId = filter?.map((f: any) => f.id).join(",");
+
+      refresh(
+        `${
+          configUrl.apiUrlProductService
+        }/product-public?size=${12}&name=${cleanedName}&categoryIds=${listId}`
+      );
+    }
+
+    setListFilter({
+      ...listFilter,
+      categories: filter,
+    });
+  };
+
+  const handleDeleteFilter = (id: string, type: string) => {
+    if (type == "name") {
+      router.push("/product/list-product/all");
+      setListFilter({
+        ...listFilter,
+        productName: "",
+      });
+    } else {
+      const filter = listFilter?.categories;
+      let newFiler = filter.filter((f: any) => f.id != id);
+      setListFilter({
+        ...listFilter,
+        categories: newFiler,
+      });
+
+      const listId = newFiler?.map((f: any) => f.id).join(",");
+
+      if (listId) {
+        refresh(
+          `${
+            configUrl.apiUrlProductService
+          }/product-public?size=${12}&name=${cleanedName}&categoryIds=${listId}`
+        );
+      } else {
+        refresh(
+          `${
+            configUrl.apiUrlProductService
+          }/product-public?size=${12}&name=${cleanedName}`
+        );
+      }
+    }
+  };
 
   useEffect(() => {
     setLoading(false);
   }, []);
 
+  if (!isLoading) {
+    setLoading(false);
+  }
+
   return (
     <div className="px-20">
       <Breadcrumbs isHideLast={true} />
-      {/* Filter */}
       <div className="flex gap-10">
         <div>
-          <FilterProduct />
+          <FilterProduct
+            handleFilterCategory={handleFilterCategory}
+            listFilter={listFilter?.categories}
+          />
         </div>
-        {/* List Product */}
         <div className="w-full">
           <ListProducts
             data={data}
             isLoading={isLoading}
             refresh={refresh}
             listFilter={listFilter}
+            handleDeleteFilter={handleDeleteFilter}
           />
         </div>
       </div>

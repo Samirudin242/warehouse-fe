@@ -68,30 +68,34 @@ export default function Navbar() {
   }, []);
 
   const handleOnClickCart = () => {
-    if (token) {
-      setLoading(true);
-      router.push(`/cart/${username}`);
-    } else {
-      setLoading(true);
+    const url = currentUrl.split("/");
+    if (url[1] != "cart") {
+      if (token) {
+        setLoading(true);
+        router.push(`/cart/${username}`);
+      } else {
+        setLoading(true);
 
-      router.push("/auth/signin");
+        router.push("/auth/signin");
+      }
     }
   };
 
   const handleOnClickOrder = () => {
-    if (token) {
-      setLoading(true);
-
-      router.push(`/order/list-order/${username}`);
-    } else {
-      setLoading(true);
-      router.push("/auth/signin");
+    const url = currentUrl.split("/");
+    if (url[1] != "order") {
+      if (token) {
+        setLoading(true);
+        router.push(`/order/list-order/${username}`);
+      } else {
+        setLoading(true);
+        router.push("/auth/signin");
+      }
     }
   };
 
   const handlePageAdmin = () => {
     setLoading(true);
-
     router.push(`/admin/${idUser}`);
   };
 

@@ -1,10 +1,25 @@
 "use client";
 import React, { useState } from "react";
-import { MdKeyboardArrowRight, MdKeyboardArrowDown } from "react-icons/md";
+import {
+  FiChevronRight,
+  FiChevronDown,
+  FiFolder,
+  FiFile,
+} from "react-icons/fi";
+import { Spin, Alert } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
 import useHookSwr from "@/hooks/useSwr";
 import { configUrl } from "@/config/configUrl";
 
-export default function FilterCategories() {
+type FilterProductProps = {
+  handleFilterCategory: (id: string, name: string) => void;
+  listFilter: any;
+};
+
+export default function FilterCategories({
+  handleFilterCategory,
+  listFilter,
+}: FilterProductProps) {
   const { data, isLoading, error } = useHookSwr(
     `${configUrl.apiUrlProductService}/product/products-category`
   );
@@ -14,7 +29,6 @@ export default function FilterCategories() {
     string[]
   >([]);
 
-  // Toggle main category collapse
   const toggleCategory = (categoryId: string) => {
     setCollapsedCategories((prev) =>
       prev.includes(categoryId)
@@ -23,7 +37,6 @@ export default function FilterCategories() {
     );
   };
 
-  // Toggle subcategory collapse
   const toggleSubcategory = (subcategoryId: string) => {
     setCollapsedSubcategories((prev) =>
       prev.includes(subcategoryId)
@@ -34,46 +47,67 @@ export default function FilterCategories() {
 
   const renderSubcategory = (subcategories: any[], parentId: string) => {
     return (
-      <ul className="pl-4 transition-all duration-500 ease-in-out overflow-hidden">
+      <ul className="ml-4 border-l-2 border-gray-100 pl-3">
         {subcategories.map((subcategory) => {
           const isCollapsed = collapsedSubcategories.includes(
             `${parentId}-${subcategory.id}`
           );
+
+          const isInclude = listFilter.find((f: any) => f.id == subcategory.id);
+
           return (
-            <li key={subcategory.id} className="py-1">
-              {/* Subcategory Toggle */}
+            <li key={subcategory.id} className="my-1">
               <div
-                className="flex justify-between items-center cursor-pointer hover:bg-gray-100 rounded-md"
-                onClick={() =>
-                  toggleSubcategory(`${parentId}-${subcategory.id}`)
-                }
+                className={`flex items-center justify-between gap-2 rounded-lg p-2 transition-colors hover:bg-gray-50 ${
+                  isInclude ? "bg-gray-100" : ""
+                }`}
               >
-                <span className="text-sm text-gray-600 capitalize">
-                  {subcategory.name}
-                </span>
-                {subcategory.children.length > 0 ? (
-                  isCollapsed ? (
-                    <MdKeyboardArrowRight className="text-gray-500 text-xl" />
+                <button
+                  className="flex flex-1 items-center gap-2 text-left"
+                  onClick={() =>
+                    handleFilterCategory(subcategory.id, subcategory.name)
+                  }
+                >
+                  {subcategory.children.length > 0 ? (
+                    <FiFolder className="h-4 w-4 text-blue-500" />
                   ) : (
-                    <MdKeyboardArrowDown className="text-gray-500 text-xl" />
-                  )
-                ) : (
-                  <MdKeyboardArrowRight className="text-gray-400" />
+                    <FiFile className="h-4 w-4 text-gray-400" />
+                  )}
+                  <span className="text-sm text-gray-700 capitalize">
+                    {subcategory.name}
+                  </span>
+                </button>
+
+                {subcategory.children.length > 0 && (
+                  <button
+                    className="rounded-md p-1 hover:bg-gray-200"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleSubcategory(`${parentId}-${subcategory.id}`);
+                    }}
+                  >
+                    {isCollapsed ? (
+                      <FiChevronRight className="h-4 w-4 text-gray-500" />
+                    ) : (
+                      <FiChevronDown className="h-4 w-4 text-gray-500" />
+                    )}
+                  </button>
                 )}
               </div>
 
-              {/* Render Children */}
               {subcategory.children.length > 0 && (
-                <ul
-                  className={`pl-4 transition-max-height duration-500 ease-in-out overflow-hidden ${
-                    isCollapsed ? "max-h-96" : "max-h-0"
+                <div
+                  className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                    isCollapsed
+                      ? "max-h-0 opacity-0"
+                      : "max-h-screen opacity-100"
                   }`}
                 >
                   {renderSubcategory(
                     subcategory.children,
                     `${parentId}-${subcategory.id}`
                   )}
-                </ul>
+                </div>
               )}
             </li>
           );
@@ -82,41 +116,74 @@ export default function FilterCategories() {
     );
   };
 
+  if (isLoading) {
+    return (
+      <div className="mt-4">
+        <h2 className="mb-4 text-lg font-semibold">Categories</h2>
+        <Spin indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <Alert
+        message="Failed to load categories"
+        description="Please try again later"
+        type="error"
+        showIcon
+        className="mt-4"
+      />
+    );
+  }
+
   return (
-    <div className="mt-2">
-      <h2 className="text-lg font-semibold mb-2">Categories</h2>
-      {data?.map((category: any) => {
-        const isCollapsed = collapsedCategories.includes(category.id);
+    <div className="mt-4">
+      <h2 className="mb-4 text-lg font-semibold">Categories</h2>
+      <div className="space-y-2">
+        {data?.map((category: any) => {
+          const isCollapsed = collapsedCategories.includes(category.id);
+          const isInclude = listFilter.find((f: any) => f.id == category.id);
 
-        return (
-          <div key={category.id} className="mb-3">
-            {/* Category Toggle */}
-            <div
-              className="flex justify-between items-center cursor-pointer hover:bg-gray-100 rounded-md"
-              onClick={() => toggleCategory(category.id)}
-            >
-              <h4 className="text-sm font-medium capitalize">
-                {category.name}
-              </h4>
-              {isCollapsed ? (
-                <MdKeyboardArrowDown className="text-xl" />
-              ) : (
-                <MdKeyboardArrowRight className="text-xl" />
-              )}
-            </div>
+          return (
+            <div key={category.id} className="rounded-lg bg-white">
+              <div
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleCategory(category.id);
+                  handleFilterCategory(category.id, category.name);
+                }}
+                className={`flex items-center justify-between gap-2 rounded-lg p-2 transition-colors hover:bg-gray-50} ${
+                  isInclude ? "bg-gray-100" : ""
+                } `}
+              >
+                <button className="flex flex-1 items-center gap-2 text-left">
+                  <FiFolder className="h-4 w-4 text-blue-500" />
+                  <span className="text-sm font-medium text-gray-700 capitalize">
+                    {category.name}
+                  </span>
+                </button>
 
-            {/* Subcategories List */}
-            <div
-              className={`transition-max-height duration-500 ease-in-out overflow-hidden ${
-                isCollapsed ? "max-h-screen" : "max-h-0"
-              }`}
-            >
-              {renderSubcategory(category.children, category.id)}
+                <button className="rounded-md p-1 hover:bg-gray-200">
+                  {isCollapsed ? (
+                    <FiChevronDown className="h-4 w-4 text-gray-500" />
+                  ) : (
+                    <FiChevronRight className="h-4 w-4 text-gray-500" />
+                  )}
+                </button>
+              </div>
+
+              <div
+                className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                  isCollapsed ? "max-h-screen opacity-100" : "max-h-0 opacity-0"
+                }`}
+              >
+                {renderSubcategory(category.children, category.id)}
+              </div>
             </div>
-          </div>
-        );
-      })}
-      <div className="mt-5"></div>
+          );
+        })}
+      </div>
     </div>
   );
 }

@@ -38,34 +38,45 @@ const ProductCard: React.FC<ProductCardProps> = ({
   return (
     <div
       onClick={handleClickCard}
-      className="w-64 bg-white hover:shadow-md rounded-lg overflow-hidden hover:border cursor-pointer"
+      className="w-64 bg-white rounded-lg overflow-hidden cursor-pointer 
+        border hover:border-gray-200 transition-all duration-300 ease-out
+        hover:shadow-lg hover:-translate-y-1.5 group"
     >
-      <div className="bg-customGray overflow-hidden">
+      <div className="bg-customGray overflow-hidden relative">
         <Image
           src={imageSrc}
           alt={title}
-          className="w-full h-64 aspect-[3/2] object-contain mix-blend-multiply transform transition-transform duration-300 ease-in-out hover:scale-110"
+          className="w-full h-64 aspect-[3/2] object-contain mix-blend-multiply 
+            transform transition-transform duration-500 ease-in-out 
+            group-hover:scale-105"
           width={200}
           height={200}
         />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent" />
       </div>
 
-      <div className="p-4">
-        <h3 className="text-base font-semibold text-gray-800 mb-2 truncate">
+      <div className="p-4 space-y-2">
+        <h3
+          className="text-base font-semibold text-gray-800 truncate 
+          transition-colors group-hover:text-blue-600"
+        >
           {title}
         </h3>
 
-        <div className="text-md font-bold text-gray-900">
+        <div className="text-md font-bold text-gray-900 animate-pulse-on-change">
           {formatToRupiah(price, true)}
         </div>
 
-        <div className="flex justify-items-center mb-2 gap-3 mt-3 text-gray-500">
-          <div className="flex justify-center items-center gap-1">
-            <PiStarFill className="text-amber-400" />
-            {rating ? rating : "not rated yet"}
+        <div
+          className="flex items-center gap-3 text-gray-500 
+          transition-opacity hover:opacity-80"
+        >
+          <div className="flex items-center gap-1">
+            <PiStarFill className="text-amber-400 animate-[ping_1s_ease-in-out_0.5]" />
+            <span className="animate-fade-in">{rating || "not rated yet"}</span>
           </div>
-          <div>|</div>
-          <div>{totalSell ? totalSell : 0} sold</div>
+          <div className="h-4 w-px bg-gray-300" />
+          <div className="animate-fade-in">{totalSell || 0} sold</div>
         </div>
       </div>
     </div>

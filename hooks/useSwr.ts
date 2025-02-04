@@ -26,9 +26,9 @@ const useHookSwr = (
 
   const mergedOptions: SWRConfiguration = {
     refreshInterval: 0,
-    revalidateIfStale: true,
-    revalidateOnFocus: true,
-    revalidateOnReconnect: true,
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
     ...swrOptions,
   };
 

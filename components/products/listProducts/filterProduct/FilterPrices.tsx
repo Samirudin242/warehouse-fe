@@ -23,43 +23,46 @@ export default function FilterPrices({
   };
 
   return (
-    <Card
-      title={
-        <Space>
-          <GiPriceTag className="text-lg text-blue-600" />
-          <Typography.Text strong>Price Range</Typography.Text>
-        </Space>
-      }
-      className="shadow-sm"
-    >
-      <div className="flex items-center gap-2 mb-4">
-        <FaDollarSign className="text-gray-500" />
-        <Slider
-          range
-          min={min}
-          max={max}
-          value={range}
-          onChange={handleChange}
-          className="flex-grow"
-          tooltip={{ formatter: (value) => `$${value}` }}
-        />
-      </div>
+    <div>
+      <h2 className="mt-3 mb-4 text-lg font-semibold">Prices</h2>
+      <Card
+        title={
+          <Space>
+            <GiPriceTag className="text-lg text-blue-600" />
+            <Typography.Text strong>Price Range</Typography.Text>
+          </Space>
+        }
+        className="shadow-sm"
+      >
+        <div className="flex items-center gap-2 mb-4">
+          <FaDollarSign className="text-gray-500" />
+          <Slider
+            range
+            min={min}
+            max={max}
+            value={range}
+            onChange={handleChange}
+            className="flex-grow"
+            tooltip={{ formatter: (value) => `$${value}` }}
+          />
+        </div>
 
-      <div className="flex justify-between items-center text-sm">
-        <div className="flex items-center gap-1">
-          <FaDollarSign className="text-gray-500 text-xs" />
-          <Typography.Text strong className="font-mono">
-            {range[0]}
-          </Typography.Text>
+        <div className="flex justify-between items-center text-sm">
+          <div className="flex items-center gap-1">
+            <FaDollarSign className="text-gray-500 text-xs" />
+            <Typography.Text strong className="font-mono">
+              {range[0]}
+            </Typography.Text>
+          </div>
+          <span className="mx-2">-</span>
+          <div className="flex items-center gap-1">
+            <FaDollarSign className="text-gray-500 text-xs" />
+            <Typography.Text strong className="font-mono">
+              {range[1]}
+            </Typography.Text>
+          </div>
         </div>
-        <span className="mx-2">-</span>
-        <div className="flex items-center gap-1">
-          <FaDollarSign className="text-gray-500 text-xs" />
-          <Typography.Text strong className="font-mono">
-            {range[1]}
-          </Typography.Text>
-        </div>
-      </div>
-    </Card>
+      </Card>
+    </div>
   );
 }
