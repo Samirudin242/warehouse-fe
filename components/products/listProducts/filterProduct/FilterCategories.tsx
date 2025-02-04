@@ -1,54 +1,57 @@
 "use client";
 import React, { useState } from "react";
 import { MdKeyboardArrowRight, MdKeyboardArrowDown } from "react-icons/md";
-
-import { filterList } from "@/data/filters";
+import useHookSwr from "@/hooks/useSwr";
+import { configUrl } from "@/config/configUrl";
 
 export default function FilterCategories() {
+  const { data, isLoading, error } = useHookSwr(
+    `${configUrl.apiUrlProductService}/product/products-category`
+  );
+
   const [collapsedCategories, setCollapsedCategories] = useState<string[]>([]);
   const [collapsedSubcategories, setCollapsedSubcategories] = useState<
     string[]
   >([]);
 
   // Toggle main category collapse
-  const toggleCategory = (category: string) => {
+  const toggleCategory = (categoryId: string) => {
     setCollapsedCategories((prev) =>
-      prev.includes(category)
-        ? prev.filter((item) => item !== category)
-        : [...prev, category]
+      prev.includes(categoryId)
+        ? prev.filter((item) => item !== categoryId)
+        : [...prev, categoryId]
     );
   };
 
   // Toggle subcategory collapse
-  const toggleSubcategory = (subcategory: string) => {
+  const toggleSubcategory = (subcategoryId: string) => {
     setCollapsedSubcategories((prev) =>
-      prev.includes(subcategory)
-        ? prev.filter((item) => item !== subcategory)
-        : [...prev, subcategory]
+      prev.includes(subcategoryId)
+        ? prev.filter((item) => item !== subcategoryId)
+        : [...prev, subcategoryId]
     );
   };
 
-  const renderSubcategory = (items: any, parentKey: string) => {
+  const renderSubcategory = (subcategories: any[], parentId: string) => {
     return (
       <ul className="pl-4 transition-all duration-500 ease-in-out overflow-hidden">
-        {Object.entries(items).map(([key, value]) => {
+        {subcategories.map((subcategory) => {
           const isCollapsed = collapsedSubcategories.includes(
-            `${parentKey}-${key}`
+            `${parentId}-${subcategory.id}`
           );
-
-          const hasChildren = true;
-
           return (
-            <li key={key} className="py-1">
+            <li key={subcategory.id} className="py-1">
               {/* Subcategory Toggle */}
               <div
                 className="flex justify-between items-center cursor-pointer hover:bg-gray-100 rounded-md"
                 onClick={() =>
-                  hasChildren && toggleSubcategory(`${parentKey}-${key}`)
+                  toggleSubcategory(`${parentId}-${subcategory.id}`)
                 }
               >
-                <span className="text-sm text-gray-600 capitalize">{key}</span>
-                {hasChildren ? (
+                <span className="text-sm text-gray-600 capitalize">
+                  {subcategory.name}
+                </span>
+                {subcategory.children.length > 0 ? (
                   isCollapsed ? (
                     <MdKeyboardArrowRight className="text-gray-500 text-xl" />
                   ) : (
@@ -60,22 +63,16 @@ export default function FilterCategories() {
               </div>
 
               {/* Render Children */}
-              {hasChildren && (
+              {subcategory.children.length > 0 && (
                 <ul
                   className={`pl-4 transition-max-height duration-500 ease-in-out overflow-hidden ${
                     isCollapsed ? "max-h-96" : "max-h-0"
                   }`}
                 >
-                  {Array.isArray(value)
-                    ? value.map((item) => (
-                        <li
-                          key={item}
-                          className="text-sm text-gray-500 capitalize py-1 cursor-pointer hover:bg-gray-100 rounded-md"
-                        >
-                          {item}
-                        </li>
-                      ))
-                    : renderSubcategory(value, `${parentKey}-${key}`)}
+                  {renderSubcategory(
+                    subcategory.children,
+                    `${parentId}-${subcategory.id}`
+                  )}
                 </ul>
               )}
             </li>
@@ -88,17 +85,19 @@ export default function FilterCategories() {
   return (
     <div className="mt-2">
       <h2 className="text-lg font-semibold mb-2">Categories</h2>
-      {Object.entries(filterList.categories).map(([gender, types]) => {
-        const isCollapsed = collapsedCategories.includes(gender);
+      {data?.map((category: any) => {
+        const isCollapsed = collapsedCategories.includes(category.id);
 
         return (
-          <div key={gender} className="mb-3 ">
-            {/* Gender Toggle */}
+          <div key={category.id} className="mb-3">
+            {/* Category Toggle */}
             <div
-              className="flex justify-between items-center cursor-pointer hover:bg-gray-100 rounded-md "
-              onClick={() => toggleCategory(gender)}
+              className="flex justify-between items-center cursor-pointer hover:bg-gray-100 rounded-md"
+              onClick={() => toggleCategory(category.id)}
             >
-              <h4 className="text-sm font-medium capitalize">{gender}</h4>
+              <h4 className="text-sm font-medium capitalize">
+                {category.name}
+              </h4>
               {isCollapsed ? (
                 <MdKeyboardArrowDown className="text-xl" />
               ) : (
@@ -112,12 +111,12 @@ export default function FilterCategories() {
                 isCollapsed ? "max-h-screen" : "max-h-0"
               }`}
             >
-              {renderSubcategory(types, gender)}
+              {renderSubcategory(category.children, category.id)}
             </div>
           </div>
         );
       })}
-      <div className="border mt-5"></div>
+      <div className="mt-5"></div>
     </div>
   );
 }

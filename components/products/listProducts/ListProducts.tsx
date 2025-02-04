@@ -1,14 +1,11 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import React, { useState } from "react";
 import { Pagination } from "antd";
 
 import ProductCard from "../ProductCard";
-import useHookSwr from "@/hooks/useSwr";
 import { configUrl } from "@/config/configUrl";
 
 import ProductCardSkeleton from "../../skeletonLoading/ProductCardSkeleton";
-import { useAppContext } from "@/contexts/useContext";
 
 type Product = {
   id: string;
@@ -20,36 +17,22 @@ type Product = {
   imageUrl: string;
 };
 
-function ListProducts() {
-  const { setLoading } = useAppContext();
+type ListProductProps = {
+  data: any;
+  isLoading: boolean;
+  refresh: (url: string) => void;
+  listFilter: any;
+};
 
-  const searchParams = useSearchParams();
-  const name = searchParams.get("name");
-  const cleanedName = name ? name.replace(/^"|"$/g, "") : "";
-
-  const url = name
-    ? `${
-        configUrl.apiUrlProductService
-      }/product-public?size=${12}&name=${cleanedName}`
-    : `${configUrl.apiUrlProductService}/product-public?size=${12}`;
-
-  const { data, error, isLoading, refresh } = useHookSwr(url);
-
+function ListProducts({
+  data,
+  isLoading,
+  refresh,
+  listFilter,
+}: ListProductProps) {
   const [curentPage, setCurrentPage] = useState<number>(1);
 
   const products = data?.content || [];
-
-  useEffect(() => {
-    refresh(
-      `${
-        configUrl.apiUrlProductService
-      }/product-public?size=${12}&name=${cleanedName}`
-    );
-  }, [name]);
-
-  useEffect(() => {
-    setLoading(false);
-  }, [data, name]);
 
   const handleChangePage = (page: number) => {
     setCurrentPage(page);
@@ -63,7 +46,7 @@ function ListProducts() {
   }
   return (
     <div className="text-black w-full">
-      <div className="mb-4 text-xl font-bold">Casual</div>
+      <div className="mb-4 text-xl font-bold">{JSON.stringify(listFilter)}</div>
       <div className="grid grid-cols-3 gap-y-3 w-full">
         {products?.map((product: Product, i: number) => {
           return (

@@ -108,6 +108,7 @@ export default function Navbar() {
   };
 
   const handleLogout = () => {
+    setRoleUser("");
     Cookies.remove("accessToken");
     setIsLoggedIn(false);
     router.push("/");
