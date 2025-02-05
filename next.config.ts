@@ -6,16 +6,10 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
 
 const nextConfig: NextConfig = withBundleAnalyzer({
   reactStrictMode: false,
-  swcMinify: true,
-
-  future: {
-    webpack5: true,
-  },
 
   experimental: {
     scrollRestoration: true,
     optimizeCss: true,
-    legacyBrowsers: false,
   },
 
   webpack(config: any) {

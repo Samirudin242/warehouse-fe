@@ -1,50 +1,63 @@
 import React from "react";
+import { useRouter } from "next/navigation";
+
 import ProductCard from "./ProductCard";
 import ButtonComponent from "../globals/Button";
+import { configUrl } from "@/config/configUrl";
 
+import useHookSwr from "@/hooks/useSwr";
 interface Props {
   title: string;
   isHideBorder?: Boolean;
+  page: number;
 }
 
-function ListProduct({ title, isHideBorder }: Props) {
+type Product = {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  totalSell: number;
+  rating: number;
+  imageUrl: string;
+};
+
+function ListProduct({ title, isHideBorder, page }: Props) {
+  const router = useRouter();
+
+  const { data, error, isLoading, refresh } = useHookSwr(
+    `${configUrl.apiUrlProductService}/product-public?size=${4}&page=${page}`
+  );
+
+  const product = data?.content || [];
+
   return (
     <div className="mt-14 px-28">
       <h1 className="text-4xl font-extrabold text-black text-center mb-10">
         {title}
       </h1>
       <div className="flex justify-between">
-        <ProductCard
-          id="1"
-          title="Down jacket ”Arsenal” Moncler brown"
-          imageSrc="https://res.cloudinary.com/hilnmyskv/image/upload/v1638376445/flagship_sunrise/M0E20000000DTVF_0.jpg"
-          price={1000}
-          rating={4}
-        />
-        <ProductCard
-          id="2"
-          title="Down jacket ”Arsenal” Moncler brown"
-          imageSrc="https://res.cloudinary.com/hilnmyskv/image/upload/v1638374296/flagship_sunrise/M0E20000000DU7X_0.jpg"
-          price={1000}
-          rating={4}
-        />
-        <ProductCard
-          id="3"
-          title="Down jacket ”Arsenal” Moncler brown"
-          imageSrc="https://res.cloudinary.com/hilnmyskv/image/upload/v1638374942/flagship_sunrise/M0E20000000DU7G_0.jpg"
-          price={1000}
-          rating={4}
-        />
-        <ProductCard
-          id="4"
-          title="Down jacket ”Arsenal” Moncler brown"
-          imageSrc="https://res.cloudinary.com/hilnmyskv/image/upload/v1638371385/flagship_sunrise/M0E20000000DTSX_1.jpg"
-          price={1000}
-          rating={4}
-        />
+        {product?.map((product: Product, i: number) => {
+          return (
+            <div key={i}>
+              <ProductCard
+                imageSrc={product.imageUrl}
+                title={product.name}
+                rating={product.rating}
+                price={product.price}
+                id={product.id}
+              />
+            </div>
+          );
+        })}
       </div>
       <div className="text-center mb-10 mt-10">
-        <ButtonComponent text="View All" />
+        <ButtonComponent
+          text="View All"
+          onClick={() => {
+            router.push("product/list-product/all");
+          }}
+        />
       </div>
       {!isHideBorder && <div className="border w-full"></div>}
     </div>

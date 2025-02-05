@@ -48,11 +48,11 @@ export default function Home() {
       </Suspense>
 
       <Suspense fallback={<SkeletonLoader type="product-list" />}>
-        <ClientListProduct title="NEW ARRIVALS" />
+        <ClientListProduct title="NEW ARRIVALS" page={1} />
       </Suspense>
 
       <Suspense fallback={<SkeletonLoader type="product-list" />}>
-        <ClientListProduct isHideBorder={true} title="TOP SELLING" />
+        <ClientListProduct isHideBorder={true} title="TOP SELLING" page={2} />
       </Suspense>
 
       <Suspense fallback={<SkeletonLoader type="categories" />}>

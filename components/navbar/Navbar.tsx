@@ -181,14 +181,31 @@ export default function Navbar() {
                 </Link>
               </li>
               <li>
-                <Link href="/on-sale" className="p-1 hover:bg-gray-100 rounded">
+                <Link
+                  onClick={() => {
+                    const url = currentUrl?.split("/");
+
+                    if (url[2] !== "list-product") {
+                      setLoading(true);
+                    }
+                  }}
+                  href="/product/list-product/all"
+                  className="p-1 hover:bg-gray-100 rounded"
+                >
                   On Sale
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/new-arrivals"
+                  href="/product/list-product/all"
                   className="p-1 hover:bg-gray-100 rounded"
+                  onClick={() => {
+                    const url = currentUrl?.split("/");
+
+                    if (url[2] !== "list-product") {
+                      setLoading(true);
+                    }
+                  }}
                 >
                   New Arrivals
                 </Link>
