@@ -2,7 +2,7 @@
 
 import { useState, lazy, Suspense, useEffect } from "react";
 import { Table, Tag, Segmented, Input, Button, Modal, Spin, Image } from "antd";
-import type { ColumnsType, TablePaginationConfig } from "antd/es/table";
+import type { ColumnsType } from "antd/es/table";
 import {
   MdOutlinePayment,
   MdLocalShipping,

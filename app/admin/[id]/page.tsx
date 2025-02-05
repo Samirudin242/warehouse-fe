@@ -4,9 +4,6 @@ import React, { Suspense, useEffect } from "react";
 import { DashboardSkeleton } from "@/components/skeletonLoading/DashboardSkeleton";
 import dynamic from "next/dynamic";
 import { useAppContext } from "@/contexts/useContext";
-import { useRouter } from "next/navigation";
-import Cookies from "js-cookie";
-import { jwtDecode } from "jwt-decode";
 import { useCheckRoleAndRedirect } from "@/utils/checkRole";
 
 const DashboardOverview = dynamic(
