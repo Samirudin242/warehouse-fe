@@ -13,6 +13,7 @@ import useHookSwr from "@/hooks/useSwr";
 import { configUrl } from "@/config/configUrl";
 import SkeletonTable from "@/components/skeletonLoading/TableSkeleton";
 import { useAppContext } from "@/contexts/useContext";
+import { useCheckRoleAndRedirect } from "@/utils/checkRole";
 
 const { Option } = Select;
 
@@ -68,6 +69,8 @@ function AdminProductPage() {
 
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pageSize] = useState<number>(10);
+
+  useCheckRoleAndRedirect();
 
   useEffect(() => {
     setLoading(false);

@@ -2,6 +2,7 @@
 import ReportFilters from "@/components/admin/report/ReportFilters";
 import SalesChart from "@/components/admin/report/SalesChart";
 import { useAppContext } from "@/contexts/useContext";
+import { useCheckRoleAndRedirect } from "@/utils/checkRole";
 import React, { useEffect, useState } from "react";
 
 function AdminReportsPage() {
@@ -16,6 +17,8 @@ function AdminReportsPage() {
   );
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
+
+  useCheckRoleAndRedirect();
 
   useEffect(() => {
     setLoading(false);

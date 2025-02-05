@@ -19,6 +19,7 @@ import useHookSwr from "@/hooks/useSwr";
 import SkeletonTable from "@/components/skeletonLoading/TableSkeleton";
 import axiosRequest from "@/hooks/useAxios";
 import { useAppContext } from "@/contexts/useContext";
+import { useCheckRoleAndRedirect } from "@/utils/checkRole";
 
 const ModalOrderDetail = lazy(
   () => import("@/components/order/ModalOrderDetail")
@@ -61,6 +62,8 @@ function OrderManagementPage() {
   const dataOrders = data?.content;
 
   const totalOrders = data?.totalElements || 0;
+
+  useCheckRoleAndRedirect();
 
   useEffect(() => {
     setLoading(false);

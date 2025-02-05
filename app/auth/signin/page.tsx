@@ -38,7 +38,7 @@ function SignInPage() {
 
       console.log(response?.data?.isSuccess, "Response");
       if (response?.data?.isSuccess) {
-        Cookies.set("accessToken", response?.data.accessToken); //set the cookie
+        Cookies.set("accessToken", response?.data.accessToken);
         // Success toast message
         toast.success("🎉 Login successful!", {
           position: "top-center",

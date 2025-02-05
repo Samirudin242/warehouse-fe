@@ -6,6 +6,7 @@ import useSwr from "@/hooks/useSwr";
 import AddUserModal from "@/components/admin/user/ModalAddUser";
 import { useAppContext } from "@/contexts/useContext";
 import SkeletonTable from "@/components/skeletonLoading/TableSkeleton";
+import { useCheckRoleAndRedirect } from "@/utils/checkRole";
 
 const { Option } = Select;
 
@@ -37,6 +38,8 @@ function AdminUserPage() {
     setSearchTerm(e.target.value);
     setCurrentPage(1);
   };
+
+  useCheckRoleAndRedirect();
 
   useEffect(() => {
     setLoading(false);

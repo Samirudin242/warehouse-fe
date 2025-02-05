@@ -11,6 +11,7 @@ import { configUrl } from "@/config/configUrl";
 import ModalAddWarehouse from "@/components/admin/warehouse/ModalAddWarehouse";
 import SkeletonTable from "@/components/skeletonLoading/TableSkeleton";
 import { useAppContext } from "@/contexts/useContext";
+import { useCheckRoleAndRedirect } from "@/utils/checkRole";
 
 export default function AdminWarehousePage() {
   const { setLoading } = useAppContext();
@@ -26,6 +27,8 @@ export default function AdminWarehousePage() {
   useEffect(() => {
     setLoading(false);
   }, []);
+
+  useCheckRoleAndRedirect();
 
   const handleEditClick = (key: string) => {
     console.log(`Edit warehouse with key: ${key}`);

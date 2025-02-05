@@ -4,6 +4,10 @@ import React, { Suspense, useEffect } from "react";
 import { DashboardSkeleton } from "@/components/skeletonLoading/DashboardSkeleton";
 import dynamic from "next/dynamic";
 import { useAppContext } from "@/contexts/useContext";
+import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
+import { jwtDecode } from "jwt-decode";
+import { useCheckRoleAndRedirect } from "@/utils/checkRole";
 
 const DashboardOverview = dynamic(
   () => import("@/components/admin/dashboard/Overview"),
@@ -38,11 +42,13 @@ const CommentList = dynamic(
 );
 
 function DashboardPage() {
-  const { setLoading } = useAppContext();
+  const { setLoading, user } = useAppContext();
+
+  useCheckRoleAndRedirect();
 
   useEffect(() => {
     setLoading(false);
-  }, []);
+  }, [user]);
 
   return (
     <div className="text-black p-5 space-y-6">
