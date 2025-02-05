@@ -3,7 +3,7 @@ import { Modal } from "antd";
 import axios from "axios";
 import { ShippingProps, OptionShipping } from "@/types/Order";
 import { configUrl } from "@/config/configUrl";
-import { formatToRupiah } from "@/app/utils/formatPrice";
+import { formatToRupiah } from "@/utils/formatPrice";
 import ListOptionSkeleton from "../skeletonLoading/ListOptionSkeleton";
 
 function ListShipping({

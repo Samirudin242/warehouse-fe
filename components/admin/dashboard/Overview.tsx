@@ -1,6 +1,17 @@
+import { configUrl } from "@/config/configUrl";
+import useHookSwr from "@/hooks/useSwr";
+import { formatToRupiah } from "@/utils/formatPrice";
 import React from "react";
 
 export default function DashboardOverview() {
+  const { data: totalUser } = useHookSwr(
+    `${configUrl.apiUrlUserService}/user/get-all-users-percentage`
+  );
+
+  const { data: totalIncome } = useHookSwr(
+    `${configUrl.apiUrlWarehouseService}/sales/all-income`
+  );
+
   const stats = [
     { label: "Customers", value: "10,243", change: "8%" },
     { label: "Income", value: "$39,403,450", change: "8%" },
@@ -22,27 +33,45 @@ export default function DashboardOverview() {
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-semibold">Overview</h1>
           <div className="relative">
-            <button className="flex items-center px-4 py-2 bg-gray-200 rounded-md shadow-sm hover:bg-gray-300">
+            {/* <button className="flex items-center px-4 py-2 bg-gray-200 rounded-md shadow-sm hover:bg-gray-300">
               All Time
               <span className="ml-2">▼</span>
-            </button>
+            </button> */}
           </div>
         </div>
         <div className="flex gap-4">
-          {stats.map((stat, index) => (
-            <div
-              key={index}
-              className="flex-1 flex justify-between items-center bg-gray-50 px-4 py-6 rounded-lg"
-            >
-              <div>
-                <h2 className="text-gray-500">{stat.label}</h2>
-                <p className="text-2xl font-bold">{stat.value}</p>
-              </div>
-              <div className="bg-green-100 text-green-600 px-3 py-1 rounded-full">
-                {stat.change}
-              </div>
+          <div className="flex-1 flex justify-between items-center bg-gray-50 px-4 py-6 rounded-lg">
+            <div>
+              <h2 className="text-gray-500">Customer</h2>
+              <p className="text-2xl font-bold">{totalUser?.totalUser}</p>
             </div>
-          ))}
+            <div
+              className={`${
+                totalUser?.percentage > 1
+                  ? "bg-green-100 text-green-600"
+                  : "bg-red-100 text-red-600"
+              }  px-3 py-1 rounded-full`}
+            >
+              {totalUser?.percentage}
+            </div>
+          </div>
+          <div className="flex-1 flex justify-between items-center bg-gray-50 px-4 py-6 rounded-lg">
+            <div>
+              <h2 className="text-gray-500">Income</h2>
+              <p className="text-2xl font-bold">
+                {formatToRupiah(totalIncome?.totalIncome)}
+              </p>
+            </div>
+            <div
+              className={`${
+                totalIncome?.percentage > 0
+                  ? "bg-green-100 text-green-600"
+                  : "bg-red-100 text-red-600"
+              } px-3 py-1 rounded-full`}
+            >
+              {totalIncome?.percentage} %
+            </div>
+          </div>
         </div>
         <div className="mt-4">
           <h2 className="text-lg font-medium mb-4">

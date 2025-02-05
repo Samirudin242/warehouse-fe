@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { toast, ToastContainer } from "react-toastify";
 import { FaStar } from "react-icons/fa6";
-import { formatToRupiah } from "@/app/utils/formatPrice";
+import { formatToRupiah } from "@/utils/formatPrice";
 import { useAppContext } from "@/contexts/useContext";
 import { DescriptionProps } from "@/types/ProductDescription";
 import axiosRequest from "@/hooks/useAxios";

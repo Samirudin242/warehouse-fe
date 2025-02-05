@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button } from "antd";
-import { formatToRupiah } from "@/app/utils/formatPrice";
+import { formatToRupiah } from "@/utils/formatPrice";
 import { FaArrowRight } from "react-icons/fa6";
 import ListAddress from "./ListAddress";
 import ListShipping from "./ListShipping";

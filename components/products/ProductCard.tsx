@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
-import { formatToRupiah } from "@/app/utils/formatPrice";
+import { formatToRupiah } from "@/utils/formatPrice";
 import Image from "next/image";
 import { PiStarFill } from "react-icons/pi";
 import { setCookie } from "nookies";

@@ -1,7 +1,7 @@
 import { OrderUser } from "@/types/Order";
 import React from "react";
 import { HiX } from "react-icons/hi";
-import { formatToRupiah } from "@/app/utils/formatPrice";
+import { formatToRupiah } from "@/utils/formatPrice";
 import GoogleMapPicker from "../location/GoogleMapPicker";
 
 type OrderCartProps = {

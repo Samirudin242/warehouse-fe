@@ -4,7 +4,7 @@ import { Button, Spin, Tooltip, Image } from "antd";
 
 import { HiDotsVertical } from "react-icons/hi";
 
-import { formatToRupiah } from "@/app/utils/formatPrice";
+import { formatToRupiah } from "@/utils/formatPrice";
 import { OrderUser } from "@/types/Order";
 import TootlipOrderCard from "./TootlipOrderCard";
 import GlobalModal from "../modal/GlobalModal";

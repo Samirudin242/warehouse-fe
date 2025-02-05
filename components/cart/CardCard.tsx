@@ -1,4 +1,4 @@
-import { formatToRupiah } from "@/app/utils/formatPrice";
+import { formatToRupiah } from "@/utils/formatPrice";
 import React, { useState } from "react";
 import { MdDelete } from "react-icons/md";
 import { useAppContext } from "@/contexts/useContext";
