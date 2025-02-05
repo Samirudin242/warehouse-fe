@@ -1,9 +1,13 @@
+import React, { useEffect } from "react";
 import { configUrl } from "@/config/configUrl";
 import useHookSwr from "@/hooks/useSwr";
 import { formatToRupiah } from "@/utils/formatPrice";
-import React from "react";
+import { useAppContext } from "@/contexts/useContext";
 
 export default function DashboardOverview() {
+  const { roles } = useAppContext();
+
+  const roleId = roles?.find((r) => r.role_name === "CUSTOMER")?.id;
   const { data: totalUser } = useHookSwr(
     `${configUrl.apiUrlUserService}/user/get-all-users-percentage`
   );
@@ -11,6 +15,18 @@ export default function DashboardOverview() {
   const { data: totalIncome } = useHookSwr(
     `${configUrl.apiUrlWarehouseService}/sales/all-income`
   );
+
+  const { data: dataUser, refresh: refreshDataUser } = useHookSwr(
+    `${configUrl.apiUrlUserService}/user?size=4&role=${roleId}`
+  );
+
+  useEffect(() => {
+    if (roleId) {
+      refreshDataUser(
+        `${configUrl.apiUrlUserService}/user?size=4&role=${roleId}`
+      );
+    }
+  }, [roleId]);
 
   const stats = [
     { label: "Customers", value: "10,243", change: "8%" },
@@ -81,14 +97,18 @@ export default function DashboardOverview() {
 
           {/* Users Section */}
           <div className="flex gap-8 items-center justify-between ">
-            {users.map((user, index) => (
+            {dataUser?.content?.map((user: any, index: number) => (
               <div key={index} className="text-center">
                 <img
-                  src={user.img}
-                  alt={user.name}
+                  src={
+                    user?.profile_picture
+                      ? user?.profile_picture
+                      : "/images/self.png"
+                  }
+                  alt={user?.profile_picture}
                   className="w-20 h-20 rounded-full object-cover mb-2"
                 />
-                <p className="text-gray-700 font-medium">{user.name}</p>
+                <p className="text-gray-700 font-medium">{user?.name}</p>
               </div>
             ))}
           </div>

@@ -15,7 +15,7 @@ import { Select } from "antd";
 import { FiFilter } from "react-icons/fi";
 import useHookSwr from "@/hooks/useSwr";
 import { configUrl } from "@/config/configUrl";
-import axiosRequest from "@/hooks/useAxios";
+import { useAppContext } from "@/contexts/useContext";
 
 // Register required Chart.js components
 ChartJS.register(
@@ -42,19 +42,15 @@ const months = [
   "December",
 ];
 
-const sampleData: { [key: string]: number[] } = {
-  "Product A": [65, 59, 80, 81, 56, 55, 40, 75],
-  "Product B": [45, 70, 60, 90, 50, 40, 30, 85],
-  "Product C": [55, 60, 70, 95, 80, 60, 50, 90],
-};
-
 function TotalIncomeChart() {
+  const { roles } = useAppContext();
+
+  const roleId = roles?.find((r) => r.role_name === "CUSTOMER")?.id;
+
   const [selectedProduct, setSelectedProduct] = useState<string>("All");
   const [selectedProductName, setProductName] = useState<string>("All Product");
 
   const [dataProduct, setDataProduct] = useState<any[]>([]);
-
-  const [listDataChart, setListDataChart] = useState<number[]>([]);
 
   const {
     data: datas,
@@ -71,6 +67,12 @@ function TotalIncomeChart() {
 
   const { data: dataChart, refresh: refreshDataChart } = useHookSwr(url);
 
+  const { data: dataUser, refresh: refreshDataUser } = useHookSwr(
+    `${configUrl.apiUrlUserService}/user?size=4&role=${roleId}`
+  );
+
+  console.log(dataUser, "<<<");
+
   useEffect(() => {
     if (datas?.content) {
       const list = {
@@ -80,6 +82,14 @@ function TotalIncomeChart() {
       setDataProduct([list, ...datas.content]);
     }
   }, [datas]);
+
+  useEffect(() => {
+    if (roleId) {
+      refreshDataUser(
+        `${configUrl.apiUrlUserService}/user?size=4&role=${roleId}`
+      );
+    }
+  }, [roleId]);
 
   const handleSearch = (value: string) => {
     refresh(
@@ -97,7 +107,6 @@ function TotalIncomeChart() {
         e == "All" || !e ? "" : e
       }`
     );
-    console.log(dataChart);
   };
 
   // Chart data
