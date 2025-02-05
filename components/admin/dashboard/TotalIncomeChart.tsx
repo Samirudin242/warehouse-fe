@@ -15,7 +15,6 @@ import { Select } from "antd";
 import { FiFilter } from "react-icons/fi";
 import useHookSwr from "@/hooks/useSwr";
 import { configUrl } from "@/config/configUrl";
-import { useAppContext } from "@/contexts/useContext";
 
 // Register required Chart.js components
 ChartJS.register(
@@ -43,10 +42,6 @@ const months = [
 ];
 
 function TotalIncomeChart() {
-  const { roles } = useAppContext();
-
-  const roleId = roles?.find((r) => r.role_name === "CUSTOMER")?.id;
-
   const [selectedProduct, setSelectedProduct] = useState<string>("All");
   const [selectedProductName, setProductName] = useState<string>("All Product");
 
@@ -67,12 +62,6 @@ function TotalIncomeChart() {
 
   const { data: dataChart, refresh: refreshDataChart } = useHookSwr(url);
 
-  const { data: dataUser, refresh: refreshDataUser } = useHookSwr(
-    `${configUrl.apiUrlUserService}/user?size=4&role=${roleId}`
-  );
-
-  console.log(dataUser, "<<<");
-
   useEffect(() => {
     if (datas?.content) {
       const list = {
@@ -82,14 +71,6 @@ function TotalIncomeChart() {
       setDataProduct([list, ...datas.content]);
     }
   }, [datas]);
-
-  useEffect(() => {
-    if (roleId) {
-      refreshDataUser(
-        `${configUrl.apiUrlUserService}/user?size=4&role=${roleId}`
-      );
-    }
-  }, [roleId]);
 
   const handleSearch = (value: string) => {
     refresh(

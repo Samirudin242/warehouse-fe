@@ -23,7 +23,7 @@ type OrderProps = {
 };
 
 function OrderSummary({ totalOrder, listWarehouseId, dataCart }: OrderProps) {
-  const { user } = useAppContext();
+  const { user, setLoading } = useAppContext();
 
   const userId = user?.id;
   const router = useRouter();
@@ -79,6 +79,7 @@ function OrderSummary({ totalOrder, listWarehouseId, dataCart }: OrderProps) {
 
   const handleSubmit = async () => {
     try {
+      setLoading(true);
       setLoadingButton(true);
       const { response, error } = await axiosRequest({
         url: `${configUrl.apiUrlWarehouseService}/order`,

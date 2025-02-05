@@ -43,7 +43,10 @@ function OrderManagementPage() {
   const [scaleStep, setScaleStep] = useState(0.5);
 
   const [openModalApprove, setOpenModalApprove] = useState<boolean>(false);
+  const [modalCancel, setModalCancel] = useState<boolean>(false);
+
   const [bodyShipping, setBodyShipping] = useState<any>();
+  const [bodyCancel, setBodyCancel] = useState<any>();
   const [loadingButton, setLoadingButton] = useState<boolean>(false);
 
   const { data, refresh, error, isLoading } = useHookSwr(
@@ -63,6 +66,23 @@ function OrderManagementPage() {
     setLoading(false);
   }, []);
 
+  const handleFilterOrder = (type: string) => {
+    refresh(`${configUrl.apiUrlWarehouseService}/order?status=${type}`);
+  };
+
+  const handleCancelOrder = async () => {
+    const { response, error } = await axiosRequest({
+      url: `${configUrl.apiUrlWarehouseService}/order/cancel-order`,
+      method: "POST",
+      body: bodyCancel,
+    });
+
+    if (response) {
+      setModalCancel(false);
+      refresh(`${configUrl.apiUrlWarehouseService}/order`);
+    }
+  };
+
   const handleChangePage = (page: any) => {
     setCurrentPage(page);
     const url = `${configUrl.apiUrlProductService}/product?page=${page}`;
@@ -81,19 +101,19 @@ function OrderManagementPage() {
     CANCELLED: { color: "red", icon: <MdCancel /> },
   };
 
-  const handleCancelOrder = async (orderId: string) => {
-    Modal.confirm({
-      title: "Confirm Order Cancellation",
-      content: "Are you sure you want to cancel this order?",
-      onOk: async () => {
-        try {
-          console.log("Cancelling order:", orderId);
-        } catch (error) {
-          console.error("Cancellation failed:", error);
-        }
-      },
-    });
-  };
+  // const handleCancelOrder = async (orderId: string) => {
+  //   Modal.confirm({
+  //     title: "Confirm Order Cancellation",
+  //     content: "Are you sure you want to cancel this order?",
+  //     onOk: async () => {
+  //       try {
+  //         console.log("Cancelling order:", orderId);
+  //       } catch (error) {
+  //         console.error("Cancellation failed:", error);
+  //       }
+  //     },
+  //   });
+  // };
 
   const handleOpenModalShipping = (order: OrderUser) => {
     setOpenModalApprove(true);
@@ -285,7 +305,13 @@ function OrderManagementPage() {
               <Button
                 danger
                 icon={<MdCancel />}
-                onClick={() => handleCancelOrder(record.id)}
+                onClick={() => {
+                  setBodyCancel({
+                    order_id: record.id,
+                    order_date: record.order_date,
+                  });
+                  setModalCancel(true);
+                }}
               >
                 Cancel
               </Button>
@@ -320,7 +346,10 @@ function OrderManagementPage() {
             <Segmented
               options={statusFilters}
               value={selectedStatus}
-              onChange={(value) => setSelectedStatus(value as string)}
+              onChange={(value) => {
+                setSelectedStatus(value as string);
+                handleFilterOrder(value as string);
+              }}
               className="flex-wrap"
             />
           </div>
@@ -367,6 +396,20 @@ function OrderManagementPage() {
             />
           </Suspense>
         )}
+
+        <GlobalModal
+          isVisible={modalCancel}
+          content={
+            <div className="text-black font-bold">
+              Are you sure want to cancel the order
+            </div>
+          }
+          onCancel={() => {
+            setModalCancel(false);
+          }}
+          icon={"cancel"}
+          onOk={handleCancelOrder}
+        />
       </div>
     </div>
   );
