@@ -1,15 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import { MdCancel } from "react-icons/md";
 import { MdOutlineUploadFile, MdOutlineRateReview } from "react-icons/md";
 import { FaPeopleCarryBox } from "react-icons/fa6";
 import { AiOutlineShopping } from "react-icons/ai";
 import { useRouter } from "next/navigation";
+import { useAppContext } from "@/contexts/useContext";
 
 type TooltipProps = {
   setIsPaymentModalOpen: (p: boolean) => void;
   status: string;
   setConfirmReceived: (type: string) => void;
   setCancelOrder: (type: string) => void;
+  setOpenModalReview: () => void;
 };
 
 export default function TootlipOrderCard({
@@ -17,7 +19,10 @@ export default function TootlipOrderCard({
   status,
   setConfirmReceived,
   setCancelOrder,
+  setOpenModalReview,
 }: TooltipProps) {
+  const { setLoading } = useAppContext();
+
   const router = useRouter();
 
   return (
@@ -54,7 +59,10 @@ export default function TootlipOrderCard({
       ) : status === "COMPLETED" ? (
         <div>
           <div className="text-black">
-            <button className="flex border w-full items-center px-3 py-2 rounded bg-gray-200 hover:bg-blue-300  font-bold">
+            <button
+              onClick={setOpenModalReview}
+              className="flex border w-full items-center px-3 py-2 rounded bg-gray-200 hover:bg-blue-300  font-bold"
+            >
               <MdOutlineRateReview className="text-blue-500 text-2xl" />
               <span className="ml-2">Review Product</span>
             </button>
@@ -66,6 +74,7 @@ export default function TootlipOrderCard({
             <button
               onClick={() => {
                 router.push("/product/list-product/all");
+                setLoading(true);
               }}
               className="flex border w-full items-center px-3 py-2 rounded bg-gray-200 font-bold"
             >

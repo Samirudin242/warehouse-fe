@@ -30,7 +30,7 @@ export default function OrderIcon() {
     if (userId && !data && token) {
       refresh(`${configUrl.apiUrlWarehouseService}/order/${userId}`);
     }
-  }, [userId]);
+  }, [userId, token]);
 
   if (isLoading) {
     return <Spin />;

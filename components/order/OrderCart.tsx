@@ -10,6 +10,7 @@ import TootlipOrderCard from "./TootlipOrderCard";
 import GlobalModal from "../modal/GlobalModal";
 import axiosRequest from "@/hooks/useAxios";
 import { configUrl } from "@/config/configUrl";
+import ReviewModal from "./ReviewModal";
 
 const ModalOrderDetail = lazy(
   () => import("@/components/order/ModalOrderDetail")
@@ -36,6 +37,8 @@ export default function OrderCart({
   const [confirmReceived, setConfirmReceived] = useState<boolean>(false);
   const [cancelOrder, setCancelOrder] = useState<boolean>(false);
   const [bodyUpdateStatus, setBodyUpdateStatus] = useState<any>();
+
+  const [openModalReview, setOpenModalReview] = useState<boolean>(false);
 
   const [visible, setVisible] = useState(false);
   const [scaleStep, setScaleStep] = useState(0.5);
@@ -155,6 +158,7 @@ export default function OrderCart({
                 status={order?.status}
                 setConfirmReceived={handleOpenModaUpdateStatus}
                 setCancelOrder={handleOpenModaUpdateStatus}
+                setOpenModalReview={() => setOpenModalReview(true)}
               />
             }
           >
@@ -195,6 +199,13 @@ export default function OrderCart({
         }}
         icon={cancelOrder ? "cancel" : "deliver"}
         onOk={handleReceivedOrder}
+      />
+
+      <ReviewModal
+        isOpen={openModalReview}
+        handleCancel={() => setOpenModalReview(false)}
+        order={order}
+        // onSubmit={}
       />
     </>
   );

@@ -79,7 +79,7 @@ type Payment = {
   payment_proof: string;
 };
 
-type OrderItem = {
+export type OrderItem = {
   id: string;
   quantity: number;
   price: number;

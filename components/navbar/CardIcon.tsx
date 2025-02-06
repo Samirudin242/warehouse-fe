@@ -23,7 +23,7 @@ export default function CardIcon() {
     if (userId && !data && token) {
       refresh(`${configUrl.apiUrlProductService}/cart/${userId}`);
     }
-  }, [userId]);
+  }, [userId, token]);
 
   if (isLoading) {
     return <Spin />;

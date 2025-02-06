@@ -22,7 +22,7 @@ function FilterProduct({
         handleFilterCategory={handleFilterCategory}
         listFilter={listFilter}
       />
-      <FilterPrices min={0} max={10000000} />
+      {/* <FilterPrices min={0} max={10000000} /> */}
     </div>
   );
 }
