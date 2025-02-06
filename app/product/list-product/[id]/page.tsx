@@ -109,10 +109,6 @@ export default function ListProduct() {
     setLoading(false);
   }, []);
 
-  if (!isLoading) {
-    setLoading(false);
-  }
-
   return (
     <div className="px-20">
       <Breadcrumbs isHideLast={true} />

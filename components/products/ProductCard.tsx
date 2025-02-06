@@ -25,12 +25,12 @@ const ProductCard: React.FC<ProductCardProps> = ({
   imageSrc,
   totalSell,
 }) => {
-  const { setLoading } = useAppContext();
+  const { setLoadingAnimation } = useAppContext();
 
   const router = useRouter();
 
   const handleClickCard = () => {
-    setLoading(true);
+    setLoadingAnimation(true);
     setCookie(null, "productId", id, { path: "/" });
     router.push(`/product/product-detail/${title}`);
   };
@@ -38,7 +38,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   return (
     <div
       onClick={handleClickCard}
-      className="w-64 bg-white rounded-lg overflow-hidden cursor-pointer 
+      className="w-64 bg-white rounded-lg overflow-hidden cursor-pointer
         border hover:border-gray-200 transition-all duration-300 ease-out
         hover:shadow-lg hover:-translate-y-1.5 group"
     >

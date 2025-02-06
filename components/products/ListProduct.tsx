@@ -6,6 +6,7 @@ import ButtonComponent from "../globals/Button";
 import { configUrl } from "@/config/configUrl";
 
 import useHookSwr from "@/hooks/useSwr";
+import { useAppContext } from "@/contexts/useContext";
 interface Props {
   title: string;
   isHideBorder?: Boolean;
@@ -23,6 +24,7 @@ type Product = {
 };
 
 function ListProduct({ title, isHideBorder, page }: Props) {
+  const { setLoading } = useAppContext();
   const router = useRouter();
 
   const { data, error, isLoading, refresh } = useHookSwr(
@@ -39,7 +41,12 @@ function ListProduct({ title, isHideBorder, page }: Props) {
       <div className="flex justify-between">
         {product?.map((product: Product, i: number) => {
           return (
-            <div key={i}>
+            <div
+              key={i}
+              onClick={() => {
+                setLoading(true);
+              }}
+            >
               <ProductCard
                 imageSrc={product.imageUrl}
                 title={product.name}

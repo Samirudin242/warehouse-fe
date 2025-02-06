@@ -58,7 +58,11 @@ function AdminUserPage() {
       render: (text: string, record: any) => (
         <div className="flex items-center">
           <img
-            src={record.profile_picture}
+            src={
+              record.profile_picture
+                ? record.profile_picture
+                : "/images/self.png"
+            }
             alt="profile"
             className="w-10 h-10 rounded-full mr-2.5"
           />

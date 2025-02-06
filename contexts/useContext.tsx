@@ -17,6 +17,8 @@ type AppContextType = {
   setUser: React.Dispatch<React.SetStateAction<User>>;
   loading: boolean;
   setLoading: (loading: boolean) => void;
+  loadingAnimation: boolean;
+  setLoadingAnimation: (load: boolean) => void;
 };
 
 type User = {
@@ -37,6 +39,7 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
   const [roles, setRoles] = useState<Role[]>([]);
   const [user, setUser] = useState<User>({ id: "", role: "", user_name: "" });
   const [loading, setLoading] = useState(false);
+  const [loadingAnimation, setLoadingAnimation] = useState(false);
 
   const fetchRoles = async () => {
     const { response, error } = await axiosRequest({
@@ -66,6 +69,8 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
         setUser,
         loading,
         setLoading,
+        loadingAnimation,
+        setLoadingAnimation,
       }}
     >
       {children}

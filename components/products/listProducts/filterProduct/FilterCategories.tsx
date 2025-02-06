@@ -21,7 +21,7 @@ export default function FilterCategories({
   listFilter,
 }: FilterProductProps) {
   const { data, isLoading, error } = useHookSwr(
-    `${configUrl.apiUrlProductService}/product/products-category`
+    `${configUrl.apiUrlProductService}/product-public/products-category`
   );
 
   const [collapsedCategories, setCollapsedCategories] = useState<string[]>([]);

@@ -3,9 +3,9 @@
 import { useAppContext } from "@/contexts/useContext";
 
 const LoadingOverlay = () => {
-  const { loading } = useAppContext();
+  const { loading, loadingAnimation } = useAppContext();
 
-  if (!loading) return null;
+  if (!loading && !loadingAnimation) return null;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-md flex items-center justify-center z-50">

@@ -15,7 +15,7 @@ import { configUrl } from "@/config/configUrl";
 import { useAppContext } from "@/contexts/useContext";
 
 function ProductDetail() {
-  const { setLoading } = useAppContext();
+  const { setLoading, setLoadingAnimation } = useAppContext();
   const cookies = parseCookies();
   const productId = cookies.productId;
 
@@ -27,6 +27,7 @@ function ProductDetail() {
 
   useEffect(() => {
     setLoading(false);
+    setLoadingAnimation(false);
     if (productId) {
       refresh(`${configUrl.apiUrlProductService}/product-public/${productId}`);
     }
