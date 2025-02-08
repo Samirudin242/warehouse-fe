@@ -52,7 +52,12 @@ function TotalIncomeChart() {
     error,
     isLoading,
     refresh,
-  } = useHookSwr(`${configUrl.apiUrlProductService}/product-public?size=5`);
+  } = useHookSwr(`${configUrl.apiUrlProductService}/product-public?size=5`, {
+    refreshInterval: 10000,
+    revalidateIfStale: true,
+    revalidateOnFocus: true,
+    revalidateOnReconnect: true,
+  });
 
   const url = `${
     configUrl.apiUrlWarehouseService

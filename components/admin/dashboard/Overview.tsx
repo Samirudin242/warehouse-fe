@@ -9,15 +9,33 @@ export default function DashboardOverview() {
 
   const roleId = roles?.find((r) => r.role_name === "CUSTOMER")?.id;
   const { data: totalUser } = useHookSwr(
-    `${configUrl.apiUrlUserService}/user/get-all-users-percentage`
+    `${configUrl.apiUrlUserService}/user/get-all-users-percentage`,
+    {
+      refreshInterval: 10000,
+      revalidateIfStale: true,
+      revalidateOnFocus: true,
+      revalidateOnReconnect: true,
+    }
   );
 
   const { data: totalIncome } = useHookSwr(
-    `${configUrl.apiUrlWarehouseService}/sales/all-income`
+    `${configUrl.apiUrlWarehouseService}/sales/all-income`,
+    {
+      refreshInterval: 10000,
+      revalidateIfStale: true,
+      revalidateOnFocus: true,
+      revalidateOnReconnect: true,
+    }
   );
 
   const { data: dataUser, refresh: refreshDataUser } = useHookSwr(
-    `${configUrl.apiUrlUserService}/user?size=4&role=${roleId}`
+    `${configUrl.apiUrlUserService}/user?size=4&role=${roleId}`,
+    {
+      refreshInterval: 10000,
+      revalidateIfStale: true,
+      revalidateOnFocus: true,
+      revalidateOnReconnect: true,
+    }
   );
 
   useEffect(() => {
@@ -27,18 +45,6 @@ export default function DashboardOverview() {
       );
     }
   }, [roleId]);
-
-  const stats = [
-    { label: "Customers", value: "10,243", change: "8%" },
-    { label: "Income", value: "$39,403,450", change: "8%" },
-  ];
-
-  const users = [
-    { name: "Johnson D.", img: "https://via.placeholder.com/150" },
-    { name: "Didinya J.", img: "https://via.placeholder.com/150" },
-    { name: "Penny L.", img: "https://via.placeholder.com/150" },
-    { name: "Elon M.", img: "https://via.placeholder.com/150" },
-  ];
 
   return (
     <div className=" bg-gray-50 mt-3">

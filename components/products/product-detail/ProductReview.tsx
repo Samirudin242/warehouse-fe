@@ -13,6 +13,8 @@ type Comment = {
   date: string;
   className?: string;
   createdAt: string;
+  profileUrl: string;
+  customerName: string;
 };
 
 type ReviewProps = {
@@ -52,6 +54,7 @@ function ProductReview({ productId }: ReviewProps) {
                 rating={review.rating}
                 date={review.createdAt}
                 className="w-full"
+                name={review?.customerName}
               />
             ))}
           </div>

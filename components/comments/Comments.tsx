@@ -11,6 +11,8 @@ type Comment = {
   date: string;
   className?: string;
   createdAt: string;
+  profileUrl: string;
+  customerName: string;
 };
 
 function Comments() {
@@ -59,6 +61,7 @@ function Comments() {
                 comment={review.comment}
                 rating={review.rating}
                 date={review.createdAt}
+                name={review?.customerName}
               />
             );
           })}
