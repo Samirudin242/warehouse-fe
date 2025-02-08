@@ -149,6 +149,7 @@ function ListProducts({
                       rating={product.rating}
                       price={product.price}
                       id={product.id}
+                      totalSell={product?.totalSell}
                     />
                   </div>
                 );

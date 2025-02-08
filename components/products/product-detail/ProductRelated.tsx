@@ -18,10 +18,12 @@ function ProductRelated() {
           return (
             <div key={i}>
               <ProductCard
+                id=""
                 imageSrc={card}
                 title="T-Shirt Kaos multi"
                 rating={4}
                 price={200}
+                totalSell={4}
               />
             </div>
           );

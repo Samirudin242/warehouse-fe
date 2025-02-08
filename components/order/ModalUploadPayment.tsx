@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Modal, Upload, message } from "antd";
 import { InboxOutlined } from "@ant-design/icons";
-import { toast, ToastContainer } from "react-toastify";
+import { toast, ToastContainer, Bounce } from "react-toastify";
 
 import Image from "next/image";
 import axiosRequest from "@/hooks/useAxios";
@@ -95,6 +95,14 @@ export default function ModalUploadPayment({
         "Successfully upload payment proof, admin will verify your payment soon!",
         {
           position: "top-center",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
         }
       );
 

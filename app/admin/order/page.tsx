@@ -50,11 +50,14 @@ function OrderManagementPage() {
   const [bodyCancel, setBodyCancel] = useState<any>();
   const [loadingButton, setLoadingButton] = useState<boolean>(false);
 
+  const [visibleImageId, setVisibleImageId] = useState<string | null>(null);
+
   const { data, refresh, error, isLoading } = useHookSwr(
     `${configUrl.apiUrlWarehouseService}/order`,
     {
-      revalidateIfStale: false,
-      revalidateOnFocus: false,
+      refreshInterval: 3000,
+      revalidateIfStale: true,
+      revalidateOnFocus: true,
       revalidateOnReconnect: false,
     }
   );
@@ -258,7 +261,7 @@ function OrderManagementPage() {
             {record.payment.payment_proof && (
               <div>
                 <button
-                  onClick={() => setVisible(true)}
+                  onClick={() => setVisibleImageId(record.id)}
                   className="border mt-2 px-1 rounded bg-green-200 text-green-700"
                 >
                   Payment proof
@@ -266,13 +269,13 @@ function OrderManagementPage() {
                 <Image
                   width={200}
                   style={{ display: "none" }}
-                  src={record?.payment?.payment_proof}
+                  src={record.payment.payment_proof}
                   preview={{
-                    visible,
+                    visible: visibleImageId === record.id,
+                    src: record.payment.payment_proof,
                     scaleStep,
-                    src: record?.payment?.payment_proof,
                     onVisibleChange: (value) => {
-                      setVisible(value);
+                      if (!value) setVisibleImageId(null);
                     },
                   }}
                 />

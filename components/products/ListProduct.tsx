@@ -53,6 +53,7 @@ function ListProduct({ title, isHideBorder, page }: Props) {
                 rating={product.rating}
                 price={product.price}
                 id={product.id}
+                totalSell={product?.totalSell}
               />
             </div>
           );

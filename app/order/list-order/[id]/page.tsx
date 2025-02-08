@@ -34,7 +34,13 @@ function ListOrderPage() {
   >("All Transaction");
 
   const { data, refresh, error, isLoading } = useHookSwr(
-    userId ? `${configUrl.apiUrlWarehouseService}/order/${userId}` : null
+    userId ? `${configUrl.apiUrlWarehouseService}/order/${userId}` : null,
+    {
+      refreshInterval: 3000,
+      revalidateIfStale: true,
+      revalidateOnFocus: true,
+      revalidateOnReconnect: false,
+    }
   );
 
   useEffect(() => {
