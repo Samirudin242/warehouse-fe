@@ -43,7 +43,9 @@ function ListProducts({
   const handleChangePage = (page: number) => {
     setCurrentPage(page);
     refresh(
-      `${configUrl.apiUrlProductService}/product-public?size=${12}&page=${page}`
+      `${configUrl.apiUrlProductService}/product-public?size=${12}&page=${
+        page - 1
+      }`
     );
   };
 

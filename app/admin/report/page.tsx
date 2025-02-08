@@ -36,17 +36,7 @@ function AdminReportsPage() {
     <div className="p-6 text-black">
       <h1 className="text-2xl font-bold mb-4">Sales Reports</h1>
 
-      <ReportFilters
-        warehouses={warehouses}
-        categories={categories}
-        products={products}
-        selectedWarehouse={selectedWarehouse}
-        selectedCategory={selectedCategory}
-        selectedProduct={selectedProduct}
-        onFilterChange={handleFilterChange}
-      />
-
-      <SalesChart labels={labels} data={data} title="Monthly Sales Report" />
+      <SalesChart />
     </div>
   );
 }
