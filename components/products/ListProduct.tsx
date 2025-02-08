@@ -10,7 +10,7 @@ import { useAppContext } from "@/contexts/useContext";
 interface Props {
   title: string;
   isHideBorder?: Boolean;
-  page: number;
+  type: string;
 }
 
 type Product = {
@@ -23,13 +23,16 @@ type Product = {
   imageUrl: string;
 };
 
-function ListProduct({ title, isHideBorder, page }: Props) {
+function ListProduct({ title, isHideBorder, type }: Props) {
   const { setLoading } = useAppContext();
   const router = useRouter();
 
-  const { data, error, isLoading, refresh } = useHookSwr(
-    `${configUrl.apiUrlProductService}/product-public?size=${4}&page=${page}`
-  );
+  const url =
+    type == "popular"
+      ? `${configUrl.apiUrlProductService}/product/popular-products?size=5`
+      : `${configUrl.apiUrlProductService}/product-public?size=4`;
+
+  const { data, error, isLoading, refresh } = useHookSwr(url);
 
   const product = data?.content || [];
 
