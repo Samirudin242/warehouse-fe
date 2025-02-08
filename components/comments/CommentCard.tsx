@@ -1,38 +1,41 @@
-import React from "react";
-import { IoStarSharp } from "react-icons/io5";
 import { FaCheckCircle } from "react-icons/fa";
+import { FaStar } from "react-icons/fa6";
 
-interface Props {
-  customwWidth?: String;
+import moment from "moment";
+
+interface CommentProps {
+  comment: string;
+  rating: number;
+  date: string;
+  className?: string;
 }
 
-export default function CommentCard({ customwWidth }: Props) {
+export default function CommentCard({
+  comment,
+  rating,
+  date,
+  className,
+}: CommentProps) {
   return (
-    <div>
-      <div
-        className={`border ${
-          customwWidth ? customwWidth : "w-72"
-        } rounded-lg py-4 px-3`}
-      >
-        <div className="flex">
-          {[...Array(4)].map((_, i) => (
-            <IoStarSharp key={i} className="text-amber-300" />
+    <article className={`border rounded-lg p-4 ${className}`}>
+      <div className="flex items-center gap-2 mb-3">
+        <div className="flex text-amber-400">
+          {[...Array(5)].map((_, i) => (
+            <FaStar
+              key={i}
+              className={i < rating ? "opacity-100" : "opacity-30"}
+            />
           ))}
         </div>
-        <div className="flex mt-2">
-          <h1 className="font-bold text-black">Sarah M. </h1>
-          <span className="ml-3">
-            <FaCheckCircle className="text-green-600" />
-          </span>{" "}
-        </div>
-        <div>
-          <p className="font-thin text-black">
-            "I'm blown away by the quality and style of the clothes I received
-            from Shop.co. From casual wear to elegant dresses, every piece I've
-            bought has exceeded my expectations.”
-          </p>
-        </div>
+        <span className="text-sm text-gray-500">
+          {moment(date).format("ll")}
+        </span>
       </div>
-    </div>
+
+      <div className="flex items-start gap-2">
+        <FaCheckCircle className="text-green-600 shrink-0 mt-1" />
+        <p className="text-gray-700 leading-relaxed">"{comment}"</p>
+      </div>
+    </article>
   );
 }

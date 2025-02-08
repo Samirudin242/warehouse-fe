@@ -1,11 +1,14 @@
+import { useAppContext } from "@/contexts/useContext";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
 
 export default function Carousel3() {
+  const { setLoading } = useAppContext();
   const router = useRouter();
 
   const handleClickShop = () => {
+    setLoading(true);
     router.push("/product/list-product/all");
   };
 

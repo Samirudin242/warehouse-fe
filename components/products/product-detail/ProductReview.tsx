@@ -1,29 +1,72 @@
-import React from "react";
-import ProductCard from "../ProductCard";
+"use client";
+
+import React, { useState } from "react";
 import CommentCard from "@/components/comments/CommentCard";
 import ButtonComponent from "@/components/globals/Button";
+import useHookSwr from "@/hooks/useSwr";
+import { configUrl } from "@/config/configUrl";
 
-function ProductReview() {
+type Comment = {
+  id: string;
+  comment: string;
+  rating: number;
+  date: string;
+  className?: string;
+  createdAt: string;
+};
+
+type ReviewProps = {
+  productId: string;
+};
+
+function ProductReview({ productId }: ReviewProps) {
+  const [page, setPage] = useState(0);
+  const { data, isLoading } = useHookSwr(
+    `${configUrl.apiUrlProductService}/product-public/reviews?productId=${productId}&size=6&page=${page}`
+  );
+
+  const handleLoadMore = () => setPage((prev) => prev + 1);
+
   return (
-    <div className="mt-16">
-      <div className="border mb-4"></div>
-      <div className="flex justify-between">
-        <h1 className="font-bold">
-          All Reviews <span className="font-thin text-sm">(145)</span>
-        </h1>
-        <button className="text-white bg-black py-1 rounded-2xl px-5 text-sm">
-          Write Review
-        </button>
-      </div>
-      <div className="mt-4 grid grid-cols-3 gap-y-5">
-        {[...Array(6)].map((_, i) => (
-          <CommentCard customwWidth={"w-96"} />
-        ))}
-      </div>
-      <div className="flex justify-center mt-10">
-        <ButtonComponent text="Load More Reviews" />
-      </div>
-    </div>
+    <section className="mt-16">
+      <hr className="mb-6 border-t-2" />
+
+      <header className="flex justify-between items-center mb-8">
+        <h2 className="text-2xl font-bold">
+          Customer Reviews
+          <span className="ml-2 text-gray-500 font-normal">
+            ({data?.totalElements ?? 0})
+          </span>
+        </h2>
+      </header>
+
+      {isLoading ? (
+        <div>Loading reviews...</div>
+      ) : (
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {data?.content?.map((review: Comment) => (
+              <CommentCard
+                key={review.id}
+                comment={review.comment}
+                rating={review.rating}
+                date={review.createdAt}
+                className="w-full"
+              />
+            ))}
+          </div>
+
+          {!data?.last && (
+            <div className="flex justify-center mt-10">
+              <ButtonComponent
+                text="Load More Reviews"
+                onClick={handleLoadMore}
+              />
+            </div>
+          )}
+        </>
+      )}
+    </section>
   );
 }
 

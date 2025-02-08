@@ -1,8 +1,25 @@
 "use client";
 import React, { useEffect, useRef } from "react";
 import CommentCard from "./CommentCard";
+import useHookSwr from "@/hooks/useSwr";
+import { configUrl } from "@/config/configUrl";
+
+type Comment = {
+  id: string;
+  comment: string;
+  rating: number;
+  date: string;
+  className?: string;
+  createdAt: string;
+};
 
 function Comments() {
+  const { data, isLoading } = useHookSwr(
+    `${
+      configUrl.apiUrlProductService
+    }/product-public/reviews?&size=10&rating=${5}`
+  );
+
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -34,13 +51,17 @@ function Comments() {
         className="relative overflow-x-auto scrollbar-hide px-20"
       >
         <div className="flex space-x-16">
-          <CommentCard />
-          <CommentCard />
-          <CommentCard />
-          <CommentCard />
-          <CommentCard />
-          <CommentCard />
-          <CommentCard />
+          {data?.content?.map((review: Comment) => {
+            return (
+              <CommentCard
+                className="w-80"
+                key={review.id}
+                comment={review.comment}
+                rating={review.rating}
+                date={review.createdAt}
+              />
+            );
+          })}
         </div>
       </div>
     </div>

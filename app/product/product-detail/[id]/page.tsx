@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect } from "react";
 
-import { useParams } from "next/navigation";
 import { parseCookies } from "nookies";
 
 import Breadcrumbs from "@/components/bredcrumbs/Bredcrumbs";
@@ -61,7 +60,7 @@ function ProductDetail() {
           </div>
         </div>
         <div>
-          <ProductReview />
+          <ProductReview productId={data?.id} />
         </div>
         <div>
           <ProductRelated />
