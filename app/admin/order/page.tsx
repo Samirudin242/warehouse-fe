@@ -91,7 +91,7 @@ function OrderManagementPage() {
 
   const handleChangePage = (page: any) => {
     setCurrentPage(page);
-    const url = `${configUrl.apiUrlProductService}/product?page=${page}`;
+    const url = `${configUrl.apiUrlWarehouseService}/order?page=${page - 1}`;
     refresh(url);
   };
 
@@ -106,20 +106,6 @@ function OrderManagementPage() {
     COMPLETED: { color: "green", icon: <MdDoneAll /> },
     CANCELLED: { color: "red", icon: <MdCancel /> },
   };
-
-  // const handleCancelOrder = async (orderId: string) => {
-  //   Modal.confirm({
-  //     title: "Confirm Order Cancellation",
-  //     content: "Are you sure you want to cancel this order?",
-  //     onOk: async () => {
-  //       try {
-  //         console.log("Cancelling order:", orderId);
-  //       } catch (error) {
-  //         console.error("Cancellation failed:", error);
-  //       }
-  //     },
-  //   });
-  // };
 
   const handleOpenModalShipping = (order: OrderUser) => {
     setOpenModalApprove(true);

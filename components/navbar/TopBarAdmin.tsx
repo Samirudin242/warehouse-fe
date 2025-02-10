@@ -47,7 +47,10 @@ export default function TopBarAdmin() {
         </Dropdown>
 
         <button
-          onClick={() => router.push("/")}
+          onClick={() => {
+            setLoading(true);
+            router.push("/");
+          }}
           className="p-2 hover:bg-gray-300 rounded-full"
         >
           <BsShop className="w-5 h-5 text-gray-700" />

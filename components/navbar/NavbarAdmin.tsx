@@ -82,8 +82,10 @@ const NavbarAdmin: React.FC<NavbarAdminProps> = ({
             <li key={item.name} className="mb-2">
               <button
                 onClick={() => {
-                  router.push(item.path);
-                  setLoading(true);
+                  if (pathname !== item.path) {
+                    router.push(item.path);
+                    setLoading(true);
+                  }
                 }}
                 className={`w-full flex items-center px-4 py-2 hover:bg-gray-300 transition ${
                   pathname === item.path ? "bg-gray-700 text-white" : ""
